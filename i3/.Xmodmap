@@ -1,0 +1,6 @@
+clear lock
+keycode 66 = Super_L NoSymbol Super_L
+
+! To reset look at default config in /etc/X11/xorg.conf.d/00-keyboard.conf
+! Run command: setxkbmap -model pc105+inet -layout us -option terminate:ctrl_alt_bksp
+! Replace values based on values in the original file.

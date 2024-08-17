@@ -1,0 +1,9 @@
+################################################################################
+# Ignore any symlinked Tmuxifier session files added ###########################
+################################################################################
+# Ignore everything
+tmux/tmux-layouts/*
+
+# Explicitly include the following
+tmux/tmux-layouts/setup-and-dotfiles.session.sh
+################################################################################
