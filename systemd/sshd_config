@@ -1,0 +1,7 @@
+Include /etc/ssh/sshd_config.d/*.conf
+Port 22
+Port 2222
+# Replace with your machine's Tailscale IP (run 'tailscale ip -4' to find it)
+ListenAddress 100.x.x.x
+AuthorizedKeysFile	.ssh/authorized_keys
+Subsystem	sftp	/usr/lib/ssh/sftp-server

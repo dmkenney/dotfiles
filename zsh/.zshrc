@@ -5,6 +5,9 @@ setopt appendhistory
 setopt HIST_IGNORE_DUPS
 setopt INC_APPEND_HISTORY
 
+# Direnv setup
+eval "$(direnv hook zsh)"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -19,10 +22,8 @@ source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
 # Tools
 alias n="nvim"
-# alias nk='NVIM_APPNAME="nvim-kickstart" nvim'
 alias lg="lazygit"
 alias ld="lazydocker"
-eval $(thefuck --alias)
 
 # File system
 alias ls='eza -lh --group-directories-first --icons'
@@ -52,3 +53,10 @@ eval "$(tmuxifier init -)"
 # Zig commands
 alias zr='zig build run'
 alias zb='zig build --release=fast'
+
+# npm global packages
+export PATH="$PATH:$HOME/.npm-global/bin"
+
+# Claude Code
+alias yolo='claude --dangerously-skip-permissions'
+
