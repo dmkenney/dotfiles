@@ -57,6 +57,9 @@ alias zb='zig build --release=fast'
 # npm global packages
 export PATH="$PATH:$HOME/.npm-global/bin"
 
+# Go binaries
+export PATH="$PATH:$HOME/go/bin"
+
 # Claude Code
 alias yolo='claude --dangerously-skip-permissions'
 
