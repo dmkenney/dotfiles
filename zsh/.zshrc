@@ -60,6 +60,9 @@ export PATH="$PATH:$HOME/.npm-global/bin"
 # Go binaries
 export PATH="$PATH:$HOME/go/bin"
 
+# asdf version manager
+. "$HOME/.asdf/asdf.sh"
+
 # Claude Code
 alias yolo='claude --dangerously-skip-permissions'
 
