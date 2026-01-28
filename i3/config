@@ -11,6 +11,19 @@
 
 set $mod Mod4
 
+# Assign workspaces to specific monitors
+workspace 1 output HDMI-0
+workspace 2 output HDMI-0
+workspace 3 output HDMI-0
+workspace 4 output HDMI-0
+workspace 5 output HDMI-0
+workspace 6 output HDMI-0
+workspace 7 output DVI-I-0
+workspace 8 output DVI-I-0
+workspace 9 output DVI-I-0
+workspace 10 output DVI-I-0
+
+exec_always ~/.screenlayout/layout.sh
 exec_always ~/.config/i3/setup.sh
 exec_always feh --bg-scale ~/.config/backgrounds/mandelbrot.png
 
@@ -209,6 +222,11 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
 
 bindsym $mod+Tab workspace back_and_forth
 
+# Spotify media controls
+bindsym XF86AudioPlay exec --no-startup-id playerctl --player=spotify play-pause
+bindsym XF86Launch5 exec --no-startup-id playerctl --player=spotify previous
+bindsym XF86Launch6 exec --no-startup-id playerctl --player=spotify next
+
 # Screenshots
-bindsym Print exec --no-startup-id flameshot full --path ~/Pictures/screenshots
-bindsym $mod+Print exec --no-startup-id flameshot gui --path ~/Pictures/screenshots
+bindsym Print exec --no-startup-id flameshot full --path ~/Pictures/screenshots -c
+bindsym $mod+Print exec --no-startup-id flameshot gui --path ~/Pictures/screenshots -c
