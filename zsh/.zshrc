@@ -54,11 +54,18 @@ eval "$(tmuxifier init -)"
 alias zr='zig build run'
 alias zb='zig build --release=fast'
 
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PATH:$PNPM_HOME"
+
 # npm global packages
 export PATH="$PATH:$HOME/.npm-global/bin"
 
 # Go binaries
 export PATH="$PATH:$HOME/go/bin"
+
+# Fly.io
+export PATH="$PATH:$HOME/.fly/bin"
 
 # asdf version manager
 . "$HOME/.asdf/asdf.sh"
