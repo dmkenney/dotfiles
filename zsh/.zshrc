@@ -67,6 +67,9 @@ export PATH="$PATH:$HOME/go/bin"
 # Fly.io
 export PATH="$PATH:$HOME/.fly/bin"
 
+# Elixir escripts
+export PATH="$PATH:$HOME/.mix/escripts"
+
 # asdf version manager
 . "$HOME/.asdf/asdf.sh"
 
