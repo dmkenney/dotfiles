@@ -35,6 +35,7 @@ smart_borders on
 
 exec --no-startup-id picom
 exec --no-startup-id unclutter
+exec --no-startup-id localsend_app --hidden
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
