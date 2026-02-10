@@ -1,4 +1,13 @@
-HISTFILE=~/.zsh_history
+# Per tmux pane history
+if [[ -n "$TMUX_PANE" ]]; then
+  TMUX_SESSION=$(tmux display-message -p '#S')
+  TMUX_WINDOW=$(tmux display-message -p '#I')
+  TMUX_PANE_INDEX=$(tmux display-message -p '#P')
+  mkdir -p ~/.zsh_history_tmux
+  HISTFILE=~/.zsh_history_tmux/s${TMUX_SESSION}_w${TMUX_WINDOW}_p${TMUX_PANE_INDEX}
+else
+  HISTFILE=~/.zsh_history
+fi
 HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
@@ -41,7 +50,7 @@ alias ....='cd ../../..'
 # Misc
 alias c='clear'
 
-export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
+export SSH_AUTH_SOCK=~/.1password/agent.sock
 export EDITOR="nvim"
 
 # Tmuxifier stuff
@@ -72,6 +81,9 @@ export PATH="$PATH:$HOME/.mix/escripts"
 
 # asdf version manager
 . "$HOME/.asdf/asdf.sh"
+
+# Local binaries (before asdf shims)
+export PATH="$HOME/.local/bin:$PATH"
 
 # Claude Code
 alias yolo='claude --dangerously-skip-permissions'
