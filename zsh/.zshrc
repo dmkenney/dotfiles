@@ -14,8 +14,8 @@ setopt appendhistory
 setopt HIST_IGNORE_DUPS
 setopt INC_APPEND_HISTORY
 
-# Direnv setup
-eval "$(direnv hook zsh)"
+# Silently load direnv env before instant prompt to avoid console output warning
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -23,6 +23,9 @@ eval "$(direnv hook zsh)"
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+# Direnv hook for directory change tracking
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
@@ -79,12 +82,11 @@ export PATH="$PATH:$HOME/.fly/bin"
 # Elixir escripts
 export PATH="$PATH:$HOME/.mix/escripts"
 
-# asdf version manager
-. "$HOME/.asdf/asdf.sh"
+# mise version manager
+eval "$(mise activate zsh)"
 
 # Local binaries (before asdf shims)
 export PATH="$HOME/.local/bin:$PATH"
 
 # Claude Code
 alias yolo='claude --dangerously-skip-permissions'
-
