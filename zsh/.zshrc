@@ -79,7 +79,7 @@ export PATH="$PATH:$HOME/.mix/escripts"
 # mise version manager
 eval "$(mise activate zsh)"
 
-# Local binaries (before asdf shims)
+# Local binaries
 export PATH="$HOME/.local/bin:$PATH"
 
 # Claude Code

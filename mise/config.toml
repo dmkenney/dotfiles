@@ -1,0 +1,9 @@
+[tools]
+erlang = "27.3"
+elixir = "1.18.3-otp-27"
+python = "3.11.9"
+ruby = "3.4.2"
+uv = "0.8.0"
+
+[settings]
+experimental = true
