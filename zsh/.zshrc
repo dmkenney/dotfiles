@@ -14,6 +14,11 @@ setopt appendhistory
 setopt HIST_IGNORE_DUPS
 setopt INC_APPEND_HISTORY
 
+# Direnv setup
+if command -v direnv &>/dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -21,7 +26,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+# Powerlevel10k
+if [[ "$(uname)" == "Darwin" ]]; then
+  source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme
+else
+  source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -47,7 +57,12 @@ alias ....='cd ../../..'
 # Misc
 alias c='clear'
 
-export SSH_AUTH_SOCK=~/.1password/agent.sock
+# 1Password SSH agent
+if [[ "$(uname)" == "Darwin" ]]; then
+  export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+else
+  export SSH_AUTH_SOCK=~/.1password/agent.sock
+fi
 export EDITOR="nvim"
 
 # Tmuxifier stuff
@@ -75,6 +90,12 @@ export PATH="$PATH:$HOME/.fly/bin"
 
 # Elixir escripts
 export PATH="$PATH:$HOME/.mix/escripts"
+
+# macOS-specific paths
+if [[ "$(uname)" == "Darwin" ]]; then
+  export ANDROID_HOME="$HOME/Library/Android/sdk"
+  export PATH="$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools"
+fi
 
 # mise version manager
 eval "$(mise activate zsh)"
