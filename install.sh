@@ -11,6 +11,9 @@ ln -sf ~/dotfiles/picom/picom.conf ~/.config/picom.conf
 ln -sf ~/dotfiles/i3/config ~/.config/i3/config
 ln -sf ~/dotfiles/i3/setup-script.sh ~/.config/i3/setup.sh
 ln -sf ~/dotfiles/i3/.Xmodmap ~/.Xmodmap
+ln -sf ~/dotfiles/i3/dropdown.sh ~/.config/i3/dropdown.sh
+mkdir -p ~/.config/dunst
+ln -sf ~/dotfiles/dunst/dunstrc ~/.config/dunst/dunstrc
 ln -sf ~/dotfiles/mise/config.toml ~/.config/mise/config.toml
 ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/zsh/.p10k.zsh ~/.p10k.zsh

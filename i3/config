@@ -36,6 +36,12 @@ smart_borders on
 exec --no-startup-id picom
 exec --no-startup-id unclutter
 exec --no-startup-id localsend_app --hidden
+exec --no-startup-id dunst
+
+# Dropdown scratchpad terminal (Super+` toggles). Lives in i3's scratchpad;
+# show/hide keeps the same window, so the tmux session inside persists.
+for_window [instance="dropdown"] floating enable, border pixel 1, resize set 100 ppt 50 ppt, move position 0 0, move scratchpad
+exec --no-startup-id ~/.config/i3/dropdown.sh
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -231,3 +237,12 @@ bindsym XF86Launch6 exec --no-startup-id playerctl --player=spotify next
 # Screenshots
 bindsym Print exec --no-startup-id flameshot full --path ~/Pictures/screenshots -c
 bindsym $mod+Print exec --no-startup-id flameshot gui --path ~/Pictures/screenshots -c
+
+# Dropdown scratchpad terminal (relaunches if the window was closed)
+bindsym $mod+grave exec --no-startup-id ~/.config/i3/dropdown.sh
+
+# Notifications (dunst)
+bindsym $mod+comma exec --no-startup-id dunstctl close
+bindsym $mod+Shift+comma exec --no-startup-id dunstctl close-all
+bindsym $mod+Ctrl+comma exec --no-startup-id dunstctl set-paused toggle
+bindsym $mod+Mod1+comma exec --no-startup-id dunstctl history-pop
