@@ -16,6 +16,12 @@ ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/zsh/.p10k.zsh ~/.p10k.zsh
 ln -sf ~/dotfiles/backgrounds/ ~/.config/
 ln -sf ~/dotfiles/gtk/.gtkrc-2.0 ~/.gtkrc-2.0
+# Global agent instructions — one source, symlinked per tool
+mkdir -p ~/.claude ~/.codex ~/.gemini ~/.config/opencode
+ln -sfn ~/dotfiles/AGENTS.md ~/.claude/CLAUDE.md
+ln -sfn ~/dotfiles/AGENTS.md ~/.codex/AGENTS.md
+ln -sfn ~/dotfiles/AGENTS.md ~/.gemini/GEMINI.md
+ln -sfn ~/dotfiles/AGENTS.md ~/.config/opencode/AGENTS.md
 
 # Tailscale setup
 if ! command -v tailscale &> /dev/null; then
@@ -33,6 +39,11 @@ sudo mkdir -p /etc/systemd/system/sshd.service.d
 sudo cp ~/dotfiles/systemd/sshd.service.d/tailscale.conf /etc/systemd/system/sshd.service.d/
 sudo systemctl daemon-reload
 sudo systemctl enable --now sshd
+
+# Claude Code skills
+npx skills add coreyhaines31/marketingskills --global --all -y
+npx skills add mager/frontend-design --global --all -y
+npx skills add JuliusBrussee/caveman --global --all -y
 
 # Run the command if the file exists
 if [ -f ./personal/install.sh ]; then
