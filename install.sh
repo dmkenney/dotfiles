@@ -52,3 +52,4 @@ npx skills add JuliusBrussee/caveman --global --all -y
 if [ -f ./personal/install.sh ]; then
   ./personal/install.sh
 fi
+ln -sf ~/dotfiles/bin/claude-settings-env ~/.local/bin/claude-settings-env

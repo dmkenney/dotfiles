@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# claude-settings-env — mirror a project's secret cache into .claude/settings.local.json
+#
+# Usage: claude-settings-env <cache-env-file> <project-dir>
+#
+# Why: Claude Code background sessions (agent view / `claude --bg`) inherit the
+# environment of a shared daemon, not the shell you dispatch from, so exported
+# secrets never reach them. Claude Code does read `env` from the project's
+# settings files on every launch path, so we keep that block in sync with the
+# 1Password cache that .1pass.sh maintains.
+#
+# Behaviour:
+#   - parses `export KEY=value` / `export KEY="value"` lines from the cache file
+#   - merges them into the `env` object of <project-dir>/.claude/settings.local.json
+#   - leaves every other key (permissions, enabledMcpjsonServers, ...) untouched
+#   - drops keys it managed on a previous run that are no longer in the cache
+#     (managed-key list lives next to the cache file, so it is RAM-backed too)
+#   - writes atomically, mode 0600, and only when the content actually changed
+set -euo pipefail
+
+cache_file="${1:?cache env file}"
+project_dir="${2:?project dir}"
+
+[[ -f "$cache_file" ]] || exit 0
+
+# Managed-key list is per project settings file (several worktrees can share
+# one cache), and lives next to the cache so it is RAM-backed like the cache.
+settings_key="$(printf '%s' "$project_dir" | md5sum | cut -c1-12)"
+managed_file="$(dirname "$cache_file")/$(basename "$cache_file").claude-managed-keys.$settings_key"
+settings_dir="$project_dir/.claude"
+settings_file="$settings_dir/settings.local.json"
+
+# Resolve values through bash so both quoted and unquoted exports parse the same
+# way the shell hook sees them. Output is NUL-delimited key/value pairs.
+pairs="$(
+  bash -c '
+    set -a; source "$1" >/dev/null 2>&1 || true; set +a
+    for k in $(grep -oE "^export [A-Za-z_][A-Za-z0-9_]*" "$1" | cut -d" " -f2 | sort -u); do
+      printf "%s\0%s\0" "$k" "${!k-}"
+    done
+  ' _ "$cache_file" | base64 -w0
+)"
+
+mkdir -p "$settings_dir"
+PAIRS_B64="$pairs" MANAGED="$managed_file" SETTINGS="$settings_file" python3 - <<'PY'
+import base64, json, os, tempfile
+
+pairs = base64.b64decode(os.environ["PAIRS_B64"]).decode("utf-8", "surrogateescape").split("\0")
+new_env = {pairs[i]: pairs[i + 1] for i in range(0, len(pairs) - 1, 2) if pairs[i]}
+
+# Never mirror variables Claude Code itself reads as its own credentials or
+# provider selection: mirroring ANTHROPIC_API_KEY, for example, would switch a
+# session from the claude.ai login to API-key billing and hide claude.ai
+# connectors. Extend with CLAUDE_SETTINGS_ENV_EXCLUDE="A,B".
+EXCLUDE = {"ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+           "CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_CUSTOM_HEADERS"}
+EXCLUDE |= {k.strip() for k in os.environ.get("CLAUDE_SETTINGS_ENV_EXCLUDE", "").split(",") if k.strip()}
+new_env = {k: v for k, v in new_env.items() if k not in EXCLUDE and not k.startswith("CLAUDE_CODE_USE_")}
+
+settings_path = os.environ["SETTINGS"]
+managed_path = os.environ["MANAGED"]
+
+try:
+    with open(settings_path) as f:
+        settings = json.load(f)
+    if not isinstance(settings, dict):
+        settings = {}
+except (FileNotFoundError, json.JSONDecodeError):
+    settings = {}
+
+env = settings.get("env")
+if not isinstance(env, dict):
+    env = {}
+
+try:
+    with open(managed_path) as f:
+        previously_managed = {line.strip() for line in f if line.strip()}
+except FileNotFoundError:
+    previously_managed = set()
+
+for key in previously_managed - set(new_env):
+    env.pop(key, None)
+for key in list(env):
+    if key in EXCLUDE or key.startswith("CLAUDE_CODE_USE_"):
+        env.pop(key, None)
+env.update(new_env)
+
+if env:
+    settings["env"] = env
+else:
+    settings.pop("env", None)
+
+rendered = json.dumps(settings, indent=2, sort_keys=False) + "\n"
+try:
+    with open(settings_path) as f:
+        current = f.read()
+except FileNotFoundError:
+    current = None
+
+if current != rendered:
+    fd, tmp = tempfile.mkstemp(prefix=".settings.local.", dir=os.path.dirname(settings_path))
+    with os.fdopen(fd, "w") as f:
+        f.write(rendered)
+    os.chmod(tmp, 0o600)
+    os.replace(tmp, settings_path)
+os.chmod(settings_path, 0o600)
+
+fd, tmp = tempfile.mkstemp(prefix=".managed.", dir=os.path.dirname(managed_path))
+with os.fdopen(fd, "w") as f:
+    f.write("\n".join(sorted(new_env)) + ("\n" if new_env else ""))
+os.chmod(tmp, 0o600)
+os.replace(tmp, managed_path)
+PY
