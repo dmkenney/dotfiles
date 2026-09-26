@@ -12,6 +12,7 @@ ln -sf ~/dotfiles/i3/config ~/.config/i3/config
 ln -sf ~/dotfiles/i3/setup-script.sh ~/.config/i3/setup.sh
 ln -sf ~/dotfiles/i3/.Xmodmap ~/.Xmodmap
 ln -sf ~/dotfiles/i3/dropdown.sh ~/.config/i3/dropdown.sh
+ln -sf ~/dotfiles/bin/clipguard ~/.local/bin/clipguard
 mkdir -p ~/.config/dunst
 ln -sf ~/dotfiles/dunst/dunstrc ~/.config/dunst/dunstrc
 mkdir -p ~/.config/flameshot

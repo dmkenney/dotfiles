@@ -37,6 +37,7 @@ exec --no-startup-id picom
 exec --no-startup-id unclutter
 exec --no-startup-id localsend_app --hidden
 exec --no-startup-id dunst
+exec --no-startup-id ~/.local/bin/clipguard
 
 # Dropdown scratchpad terminal (Super+` toggles). Lives in i3's scratchpad;
 # show/hide keeps the same window, so the tmux session inside persists.

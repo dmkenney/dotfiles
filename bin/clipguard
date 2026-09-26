@@ -1,0 +1,74 @@
+#!/home/dylan/.local/share/mise/installs/python/3.11.9/bin/python3
+"""Take over X11 CLIPBOARD right after every copy so no app (e.g. a wedged
+Alacritty) stays the owner. Brave (Chromium 150+) waits forever on an owner
+that stops answering; xclip always answers.
+
+On each owner change: read the data from the new owner (2s timeout) and
+re-serve it via xclip. If the owner doesn't answer, replace it with an empty
+clipboard so pastes don't hang. Keeps one format (image or text); rich formats
+like text/html are dropped.
+"""
+import subprocess, sys, time
+from Xlib import display, X
+from Xlib.ext import res, xfixes
+
+TIMEOUT = 2
+d = display.Display()
+d.xfixes_query_version()
+root = d.screen().root
+CLIP = d.intern_atom("CLIPBOARD")
+xfixes.select_selection_input(d, root, CLIP, xfixes.XFixesSetSelectionOwnerNotifyMask)
+d.flush()
+
+
+def log(*a):
+    print(time.strftime("%H:%M:%S"), *a, file=sys.stderr, flush=True)
+
+
+def owner_comm(wid):
+    try:
+        r = d.res_query_client_ids([{"client": wid, "mask": res.LocalClientPIDMask}])
+        pid = r.ids[0].value[0]
+        return open(f"/proc/{pid}/comm").read().strip(), pid
+    except Exception:
+        return None, None
+
+
+def xclip_out(target):
+    return subprocess.run(
+        ["xclip", "-o", "-selection", "clipboard", "-t", target],
+        capture_output=True, timeout=TIMEOUT, check=True,
+    ).stdout
+
+
+def own(data, target):
+    subprocess.run(["xclip", "-i", "-selection", "clipboard", "-t", target],
+                   input=data, timeout=TIMEOUT)
+
+
+def guard(wid):
+    comm, pid = owner_comm(wid)
+    if comm in ("xclip", None):  # xclip forks, so its recorded pid is usually gone
+        return
+    try:
+        targets = xclip_out("TARGETS").decode(errors="replace").split()
+        target = next((t for t in ("image/png", "UTF8_STRING", "STRING") if t in targets), None)
+        if target is None:
+            return  # unknown formats only (e.g. file lists); leave the owner alone
+        data = xclip_out(target)
+    except subprocess.TimeoutExpired:
+        log(f"owner {comm}[{pid}] not answering; clearing clipboard")
+        own(b"", "UTF8_STRING")
+        return
+    except subprocess.CalledProcessError:
+        return
+    own(data, target)
+
+
+while True:
+    ev = d.next_event()
+    if type(ev).__name__ == "SetSelectionOwnerNotify" and ev.selection == CLIP and ev.owner:
+        try:
+            guard(ev.owner.id if hasattr(ev.owner, "id") else ev.owner)
+        except Exception as e:
+            log("error:", e)
