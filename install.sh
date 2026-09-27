@@ -9,7 +9,6 @@ ln -sf ~/dotfiles/nvim ~/.config/nvim
 ln -sf ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
 ln -sf ~/dotfiles/picom/picom.conf ~/.config/picom.conf
 ln -sf ~/dotfiles/i3/config ~/.config/i3/config
-ln -sf ~/dotfiles/i3/setup-script.sh ~/.config/i3/setup.sh
 ln -sf ~/dotfiles/i3/.Xmodmap ~/.Xmodmap
 ln -sf ~/dotfiles/i3/dropdown.sh ~/.config/i3/dropdown.sh
 ln -sf ~/dotfiles/bin/clipguard ~/.local/bin/clipguard
