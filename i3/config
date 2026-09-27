@@ -24,7 +24,6 @@ workspace 9 output DVI-I-0
 workspace 10 output DVI-I-0
 
 exec_always ~/.screenlayout/layout.sh
-exec_always ~/.config/i3/setup.sh
 exec_always feh --bg-scale ~/.config/backgrounds/mandelbrot.png
 
 # Change the border style - https://i3wm.org/docs/userguide.html#_changing_border_style.
@@ -35,7 +34,11 @@ smart_borders on
 
 exec --no-startup-id picom
 exec --no-startup-id unclutter
-exec --no-startup-id localsend_app --hidden
+# No --hidden: it crashes hiding to the tray (i3bar has no appindicator host)
+# before the TCP server starts, so phones can't connect. Park the window instead.
+for_window [class="Localsend"] move scratchpad
+exec --no-startup-id localsend
+exec --no-startup-id /opt/1Password/1password --silent
 exec --no-startup-id dunst
 exec --no-startup-id ~/.local/bin/clipguard
 
@@ -51,10 +54,6 @@ font pango:CaskaydiaCove Nerd Font 12
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
-
-# Start XDG autostart .desktop files using dex. See also
-# https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex --autostart --environment i3
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
