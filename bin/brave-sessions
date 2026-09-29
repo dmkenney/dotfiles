@@ -1,0 +1,212 @@
+#!/usr/bin/python3
+"""Snapshot and restore Brave session state (open tabs, pinned tabs, tab groups) per profile.
+
+  brave-sessions snapshot                 save changed profiles (run by systemd timer)
+  brave-sessions list [PROFILE]           list snapshots
+  brave-sessions show PROFILE [SNAPSHOT]  show tabs in a snapshot (default: newest)
+  brave-sessions restore PROFILE [SNAPSHOT]
+                                          put a snapshot back (Brave must be closed)
+
+PROFILE is the display name (e.g. "K Squared", case-insensitive) or dir name ("Profile 3").
+"""
+import hashlib, json, os, shutil, struct, subprocess, sys, time
+from datetime import datetime, timedelta
+from pathlib import Path
+
+BRAVE = Path.home() / ".config/BraveSoftware/Brave-Browser"
+BACKUPS = Path.home() / ".local/share/brave-session-backups"
+KEEP_RECENT = 12      # newest N snapshots kept as-is
+HOURLY_FOR = 48       # then one per hour for this many hours
+DAILY_FOR = 14        # then one per day for this many days
+
+
+def profiles():
+    info = json.loads((BRAVE / "Local State").read_text())["profile"]["info_cache"]
+    return {d: v.get("name", d) for d, v in info.items() if (BRAVE / d / "Sessions").is_dir()}
+
+
+def resolve(arg):
+    for d, name in profiles().items():
+        if arg.lower() in (d.lower(), name.lower()):
+            return d, name
+    sys.exit(f"unknown profile {arg!r}; have: {', '.join(profiles().values())}")
+
+
+def slug(name):
+    return "".join(c if c.isalnum() else "-" for c in name).strip("-").lower()
+
+
+# --- SNSS parsing (Chromium session command log) ---
+
+def records(path):
+    d = Path(path).read_bytes()
+    if d[:4] != b"SNSS":
+        return
+    i = 8
+    while i + 2 <= len(d):
+        n = struct.unpack_from("<H", d, i)[0]
+        i += 2
+        if n == 0 or i + n > len(d):
+            return
+        yield d[i], d[i + 1:i + n]
+        i += n
+
+
+def parse_nav(p):
+    try:
+        tab, idx = struct.unpack_from("<ii", p, 4)
+        n = struct.unpack_from("<i", p, 12)[0]
+        url = p[16:16 + n].decode("utf8", "replace")
+        o = 16 + (n + 3) // 4 * 4
+        tn = struct.unpack_from("<i", p, o)[0]
+        title = p[o + 4:o + 4 + 2 * tn].decode("utf-16-le", "replace") if 0 <= tn < 5000 else ""
+        return tab, idx, url, title
+    except (struct.error, ValueError):
+        return None
+
+
+def tabs(session_file):
+    """Return open tabs as (window, index, url, title, pinned), ordered."""
+    navs, sel, win, pos, closed, wclosed, pinned = {}, {}, {}, {}, set(), set(), set()
+    for cid, p in records(session_file):
+        if cid == 6:
+            r = parse_nav(p)
+            if r:
+                navs.setdefault(r[0], {})[r[1]] = (r[2], r[3])
+        elif len(p) >= 8 and cid in (0, 2, 7):
+            a, b = struct.unpack_from("<ii", p)
+            if cid == 0: win[b] = a
+            elif cid == 2: pos[a] = b
+            else: sel[a] = b
+        elif cid == 16 and len(p) >= 4: closed.add(struct.unpack_from("<i", p)[0])
+        elif cid == 17 and len(p) >= 4: wclosed.add(struct.unpack_from("<i", p)[0])
+        elif cid == 12 and len(p) >= 5:
+            t = struct.unpack_from("<i", p)[0]
+            (pinned.add if p[4] else pinned.discard)(t)
+    out = []
+    for t, ns in navs.items():
+        if t in closed or win.get(t) in wclosed:
+            continue
+        url, title = ns.get(sel.get(t), ns[max(ns)])
+        out.append((win.get(t, -1), pos.get(t, 999), url, title, t in pinned))
+    return sorted(out)
+
+
+def newest(d, prefix):
+    fs = sorted(d.glob(prefix + "*"), key=lambda f: int(f.name.split("_")[1]))
+    return fs[-1] if fs else None
+
+
+# --- commands ---
+
+def snapshot():
+    for d, name in profiles().items():
+        src = BRAVE / d / "Sessions"
+        sess = newest(src, "Session_")
+        # skip empty/unparseable state (e.g. right after a crash) so it never looks like a good backup
+        if not sess or sess.stat().st_size == 0 or not tabs(sess):
+            continue
+        files = [f for f in (sess, newest(src, "Tabs_")) if f and f.stat().st_size]
+        digest = hashlib.sha256(b"".join(f.read_bytes() for f in files)).hexdigest()
+        dest_root = BACKUPS / slug(name)
+        dest_root.mkdir(parents=True, exist_ok=True)
+        last = dest_root / ".last-hash"
+        if last.exists() and last.read_text() == digest:
+            continue
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        tmp = dest_root / f".tmp-{stamp}"
+        tmp.mkdir()
+        for f in files:
+            subprocess.run(["cp", "--reflink=auto", str(f), str(tmp / f.name)], check=True)
+        (tmp / "profile-dir").write_text(d)
+        for f in tmp.iterdir():  # flush to disk so a power cut can't leave empty backups
+            with open(f, "rb") as fh:
+                os.fsync(fh.fileno())
+        tmp.rename(dest_root / stamp)
+        last.write_text(digest)
+        prune(dest_root)
+
+
+def prune(root):
+    snaps = sorted((p for p in root.iterdir() if p.is_dir() and not p.name.startswith(".")), reverse=True)
+    now, seen = datetime.now(), set()
+    for i, s in enumerate(snaps):
+        t = datetime.strptime(s.name, "%Y%m%d-%H%M%S")
+        if i < KEEP_RECENT:
+            continue
+        if now - t < timedelta(hours=HOURLY_FOR):
+            key = t.strftime("h%Y%m%d%H")
+        elif now - t < timedelta(days=DAILY_FOR):
+            key = t.strftime("d%Y%m%d")
+        else:
+            key = None
+        if key and key not in seen:
+            seen.add(key)
+        else:
+            shutil.rmtree(s)
+
+
+def snaps_for(name):
+    root = BACKUPS / slug(name)
+    return sorted((p for p in root.iterdir() if p.is_dir() and not p.name.startswith(".")), reverse=True) if root.exists() else []
+
+
+def summary(snap):
+    t = tabs(newest(snap, "Session_"))
+    return f"{len(t)} tabs, {sum(x[4] for x in t)} pinned, {len({x[0] for x in t})} windows"
+
+
+def pick(name, which):
+    snaps = snaps_for(name)
+    if not snaps:
+        sys.exit(f"no snapshots for {name}")
+    if not which:
+        return snaps[0]
+    m = [s for s in snaps if s.name.startswith(which)]
+    if not m:
+        sys.exit(f"no snapshot matching {which!r}; run: brave-sessions list {name!r}")
+    return m[0]
+
+
+def cmd_list(arg=None):
+    names = [resolve(arg)[1]] if arg else profiles().values()
+    for name in names:
+        print(f"== {name}")
+        for s in snaps_for(name):
+            print(f"  {s.name}  {summary(s)}")
+
+
+def cmd_show(arg, which=None):
+    d, name = resolve(arg)
+    snap = pick(name, which)
+    print(f"{name} @ {snap.name}: {summary(snap)}")
+    w = None
+    for win, _, url, title, pin in tabs(newest(snap, "Session_")):
+        if win != w:
+            print(f"-- window {win}")
+            w = win
+        print(f"  {'📌' if pin else '  '} {title[:70] or url[:70]}")
+
+
+def cmd_restore(arg, which=None):
+    d, name = resolve(arg)
+    snap = pick(name, which)
+    if subprocess.run(["pgrep", "-x", "brave"], capture_output=True).returncode == 0:
+        sys.exit("Brave is running. Quit it fully first (Ctrl+Shift+Q), then re-run.")
+    sess = BRAVE / d / "Sessions"
+    keep = sess.with_name(f"Sessions.before-restore-{datetime.now():%Y%m%d-%H%M%S}")
+    sess.rename(keep)
+    sess.mkdir()
+    for f in snap.glob("*_*"):
+        shutil.copy2(f, sess / f.name)
+    print(f"Restored {name} from {snap.name} ({summary(snap)}). Old state kept in {keep}")
+    subprocess.Popen(["brave", f"--profile-directory={d}", "--restore-last-session"],
+                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+
+
+if __name__ == "__main__":
+    a = sys.argv[1:]
+    cmds = {"snapshot": snapshot, "list": cmd_list, "show": cmd_show, "restore": cmd_restore}
+    if not a or a[0] not in cmds:
+        sys.exit(__doc__)
+    cmds[a[0]](*a[1:])

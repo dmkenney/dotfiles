@@ -1,0 +1,8 @@
+[Unit]
+Description=Snapshot Brave session state per profile
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/brave-sessions snapshot
+Nice=19
+IOSchedulingClass=idle
