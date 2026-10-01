@@ -40,6 +40,8 @@ for_window [class="Localsend"] move scratchpad
 exec --no-startup-id localsend
 exec --no-startup-id /opt/1Password/1password --silent
 exec --no-startup-id dunst
+# Shows appindicator tray icons (Spotify etc.) in i3bar's tray
+exec --no-startup-id snixembed --fork
 exec --no-startup-id ~/.local/bin/clipguard
 
 # Dropdown scratchpad terminal (Super+` toggles). Lives in i3's scratchpad;
@@ -230,7 +232,8 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
 bindsym $mod+Tab workspace back_and_forth
 
 # Spotify media controls
-bindsym XF86AudioPlay exec --no-startup-id playerctl --player=spotify play-pause
+# Play/pause Spotify, or launch it if it isn't running
+bindsym XF86AudioPlay exec --no-startup-id sh -c 'playerctl --player=spotify status >/dev/null 2>&1 && playerctl --player=spotify play-pause || spotify'
 bindsym XF86Launch5 exec --no-startup-id playerctl --player=spotify previous
 bindsym XF86Launch6 exec --no-startup-id playerctl --player=spotify next
 
