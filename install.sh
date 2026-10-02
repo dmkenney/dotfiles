@@ -18,6 +18,8 @@ ln -sf ~/dotfiles/bin/brave-sessions ~/.local/bin/brave-sessions
 mkdir -p ~/.config/systemd/user
 ln -sf ~/dotfiles/systemd/user/brave-sessions.service ~/.config/systemd/user/brave-sessions.service
 ln -sf ~/dotfiles/systemd/user/brave-sessions.timer ~/.config/systemd/user/brave-sessions.timer
+# Tray bridge for i3bar; i3 config starts it, systemd restarts it if it dies
+ln -sf ~/dotfiles/systemd/user/snixembed.service ~/.config/systemd/user/snixembed.service
 systemctl --user daemon-reload
 systemctl --user enable --now brave-sessions.timer
 mkdir -p ~/.config/dunst

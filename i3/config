@@ -41,7 +41,7 @@ exec --no-startup-id localsend
 exec --no-startup-id /opt/1Password/1password --silent
 exec --no-startup-id dunst
 # Shows appindicator tray icons (Spotify etc.) in i3bar's tray
-exec --no-startup-id snixembed --fork
+exec_always --no-startup-id sh -c "systemctl --user import-environment DISPLAY XAUTHORITY && systemctl --user start snixembed"
 exec --no-startup-id ~/.local/bin/clipguard
 
 # Dropdown scratchpad terminal (Super+` toggles). Lives in i3's scratchpad;

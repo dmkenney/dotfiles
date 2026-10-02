@@ -1,0 +1,8 @@
+[Unit]
+Description=snixembed tray bridge (lets Spotify etc. hide to the i3bar tray)
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/usr/bin/snixembed
+Restart=always
+RestartSec=2
