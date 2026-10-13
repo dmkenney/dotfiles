@@ -48,8 +48,11 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
    mise bootstrap --force-dotfiles
    chsh -s /usr/bin/zsh
    ```
-6. Firewall: from the infrastructure repo, `environments/home/nftables/install-failsafe.sh`, then
-   `apply.sh`. Update the interface name in its `nftables.conf` first (`ip -br link`).
+6. Firewall:
+   - **i3:** from the infrastructure repo, `environments/home/nftables/install-failsafe.sh`, then
+     `apply.sh`. Update the interface name in its `nftables.conf` first (`ip -br link`).
+   - **Omarchy:** nothing to do. `mise bootstrap` runs `personal/system/ufw-rules.sh`, the ufw
+     version of the same rules. Check with `sudo ufw status verbose`.
 7. Logins: `sudo tailscale up`, `netbird up`, 1Password, `gh auth login`, `aws sso login`,
    Claude Code (`curl -fsSL https://claude.ai/install.sh | bash`).
 8. Brave profiles: `~/dotfiles/personal/brave/setup-profiles.sh` (overwrites profile settings, run once).

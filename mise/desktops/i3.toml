@@ -35,6 +35,11 @@
 "~/.config/i3status/config" = "~/dotfiles/i3status/config"
 "~/.config/dunst/dunstrc" = "~/dotfiles/dunst/dunstrc"
 "~/.config/flameshot/flameshot.ini" = "~/dotfiles/flameshot/flameshot.ini"
+# App configs. Omarchy ships and themes its own versions of these.
+"~/.config/alacritty" = "~/dotfiles/alacritty"
+"~/.config/ghostty/config" = "~/dotfiles/ghostty/config"
+"~/.config/lazygit/config.yml" = "~/dotfiles/lazygit/config.yml"
+"~/.config/btop/btop.conf" = "~/dotfiles/btop/btop.conf"
 # X11 clipboard workarounds (Brave paste hang)
 "~/.local/bin/clipguard" = "~/dotfiles/bin/clipguard"
 "~/.local/bin/brave-unwedge" = "~/dotfiles/bin/brave-unwedge"

@@ -204,11 +204,7 @@ groups = ["wheel", "docker"]
 "~/.zshrc" = "~/dotfiles/zsh/.zshrc"
 "~/.p10k.zsh" = "~/dotfiles/zsh/.p10k.zsh"
 "~/.tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
-"~/.config/alacritty" = "~/dotfiles/alacritty"
 "~/.config/nvim" = "~/dotfiles/nvim"
-"~/.config/ghostty/config" = "~/dotfiles/ghostty/config"
-"~/.config/lazygit/config.yml" = "~/dotfiles/lazygit/config.yml"
-"~/.config/btop/btop.conf" = "~/dotfiles/btop/btop.conf"
 "~/.config/mise/conf.d/personal.toml" = "~/dotfiles/personal/mise.toml"
 # Scripts
 "~/.local/bin/brave-sessions" = "~/dotfiles/bin/brave-sessions"

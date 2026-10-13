@@ -8,3 +8,8 @@
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors.lua"
+
+# Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
+# (private, in the personal submodule).
+[bootstrap.hooks]
+post-packages = "~/dotfiles/personal/system/ufw-rules.sh"
