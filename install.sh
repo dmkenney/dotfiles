@@ -20,8 +20,12 @@ ln -sf ~/dotfiles/systemd/user/brave-sessions.service ~/.config/systemd/user/bra
 ln -sf ~/dotfiles/systemd/user/brave-sessions.timer ~/.config/systemd/user/brave-sessions.timer
 # Tray bridge for i3bar; i3 config starts it, systemd restarts it if it dies
 ln -sf ~/dotfiles/systemd/user/snixembed.service ~/.config/systemd/user/snixembed.service
+# OBSBOT webcam: reapply camera settings that Brave/Teams reset (see bin/obsbot-enforce)
+ln -sf ~/dotfiles/bin/obsbot-enforce ~/.local/bin/obsbot-enforce
+ln -sf ~/dotfiles/systemd/user/obsbot-enforce.service ~/.config/systemd/user/obsbot-enforce.service
 systemctl --user daemon-reload
 systemctl --user enable --now brave-sessions.timer
+systemctl --user enable --now obsbot-enforce.service
 mkdir -p ~/.config/dunst
 ln -sf ~/dotfiles/dunst/dunstrc ~/.config/dunst/dunstrc
 mkdir -p ~/.config/flameshot

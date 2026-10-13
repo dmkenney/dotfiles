@@ -1,0 +1,30 @@
+#!/bin/bash
+# Keeps OBSBOT Meet 2 settings applied. Browsers (Teams in Brave) reset them when opening the camera.
+# Edit values here, then: systemctl --user restart obsbot-enforce
+SETTINGS=(
+  white_balance_automatic=0
+  white_balance_temperature=3200
+  focus_automatic_continuous=1
+  zoom_absolute=20
+  brightness=58
+  backlight_compensation=12
+)
+
+find_dev() {
+  for d in /dev/video*; do
+    [[ $(cat /sys/class/video4linux/${d##*/}/name 2>/dev/null) == *"OBSBOT Meet 2"* ]] || continue
+    v4l2-ctl -d "$d" -C brightness &>/dev/null && { echo "$d"; return; }
+  done
+}
+
+while true; do
+  dev=$(find_dev)
+  if [[ -n $dev ]]; then
+    for s in "${SETTINGS[@]}"; do
+      name=${s%%=*} want=${s#*=}
+      have=$(v4l2-ctl -d "$dev" -C "$name" 2>/dev/null | awk '{print $2}')
+      [[ $have == "$want" ]] || v4l2-ctl -d "$dev" -c "$s" 2>/dev/null
+    done
+  fi
+  sleep 2
+done

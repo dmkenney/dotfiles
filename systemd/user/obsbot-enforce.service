@@ -1,0 +1,9 @@
+[Unit]
+Description=Keep OBSBOT camera settings applied
+
+[Service]
+ExecStart=%h/.local/bin/obsbot-enforce
+Restart=always
+
+[Install]
+WantedBy=default.target
