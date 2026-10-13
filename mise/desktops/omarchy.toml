@@ -1,0 +1,10 @@
+# Omarchy (Hyprland on Wayland), installed from the Omarchy ISO.
+# Omarchy installs its own desktop, sddm, limine and snapper; this file only adds
+# overrides. Linked as ~/.config/mise/conf.d/desktop.toml on machines that use it.
+# Fill in monitor names in omarchy/hypr/monitors.lua (`hyprctl monitors all`).
+
+[dotfiles]
+"~/.config/hypr/hyprland.lua" = "~/dotfiles/omarchy/hypr/hyprland.lua"
+"~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
+"~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
+"~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors.lua"

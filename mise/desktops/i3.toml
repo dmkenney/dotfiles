@@ -1,0 +1,44 @@
+# i3 on X11, installed with archinstall (GRUB, lightdm).
+# Linked as ~/.config/mise/conf.d/desktop.toml on machines that use it.
+
+[bootstrap.packages]
+"pacman:i3-wm" = "latest"
+"pacman:i3lock" = "latest"
+"pacman:i3status" = "latest"
+"pacman:picom" = "latest"
+"pacman:dmenu" = "latest"
+"pacman:feh" = "latest"
+"pacman:flameshot" = "latest"
+"pacman:arandr" = "latest"
+"pacman:unclutter" = "latest"
+"pacman:snixembed" = "latest"
+"pacman:network-manager-applet" = "latest"
+"pacman:lxappearance" = "latest"
+"pacman:gnome-themes-extra" = "latest"
+"pacman:xclip" = "latest"
+"pacman:xorg-xev" = "latest"
+"pacman:xorg-xinit" = "latest"
+"pacman:xorg-xrandr" = "latest"
+"pacman:lightdm" = "latest"
+"pacman:lightdm-gtk-greeter" = "latest"
+# Boot: GRUB with a boot entry per btrfs snapshot
+"pacman:grub" = "latest"
+"pacman:grub-btrfs" = "latest"
+
+[dotfiles]
+"~/.Xmodmap" = "~/dotfiles/i3/.Xmodmap"
+"~/.gtkrc-2.0" = "~/dotfiles/gtk/.gtkrc-2.0"
+"~/.config/backgrounds" = "~/dotfiles/backgrounds"
+"~/.config/picom.conf" = "~/dotfiles/picom/picom.conf"
+"~/.config/i3/config" = "~/dotfiles/i3/config"
+"~/.config/i3/dropdown.sh" = "~/dotfiles/i3/dropdown.sh"
+"~/.config/i3status/config" = "~/dotfiles/i3status/config"
+"~/.config/dunst/dunstrc" = "~/dotfiles/dunst/dunstrc"
+"~/.config/flameshot/flameshot.ini" = "~/dotfiles/flameshot/flameshot.ini"
+# X11 clipboard workarounds (Brave paste hang)
+"~/.local/bin/clipguard" = "~/dotfiles/bin/clipguard"
+"~/.local/bin/brave-unwedge" = "~/dotfiles/bin/brave-unwedge"
+"~/.config/systemd/user/snixembed.service" = "~/dotfiles/systemd/user/snixembed.service"
+
+[bootstrap.services.lightdm]
+[bootstrap.services.grub-btrfsd]

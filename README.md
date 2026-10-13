@@ -6,6 +6,7 @@ Arch Linux + i3 setup, applied with [`mise bootstrap`](https://mise.jdx.dev/boot
 |---|---|
 | `mise/config.toml` | Packages (pacman + AUR), tools, dotfile links, services, hooks. Linked to `~/.config/mise/config.toml`. |
 | `mise/machines/<host>.toml` | Per-machine packages (GPU driver, CPU microcode). Linked to `~/.config/mise/conf.d/machine.toml`. |
+| `mise/desktops/<i3\|omarchy>.toml` | Desktop: i3/X11 (archinstall, GRUB, lightdm) or Omarchy overrides (`omarchy/hypr/`). Linked to `~/.config/mise/conf.d/desktop.toml`. |
 | `personal/mise.toml` | Private submodule: ssh, git, aws configs, sshd. Linked to `~/.config/mise/conf.d/personal.toml`. |
 
 Daily use:
@@ -20,8 +21,10 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
 
 ## New machine
 
-1. Install Arch with archinstall: btrfs with the default subvolumes, GRUB, `linux` + `linux-lts`,
-   user `dylan` in `wheel`, NetworkManager.
+1. Install the base system, one of:
+   - **i3:** archinstall with btrfs (default subvolumes), GRUB, `linux` + `linux-lts`,
+     user `dylan` in `wheel`, NetworkManager.
+   - **Omarchy:** the Omarchy ISO (UEFI, limine, btrfs + snapper, Hyprland).
 2. Base tools and yay:
    ```sh
    sudo pacman -S --needed git base-devel mise openssh
@@ -36,6 +39,7 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
    ln -sf ~/dotfiles/mise/config.toml ~/.config/mise/config.toml
    ln -sf ~/dotfiles/personal/mise.toml ~/.config/mise/conf.d/personal.toml
    ln -sf ~/dotfiles/mise/machines/<host>.toml ~/.config/mise/conf.d/machine.toml
+   ln -sf ~/dotfiles/mise/desktops/<i3|omarchy>.toml ~/.config/mise/conf.d/desktop.toml
    ```
    For a new host, copy a file in `mise/machines/` and adjust it.
 5. Apply. Conflicting default files (`~/.zshrc`, `~/.config/i3/config`, ...) need `--force-dotfiles`:
@@ -51,3 +55,5 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
 8. Brave profiles: `~/dotfiles/personal/brave/setup-profiles.sh` (overwrites profile settings, run once).
 9. Copy data that is not in git: `~/.ssh`, `~/.claude`, Postgres databases, unpushed repos.
 10. Reboot (new kernel modules, snapper, display manager).
+11. Omarchy only: fill in monitor names in `omarchy/hypr/monitors.lua` (`hyprctl monitors all`).
+    Keybindings keep the i3 layout; see `omarchy/hypr/bindings.lua`. Super+F1 lists them all.
