@@ -42,9 +42,9 @@ alias lg="lazygit"
 alias ld="lazydocker"
 
 # File system
-alias ls='eza -lh --group-directories-first --icons'
-alias lt='eza --tree --level=2 --long --icons --git'
-alias lt3='eza --tree --level=3 --long --icons --git'
+alias ls='eza -lh --group-directories-first --icons=auto'
+alias lt='eza --tree --level=2 --long --icons=auto --git'
+alias lt3='eza --tree --level=3 --long --icons=auto --git'
 alias ll='ls -lah'
 alias l='ls -lah'
 alias ff="fzf --preview 'bat --style=numbers --color=always {}'" 
@@ -70,6 +70,9 @@ alias tmux-ls-config='tmuxifier load-session setup-and-dotfiles'
 export PATH="$PATH:$HOME/.tmux/plugins/tmuxifier/bin"
 export TMUXIFIER_LAYOUT_PATH="$HOME/dotfiles/tmux/tmux-layouts"
 eval "$(tmuxifier init -)"
+
+# Private aliases (personal submodule)
+[[ -f ~/dotfiles/personal/zsh/aliases.zsh ]] && source ~/dotfiles/personal/zsh/aliases.zsh
 
 # Zig commands
 alias zr='zig build run'

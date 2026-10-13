@@ -1,0 +1,35 @@
+#!/bin/bash
+# One-time snapper setup for the archinstall btrfs layout, where @.snapshots is
+# already mounted at /.snapshots. `snapper create-config` refuses an existing
+# /.snapshots and would create a nested subvolume instead, so: unmount it, let
+# snapper create its config, drop the nested subvolume, and remount @.snapshots.
+# Safe to re-run: exits if the root config already exists.
+set -euo pipefail
+
+[[ -f /etc/snapper/configs/root ]] && exit 0
+[[ $(findmnt -no FSTYPE /) == btrfs ]] || { echo "setup-snapper: / is not btrfs, skipping"; exit 0; }
+
+had_mount=false
+if findmnt -n /.snapshots >/dev/null; then
+  had_mount=true
+  sudo umount /.snapshots
+  sudo rmdir /.snapshots
+fi
+
+sudo snapper -c root create-config /
+
+if $had_mount; then
+  sudo btrfs subvolume delete /.snapshots
+  sudo mkdir /.snapshots
+  sudo mount /.snapshots   # from fstab
+fi
+sudo chmod 750 /.snapshots
+
+# Keep a short history: pacman pre/post pairs from snap-pac, plus a few timeline
+# snapshots. Defaults keep 10 of each period, which fills a small root fast.
+sudo snapper -c root set-config \
+  TIMELINE_LIMIT_HOURLY=5 TIMELINE_LIMIT_DAILY=7 TIMELINE_LIMIT_WEEKLY=0 \
+  TIMELINE_LIMIT_MONTHLY=0 TIMELINE_LIMIT_YEARLY=0 NUMBER_LIMIT=20 \
+  ALLOW_GROUPS=wheel
+
+echo "setup-snapper: root config created"

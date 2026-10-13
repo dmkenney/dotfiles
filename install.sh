@@ -1,4 +1,5 @@
 #!/bin/bash
+# DEPRECATED: replaced by `mise bootstrap` (see README.md). Kept until the new machine is set up.
 
 rm -rf ~/.config/alacritty
 ln -sf ~/dotfiles/alacritty ~/.config/alacritty

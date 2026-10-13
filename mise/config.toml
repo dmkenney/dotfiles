@@ -1,3 +1,14 @@
+# Machine setup for Arch + i3. Replaces install.sh.
+#
+# ~/.config/mise/config.toml links here. Per-machine and private config load from
+# ~/.config/mise/conf.d/ (see README):
+#   machine.toml  -> mise/machines/<host>.toml   (drivers, microcode, hardware)
+#   personal.toml -> personal/mise.toml          (ssh, git, aws, firewall, sshd)
+#
+#   mise bootstrap --dry-run   # preview
+#   mise bootstrap             # apply
+#   mise bootstrap status      # check this machine against the config
+
 [tools]
 erlang = "27.3"
 elixir = "1.18.3-otp-27"
@@ -5,6 +16,280 @@ python = "3.11.9"
 ruby = "3.4.2"
 uv = "0.8.0"
 git-lfs = "latest"
+"npm:@google/gemini-cli" = "latest"
+"npm:@googleworkspace/cli" = "latest"
+"npm:@openai/codex" = "latest"
+"npm:@playwright/test" = "latest"
+"npm:agent-browser" = "latest"
+"npm:ccusage" = "latest"
+"npm:cf" = "latest"
+"npm:chromedriver" = "latest"
+"npm:eas-cli" = "latest"
+"npm:opencode-ai" = "latest"
+"npm:playwright-mcp" = "latest"
+"npm:wrangler" = "latest"
+"pipx:harlequin" = "latest"
+stripe = "latest"
+herdr = "latest"
+powershell = "latest"
+flyctl = "latest"
 
 [settings]
 experimental = true
+# Dotfiles live in this git repo; don't keep a second history of them.
+history.enabled = false
+
+# --- System packages --------------------------------------------------------
+# Hardware-specific packages (GPU driver, CPU microcode) go in mise/machines/.
+# Arch: keep upgrading with `sudo pacman -Syu`, not `mise bootstrap packages upgrade`.
+[bootstrap.packages]
+"pacman:7zip" = "latest"
+"pacman:aarch64-linux-gnu-gcc" = "latest"
+"pacman:alacritty" = "latest"
+"pacman:arandr" = "latest"
+"pacman:base" = "latest"
+"pacman:base-devel" = "latest"
+"pacman:bat" = "latest"
+"pacman:bind" = "latest"
+"pacman:btop" = "latest"
+"pacman:btrfs-progs" = "latest"
+"pacman:caddy" = "latest"
+"pacman:cloudflared" = "latest"
+"pacman:cups" = "latest"
+"pacman:cups-pdf" = "latest"
+"pacman:dbeaver" = "latest"
+"pacman:direnv" = "latest"
+"pacman:dive" = "latest"
+"pacman:dkms" = "latest"
+"pacman:dmenu" = "latest"
+"pacman:dmidecode" = "latest"
+"pacman:docker" = "latest"
+"pacman:docker-buildx" = "latest"
+"pacman:docker-compose" = "latest"
+"pacman:dosfstools" = "latest"
+"pacman:earlyoom" = "latest"
+"pacman:ethtool" = "latest"
+"pacman:eza" = "latest"
+"pacman:fastfetch" = "latest"
+"pacman:feh" = "latest"
+"pacman:firefox" = "latest"
+"pacman:flameshot" = "latest"
+"pacman:fop" = "latest"
+"pacman:fuse2" = "latest"
+"pacman:fwupd" = "latest"
+"pacman:fzf" = "latest"
+"pacman:gdb" = "latest"
+"pacman:ghostty" = "latest"
+"pacman:gimp" = "latest"
+"pacman:git" = "latest"
+"pacman:git-filter-repo" = "latest"
+"pacman:github-cli" = "latest"
+"pacman:glab" = "latest"
+"pacman:gnome-themes-extra" = "latest"
+"pacman:grub" = "latest"
+"pacman:grub-btrfs" = "latest"
+"pacman:gst-plugin-pipewire" = "latest"
+"pacman:gum" = "latest"
+"pacman:hcloud" = "latest"
+"pacman:htop" = "latest"
+"pacman:i3-wm" = "latest"
+"pacman:i3lock" = "latest"
+"pacman:i3status" = "latest"
+"pacman:img2pdf" = "latest"
+"pacman:inetutils" = "latest"
+"pacman:inkscape" = "latest"
+"pacman:inotify-tools" = "latest"
+"pacman:iwd" = "latest"
+"pacman:jpegoptim" = "latest"
+"pacman:jq" = "latest"
+"pacman:lazydocker" = "latest"
+"pacman:lazygit" = "latest"
+"pacman:libpulse" = "latest"
+"pacman:libreoffice-still" = "latest"
+"pacman:lightdm" = "latest"
+"pacman:lightdm-gtk-greeter" = "latest"
+"pacman:linux" = "latest"
+"pacman:linux-firmware" = "latest"
+"pacman:linux-headers" = "latest"
+"pacman:linux-lts" = "latest"
+"pacman:linux-lts-headers" = "latest"
+"pacman:lksctp-tools" = "latest"
+"pacman:llvm" = "latest"
+"pacman:lshw" = "latest"
+"pacman:lsof" = "latest"
+"pacman:lxappearance" = "latest"
+"pacman:man-db" = "latest"
+"pacman:mesa-utils" = "latest"
+"pacman:mise" = "latest"
+"pacman:nano" = "latest"
+"pacman:neovim" = "latest"
+"pacman:network-manager-applet" = "latest"
+"pacman:networkmanager" = "latest"
+"pacman:nmap" = "latest"
+"pacman:nodejs-lts-iron" = "latest"
+"pacman:noto-fonts-emoji" = "latest"
+"pacman:npm" = "latest"
+"pacman:nvidia-settings" = "latest"
+"pacman:nvtop" = "latest"
+"pacman:openscenegraph" = "latest"
+"pacman:optipng" = "latest"
+"pacman:oxipng" = "latest"
+"pacman:pacman-contrib" = "latest"
+"pacman:pandoc-cli" = "latest"
+"pacman:picom" = "latest"
+"pacman:pipewire" = "latest"
+"pacman:pipewire-alsa" = "latest"
+"pacman:pipewire-jack" = "latest"
+"pacman:pipewire-pulse" = "latest"
+"pacman:playerctl" = "latest"
+"pacman:pnpm" = "latest"
+"pacman:podofo" = "latest"
+"pacman:postgis" = "latest"
+"pacman:postgresql" = "latest"
+"pacman:proton-vpn-gtk-app" = "latest"
+"pacman:python" = "latest"
+"pacman:python-build" = "latest"
+"pacman:python-pip" = "latest"
+"pacman:python-setuptools" = "latest"
+"pacman:qt6-wayland" = "latest"
+"pacman:raylib" = "latest"
+"pacman:reflector" = "latest"
+"pacman:ripgrep" = "latest"
+"pacman:rpi-imager" = "latest"
+"pacman:rsync" = "latest"
+"pacman:sane-airscan" = "latest"
+"pacman:scribus" = "latest"
+"pacman:smartmontools" = "latest"
+"pacman:snap-pac" = "latest"
+"pacman:snapper" = "latest"
+"pacman:snixembed" = "latest"
+"pacman:tailscale" = "latest"
+"pacman:tk" = "latest"
+"pacman:tmux" = "latest"
+"pacman:tokei" = "latest"
+"pacman:tree-sitter-cli" = "latest"
+"pacman:ttf-cascadia-code-nerd" = "latest"
+"pacman:udisks2" = "latest"
+"pacman:unclutter" = "latest"
+"pacman:unixodbc" = "latest"
+"pacman:unpaper" = "latest"
+"pacman:unzip" = "latest"
+"pacman:vim" = "latest"
+"pacman:vlc" = "latest"
+"pacman:vlc-plugin-ffmpeg" = "latest"
+"pacman:wget" = "latest"
+"pacman:wireplumber" = "latest"
+"pacman:wireshark-qt" = "latest"
+"pacman:xclip" = "latest"
+"pacman:xdg-utils" = "latest"
+"pacman:xorg-xev" = "latest"
+"pacman:xorg-xinit" = "latest"
+"pacman:xorg-xrandr" = "latest"
+"pacman:xpdf" = "latest"
+"pacman:yazi" = "latest"
+"pacman:yt-dlp" = "latest"
+"pacman:zip" = "latest"
+"pacman:zram-generator" = "latest"
+"pacman:zsh" = "latest"
+"pacman:zsh-completions" = "latest"
+"aur:1password" = "latest"
+"aur:1password-cli" = "latest"
+"aur:ast-grep-bin" = "latest"
+"aur:brave-bin" = "latest"
+"aur:flarectl-bin" = "latest"
+"aur:google-chrome" = "latest"
+"aur:lazysql" = "latest"
+"aur:localsend" = "latest"
+"aur:scc" = "latest"
+"aur:spotify" = "latest"
+"aur:ttf-ms-fonts" = "latest"
+"aur:ttf-vista-fonts" = "latest"
+"aur:yay" = "latest"
+"aur:zsh-theme-powerlevel10k-git" = "latest"
+
+# --- Accounts -----------------------------------------------------------------
+[bootstrap.users.dylan]
+group = "dylan"
+groups = ["wheel", "docker"]
+
+# --- Git checkouts ------------------------------------------------------------
+# tpm installs the other tmux plugins listed in .tmux.conf (post-repos hook).
+[bootstrap.repos]
+"~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm" }
+
+# --- Dotfiles (symlinks into this repo) --------------------------------------
+[dotfiles]
+"~/.config/mise/config.toml" = "~/dotfiles/mise/config.toml"
+"~/.zshrc" = "~/dotfiles/zsh/.zshrc"
+"~/.p10k.zsh" = "~/dotfiles/zsh/.p10k.zsh"
+"~/.tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
+"~/.gtkrc-2.0" = "~/dotfiles/gtk/.gtkrc-2.0"
+"~/.Xmodmap" = "~/dotfiles/i3/.Xmodmap"
+"~/.config/alacritty" = "~/dotfiles/alacritty"
+"~/.config/nvim" = "~/dotfiles/nvim"
+"~/.config/backgrounds" = "~/dotfiles/backgrounds"
+"~/.config/picom.conf" = "~/dotfiles/picom/picom.conf"
+"~/.config/i3/config" = "~/dotfiles/i3/config"
+"~/.config/i3/dropdown.sh" = "~/dotfiles/i3/dropdown.sh"
+"~/.config/i3status/config" = "~/dotfiles/i3status/config"
+"~/.config/dunst/dunstrc" = "~/dotfiles/dunst/dunstrc"
+"~/.config/flameshot/flameshot.ini" = "~/dotfiles/flameshot/flameshot.ini"
+"~/.config/ghostty/config" = "~/dotfiles/ghostty/config"
+"~/.config/lazygit/config.yml" = "~/dotfiles/lazygit/config.yml"
+"~/.config/btop/btop.conf" = "~/dotfiles/btop/btop.conf"
+"~/.config/mise/conf.d/personal.toml" = "~/dotfiles/personal/mise.toml"
+# Scripts
+"~/.local/bin/clipguard" = "~/dotfiles/bin/clipguard"
+"~/.local/bin/brave-unwedge" = "~/dotfiles/bin/brave-unwedge"
+"~/.local/bin/brave-sessions" = "~/dotfiles/bin/brave-sessions"
+"~/.local/bin/obsbot-enforce" = "~/dotfiles/bin/obsbot-enforce"
+"~/.local/bin/claude-settings-env" = "~/dotfiles/bin/claude-settings-env"
+"~/.local/bin/setup-snapper" = "~/dotfiles/bin/setup-snapper"
+# User systemd units (enabled in the post-dotfiles hook)
+"~/.config/systemd/user/brave-sessions.service" = "~/dotfiles/systemd/user/brave-sessions.service"
+"~/.config/systemd/user/brave-sessions.timer" = "~/dotfiles/systemd/user/brave-sessions.timer"
+"~/.config/systemd/user/snixembed.service" = "~/dotfiles/systemd/user/snixembed.service"
+"~/.config/systemd/user/obsbot-enforce.service" = "~/dotfiles/systemd/user/obsbot-enforce.service"
+# Global agent instructions: one source, linked per tool
+"~/.claude/CLAUDE.md" = "~/dotfiles/AGENTS.md"
+"~/.codex/AGENTS.md" = "~/dotfiles/AGENTS.md"
+"~/.gemini/GEMINI.md" = "~/dotfiles/AGENTS.md"
+"~/.config/opencode/AGENTS.md" = "~/dotfiles/AGENTS.md"
+
+# --- System services ----------------------------------------------------------
+[bootstrap.services.NetworkManager]
+[bootstrap.services.lightdm]
+[bootstrap.services.docker]
+[bootstrap.services.postgresql]
+[bootstrap.services.earlyoom]
+[bootstrap.services.cups]
+[bootstrap.services.tailscaled]
+[bootstrap.services.sshd]
+[bootstrap.services.lm_sensors]
+# Snapshots (snapper config is created by bin/setup-snapper in post-packages)
+[bootstrap.services."snapper-timeline.timer"]
+[bootstrap.services."snapper-cleanup.timer"]
+[bootstrap.services.grub-btrfsd]
+# Weekly package cache cleanup and mirror refresh
+[bootstrap.services."paccache.timer"]
+[bootstrap.services."reflector.timer"]
+
+# --- Hooks (commands mise can't declare) ---------------------------------------
+[bootstrap.hooks]
+# Install the tmux plugins listed in .tmux.conf.
+post-repos = "~/.tmux/plugins/tpm/bin/install_plugins"
+post-dotfiles = "systemctl --user daemon-reload && systemctl --user enable --now brave-sessions.timer obsbot-enforce.service"
+
+[bootstrap.hooks.post-packages]
+run = [
+  # postgresql won't start until its data directory is initialized.
+  "[ -d /var/lib/postgres/data/base ] || sudo -iu postgres initdb -D /var/lib/postgres/data",
+  "~/dotfiles/bin/setup-snapper",
+]
+
+[bootstrap.hooks.post-tools]
+run = [
+  "npx -y skills add coreyhaines31/marketingskills --global --all -y",
+  "npx -y skills add mager/frontend-design --global --all -y",
+  "npx -y skills add JuliusBrussee/caveman --global --all -y",
+]

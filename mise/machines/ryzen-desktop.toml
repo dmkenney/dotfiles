@@ -1,0 +1,11 @@
+# New desktop: Ryzen 9 9950X, RTX 5070 Ti, Gigabyte B850 AORUS ELITE WIFI7 ICE.
+# RTX 50 series (Blackwell) only works with NVIDIA's open kernel modules.
+# -dkms builds them for both linux and linux-lts.
+
+[bootstrap.packages]
+"pacman:amd-ucode" = "latest"
+"pacman:nvidia-open-dkms" = "latest"
+"pacman:nvidia-utils" = "latest"
+"aur:netbird-bin" = "latest"
+# RGB on the coolers and RAM
+"pacman:openrgb" = "latest"

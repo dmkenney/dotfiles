@@ -1,0 +1,6 @@
+# dk-desktop: Intel CPU, GeForce GTX 960 (Maxwell, legacy 470xx driver)
+
+[bootstrap.packages]
+"pacman:intel-ucode" = "latest"
+"aur:nvidia-470xx-dkms" = "latest"
+"aur:nvidia-470xx-utils" = "latest"
