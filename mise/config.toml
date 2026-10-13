@@ -17,16 +17,17 @@ python = "3.11.9"
 ruby = "3.4.2"
 uv = "0.8.0"
 git-lfs = "latest"
-"npm:@google/gemini-cli" = "latest"
+node = "24"
+gemini = "latest"
 "npm:@googleworkspace/cli" = "latest"
-"npm:@openai/codex" = "latest"
+codex = "latest"
 "npm:@playwright/test" = "latest"
 "npm:agent-browser" = "latest"
 "npm:ccusage" = "latest"
 "npm:cf" = "latest"
 "npm:chromedriver" = "latest"
 "npm:eas-cli" = "latest"
-"npm:opencode-ai" = "latest"
+opencode = "latest"
 "npm:playwright-mcp" = "latest"
 "npm:wrangler" = "latest"
 "pipx:harlequin" = "latest"
@@ -39,6 +40,9 @@ flyctl = "latest"
 experimental = true
 # Dotfiles live in this git repo; don't keep a second history of them.
 history.enabled = false
+# `mise use -g` (by hand, or by Omarchy's tool launchers) writes to this untracked,
+# per-machine file instead of this shared one. Add tools for every machine here.
+write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 
 # --- System packages --------------------------------------------------------
 # Hardware-specific packages (GPU driver, CPU microcode) go in mise/machines/.
