@@ -250,7 +250,7 @@ post-dotfiles = "systemctl --user daemon-reload && systemctl --user enable --now
 [bootstrap.hooks.post-packages]
 run = [
   # postgresql won't start until its data directory is initialized.
-  "[ -d /var/lib/postgres/data/base ] || sudo -iu postgres initdb -D /var/lib/postgres/data",
+  "sudo test -e /var/lib/postgres/data/PG_VERSION || sudo -iu postgres initdb -D /var/lib/postgres/data",
   "~/dotfiles/bin/setup-snapper",
 ]
 
