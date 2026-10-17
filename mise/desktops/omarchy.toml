@@ -14,12 +14,15 @@
 "pacman:spotify" = "latest"
 "pacman:localsend" = "latest"
 "pacman:yay" = "latest"
+# Monitors off after idle (omarchy/hypr/hypridle.conf); Omarchy's shell never does it.
+"pacman:hypridle" = "latest"
 
 [dotfiles]
 "~/.config/hypr/hyprland.lua" = "~/dotfiles/omarchy/hypr/hyprland.lua"
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
+"~/.config/hypr/hypridle.conf" = "~/dotfiles/omarchy/hypr/hypridle.conf"
 # Default terminal: FiraCode font, no padding.
 "~/.config/foot/foot.ini" = "~/dotfiles/omarchy/foot/foot.ini"
 # File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
@@ -41,6 +44,9 @@
 
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).
+[bootstrap.hooks.post-dotfiles]
+run = ["systemctl --user enable --now hypridle.service"]
+
 [bootstrap.hooks]
 # If Omarchy replaced the shell.json link with a newer plain file, keep its changes.
 # A fresh install's stock file is older than the clone and is just dropped.
