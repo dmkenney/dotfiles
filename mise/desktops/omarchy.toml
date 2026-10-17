@@ -20,6 +20,8 @@
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
+# Default terminal: FiraCode font, no padding.
+"~/.config/foot/foot.ini" = "~/dotfiles/omarchy/foot/foot.ini"
 # Omarchy's bash (not zsh) plus personal aliases.
 "~/.bashrc" = "~/dotfiles/omarchy/bash/.bashrc"
 # tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
