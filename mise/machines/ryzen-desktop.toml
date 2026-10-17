@@ -11,3 +11,14 @@
 
 [dotfiles]
 "~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors/ryzen-desktop.lua"
+"~/.config/hypr/autostart.lua" = "~/dotfiles/omarchy/hypr/autostart/ryzen-desktop.lua"
+# OpenRGB profile (loaded at login by autostart.lua) and ARGB header LED counts.
+# In personal: the profile records hardware serials.
+"~/.config/OpenRGB/rainbow.orp" = "~/dotfiles/personal/openrgb/ryzen-desktop/rainbow.orp"
+"~/.config/OpenRGB/sizes.ors" = "~/dotfiles/personal/openrgb/ryzen-desktop/sizes.ors"
+
+# The AMD SMBus driver (RAM RGB) fails on an ACPI resource conflict without this.
+[bootstrap.hooks.post-packages]
+run = [
+  "grep -q acpi_enforce_resources=lax /etc/default/limine || { sudo sed -i '0,/^KERNEL_CMDLINE\\[default\\]+=\"/s//&acpi_enforce_resources=lax /' /etc/default/limine && sudo limine-update; }",
+]
