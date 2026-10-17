@@ -102,11 +102,7 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:lazygit" = "latest"
 "pacman:libpulse" = "latest"
 "pacman:libreoffice-still" = "latest"
-"pacman:linux" = "latest"
 "pacman:linux-firmware" = "latest"
-"pacman:linux-headers" = "latest"
-"pacman:linux-lts" = "latest"
-"pacman:linux-lts-headers" = "latest"
 "pacman:lksctp-tools" = "latest"
 "pacman:llvm" = "latest"
 "pacman:lshw" = "latest"
@@ -121,7 +117,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:nodejs-lts-iron" = "latest"
 "pacman:noto-fonts-emoji" = "latest"
 "pacman:npm" = "latest"
-"pacman:nvidia-settings" = "latest"
 "pacman:nvtop" = "latest"
 "pacman:openscenegraph" = "latest"
 "pacman:optipng" = "latest"
@@ -151,8 +146,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:sane-airscan" = "latest"
 "pacman:scribus" = "latest"
 "pacman:smartmontools" = "latest"
-"pacman:snap-pac" = "latest"
-"pacman:snapper" = "latest"
 "pacman:tailscale" = "latest"
 "pacman:tk" = "latest"
 "pacman:tmux" = "latest"
@@ -175,8 +168,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:yt-dlp" = "latest"
 "pacman:zip" = "latest"
 "pacman:zram-generator" = "latest"
-"pacman:zsh" = "latest"
-"pacman:zsh-completions" = "latest"
 "aur:1password" = "latest"
 "aur:1password-cli" = "latest"
 "aur:ast-grep-bin" = "latest"
@@ -190,7 +181,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "aur:ttf-ms-fonts" = "latest"
 "aur:ttf-vista-fonts" = "latest"
 "aur:yay" = "latest"
-"aur:zsh-theme-powerlevel10k-git" = "latest"
 
 # --- Accounts -----------------------------------------------------------------
 [bootstrap.users.dylan]
@@ -198,22 +188,19 @@ group = "dylan"
 groups = ["wheel", "docker"]
 
 # --- Git checkouts ------------------------------------------------------------
-# tpm installs the other tmux plugins listed in .tmux.conf (post-repos hook).
+# tpm installs the other tmux plugins listed in .tmux.conf (post-dotfiles hook).
 [bootstrap.repos]
 "~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm" }
 
 # --- Dotfiles (symlinks into this repo) --------------------------------------
 [dotfiles]
 "~/.config/mise/config.toml" = "~/dotfiles/mise/config.toml"
-"~/.zshrc" = "~/dotfiles/zsh/.zshrc"
-"~/.p10k.zsh" = "~/dotfiles/zsh/.p10k.zsh"
 "~/.config/nvim" = "~/dotfiles/nvim"
 "~/.config/mise/conf.d/personal.toml" = "~/dotfiles/personal/mise.toml"
 # Scripts
 "~/.local/bin/brave-sessions" = "~/dotfiles/bin/brave-sessions"
 "~/.local/bin/obsbot-enforce" = "~/dotfiles/bin/obsbot-enforce"
 "~/.local/bin/claude-settings-env" = "~/dotfiles/bin/claude-settings-env"
-"~/.local/bin/setup-snapper" = "~/dotfiles/bin/setup-snapper"
 # User systemd units (enabled in the post-dotfiles hook)
 "~/.config/systemd/user/brave-sessions.service" = "~/dotfiles/systemd/user/brave-sessions.service"
 "~/.config/systemd/user/brave-sessions.timer" = "~/dotfiles/systemd/user/brave-sessions.timer"
@@ -233,24 +220,24 @@ groups = ["wheel", "docker"]
 [bootstrap.services.tailscaled]
 [bootstrap.services.sshd]
 [bootstrap.services.lm_sensors]
-# Snapshots (snapper config is created by bin/setup-snapper in post-packages)
-[bootstrap.services."snapper-timeline.timer"]
-[bootstrap.services."snapper-cleanup.timer"]
 # Weekly package cache cleanup and mirror refresh
 [bootstrap.services."paccache.timer"]
 [bootstrap.services."reflector.timer"]
 
 # --- Hooks (commands mise can't declare) ---------------------------------------
-[bootstrap.hooks]
-# Install the tmux plugins listed in .tmux.conf.
-post-repos = "~/.tmux/plugins/tpm/bin/install_plugins"
-post-dotfiles = "systemctl --user daemon-reload && systemctl --user enable --now brave-sessions.timer obsbot-enforce.service"
+[bootstrap.hooks.post-dotfiles]
+run = [
+  "systemctl --user daemon-reload && systemctl --user enable --now brave-sessions.timer obsbot-enforce.service",
+  # Install the tmux plugins listed in the tmux config. Runs after dotfiles so the
+  # config is linked. tpm reads its settings from the tmux server, so reload the
+  # config into a server that is already running.
+  "tmux has-session 2>/dev/null && tmux source-file -q ~/.tmux.conf \\; source-file -q ~/.config/tmux/tmux.conf; ~/.tmux/plugins/tpm/bin/install_plugins",
+]
 
 [bootstrap.hooks.post-packages]
 run = [
   # postgresql won't start until its data directory is initialized.
   "sudo test -e /var/lib/postgres/data/PG_VERSION || sudo -iu postgres initdb -D /var/lib/postgres/data",
-  "~/dotfiles/bin/setup-snapper",
 ]
 
 [bootstrap.hooks.post-tools]

@@ -21,11 +21,28 @@
 "pacman:xorg-xrandr" = "latest"
 "pacman:lightdm" = "latest"
 "pacman:lightdm-gtk-greeter" = "latest"
+# Kernels (Omarchy ships linux-omarchy and its own boot setup)
+"pacman:linux" = "latest"
+"pacman:linux-headers" = "latest"
+"pacman:linux-lts" = "latest"
+"pacman:linux-lts-headers" = "latest"
+# zsh + powerlevel10k (Omarchy machines stay on Omarchy's bash; see omarchy/bash/.bashrc)
+"pacman:zsh" = "latest"
+"pacman:zsh-completions" = "latest"
+"aur:zsh-theme-powerlevel10k-git" = "latest"
+# Snapshots: snapper config from bin/setup-snapper, pre/post pacman snapshots from snap-pac.
+# Omarchy sets up its own snapper (5 snapshots, no timeline, one before each
+# `omarchy update`); snap-pac there would rotate the update snapshot out.
+"pacman:snapper" = "latest"
+"pacman:snap-pac" = "latest"
 # Boot: GRUB with a boot entry per btrfs snapshot
 "pacman:grub" = "latest"
 "pacman:grub-btrfs" = "latest"
 
 [dotfiles]
+"~/.zshrc" = "~/dotfiles/zsh/.zshrc"
+"~/.p10k.zsh" = "~/dotfiles/zsh/.p10k.zsh"
+"~/.local/bin/setup-snapper" = "~/dotfiles/bin/setup-snapper"
 "~/.Xmodmap" = "~/dotfiles/i3/.Xmodmap"
 "~/.tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
 "~/.gtkrc-2.0" = "~/dotfiles/gtk/.gtkrc-2.0"
@@ -48,3 +65,8 @@
 
 [bootstrap.services.lightdm]
 [bootstrap.services.grub-btrfsd]
+[bootstrap.services."snapper-timeline.timer"]
+[bootstrap.services."snapper-cleanup.timer"]
+
+[bootstrap.hooks.post-packages]
+run = ["~/dotfiles/bin/setup-snapper"]
