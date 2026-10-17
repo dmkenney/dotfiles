@@ -35,3 +35,11 @@ o.window("dropdown", {
   size = { "monitor_w", "(monitor_h/2)" },
   move = { 0, 0 },
 })
+
+-- Smart borders, like i3's smart_borders: no border on a tiled window that is
+-- alone on its workspace, so it sits flush against the bar.
+-- hl.window_rule({
+--   name = "smart-borders",
+--   match = { float = false, workspace = "w[tv1]" },
+--   border_size = 0,
+-- })
