@@ -32,3 +32,6 @@ alias tmux-ls-config='tmuxifier load-session setup-and-dotfiles'
 
 # Tool paths
 export PATH="$PATH:$HOME/.npm-global/bin:$HOME/go/bin:$HOME/.fly/bin:$HOME/.mix/escripts"
+
+# LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
