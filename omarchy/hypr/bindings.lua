@@ -57,6 +57,12 @@ o.bind("PRINT", "Screenshot full screen", "omarchy-capture-screenshot fullscreen
 o.bind("SUPER + PRINT", "Screenshot region", "omarchy-capture-screenshot region")
 o.bind("SUPER + SHIFT + PRINT", "Color picker", "pkill hyprpicker || hyprpicker -a")
 
+-- File manager: Yazi (vim keys, image/video previews) instead of Nautilus.
+hl.unbind("SUPER + SHIFT + F")
+hl.unbind("SUPER + ALT + SHIFT + F")
+o.bind("SUPER + SHIFT + F", "File manager", { tui = "yazi" })
+o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)", "omarchy-launch-terminal yazi")
+
 -- Spotify keys on the keyboard
 o.bind("XF86Launch5", "Spotify previous", "playerctl --player=spotify previous")
 o.bind("XF86Launch6", "Spotify next", "playerctl --player=spotify next")
