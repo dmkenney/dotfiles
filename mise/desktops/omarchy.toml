@@ -6,11 +6,9 @@
 # New machine: omarchy/setup.sh does all of this.
 
 # Prebuilt in Omarchy's pacman repo (AUR on i3, see desktops/i3.toml).
+# Brave, Chrome, Firefox, 1Password and sshd are installed by Omarchy's helpers in
+# omarchy/setup.sh, which also set them up (flags, theme policy, firewall).
 [bootstrap.packages]
-"pacman:1password" = "latest"
-"pacman:1password-cli" = "latest"
-"pacman:brave-bin" = "latest"
-"pacman:google-chrome" = "latest"
 "pacman:spotify" = "latest"
 # Monitors off after idle (omarchy/hypr/hypridle.conf); Omarchy's shell never does it.
 "pacman:hypridle" = "latest"

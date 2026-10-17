@@ -59,7 +59,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:dive" = "latest"
 "pacman:dmidecode" = "latest"
 "pacman:ethtool" = "latest"
-"pacman:firefox" = "latest"
 "pacman:fop" = "latest"
 "pacman:fuse2" = "latest"
 "pacman:fwupd" = "latest"
@@ -157,7 +156,6 @@ groups = ["wheel"]
 
 # --- System services ----------------------------------------------------------
 [bootstrap.services.postgresql]
-[bootstrap.services.sshd]
 [bootstrap.services.lm_sensors]
 
 # --- Hooks (commands mise can't declare) ---------------------------------------
