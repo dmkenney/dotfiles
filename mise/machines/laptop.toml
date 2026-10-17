@@ -3,6 +3,3 @@
 # Omarchy installs CPU microcode and GPU drivers itself; add hardware-specific
 # packages here only if Omarchy misses something.
 # No monitor layout: Omarchy's default monitors.lua (auto scale) suits a laptop panel.
-
-[bootstrap.packages]
-"aur:netbird-bin" = "latest"

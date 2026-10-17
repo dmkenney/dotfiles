@@ -8,7 +8,6 @@
 "pacman:nvidia-open-dkms" = "latest"
 "pacman:nvidia-utils" = "latest"
 "pacman:nvidia-settings" = "latest"
-"aur:netbird-bin" = "latest"
 # RGB on the coolers and RAM
 "pacman:openrgb" = "latest"
 

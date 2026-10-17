@@ -1,0 +1,41 @@
+#!/bin/bash
+# Install the NetBird client from the vendor's GitHub release, pinned to the version
+# every peer and the control plane run. Mixed versions have broken P2P; see the
+# infrastructure repo, environments/home/knowledge/runbooks/netbird.md ("Versions").
+# Not from the AUR: avoided after the June 2026 "Atomic Arch" supply-chain attack
+# (same runbook, "Clients"). Upgrade order is server, fleet, then this pin.
+# Safe to re-run: only downloads when the pinned version isn't installed.
+set -euo pipefail
+
+version=0.80.0
+bin=/usr/local/bin/netbird
+
+case $(uname -m) in
+  x86_64) arch=amd64 ;;
+  aarch64) arch=arm64 ;;
+  *) echo "install-netbird: unsupported architecture $(uname -m)" >&2; exit 1 ;;
+esac
+
+if [[ $("$bin" version 2>/dev/null || true) != "$version" ]]; then
+  tmp=$(mktemp -d)
+  trap 'rm -rf "$tmp"' EXIT
+  tarball="netbird_${version}_linux_${arch}.tar.gz"
+  base="https://github.com/netbirdio/netbird/releases/download/v${version}"
+  curl -fsSL -o "$tmp/$tarball" "$base/$tarball"
+  curl -fsSL -o "$tmp/checksums.txt" "$base/netbird_${version}_checksums.txt"
+  (cd "$tmp" && grep " $tarball\$" checksums.txt | sha256sum -c --quiet -)
+  tar -xzf "$tmp/$tarball" -C "$tmp" netbird
+  sudo install -m 0755 "$tmp/netbird" "$bin"
+  echo "install-netbird: installed $version at $bin"
+fi
+
+# The service unit names the binary's path; recreate it if it points elsewhere
+# (e.g. a leftover from the AUR package at /usr/bin/netbird).
+if ! systemctl cat netbird.service 2>/dev/null | grep -q "ExecStart=$bin "; then
+  if systemctl cat netbird.service >/dev/null 2>&1; then
+    sudo systemctl stop netbird.service || true
+    sudo "$bin" service uninstall || sudo rm -f /etc/systemd/system/netbird.service
+  fi
+  sudo "$bin" service install
+  sudo systemctl daemon-reload
+fi
