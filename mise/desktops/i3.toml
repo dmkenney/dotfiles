@@ -31,9 +31,8 @@
 "pacman:npm" = "latest"
 "pacman:github-cli" = "latest"
 "pacman:alacritty" = "latest"
-# Omarchy installs these with omarchy-install-browser / omarchy-setup-security-sshd.
+# Omarchy installs this with omarchy-install-browser.
 "pacman:firefox" = "latest"
-"pacman:openssh" = "latest"
 "pacman:ghostty" = "latest"
 # Omarchy installs these from its own repo (see desktops/omarchy.toml)
 "aur:1password" = "latest"
@@ -120,7 +119,6 @@ herdr = "latest"
 [bootstrap.services.docker]
 [bootstrap.services.cups]
 [bootstrap.services."paccache.timer"]
-[bootstrap.services.sshd]
 
 [bootstrap.users.dylan]
 group = "dylan"

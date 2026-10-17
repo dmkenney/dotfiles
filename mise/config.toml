@@ -78,6 +78,10 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:nano" = "latest"
 "pacman:nmap" = "latest"
 "pacman:nvtop" = "latest"
+# personal/mise.toml manages /etc/ssh/sshd_config, which needs openssh and the sshd
+# service on every machine. On Omarchy, setup.sh also runs omarchy-setup-security-sshd
+# for the ufw rule and an authorized key.
+"pacman:openssh" = "latest"
 "pacman:openscenegraph" = "latest"
 "pacman:optipng" = "latest"
 "pacman:oxipng" = "latest"
@@ -156,6 +160,7 @@ groups = ["wheel"]
 
 # --- System services ----------------------------------------------------------
 [bootstrap.services.postgresql]
+[bootstrap.services.sshd]
 [bootstrap.services.lm_sensors]
 
 # --- Hooks (commands mise can't declare) ---------------------------------------
