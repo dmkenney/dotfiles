@@ -25,8 +25,20 @@
 # tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
 # would override ours (prefix k = kill-window). Replace it instead.
 "~/.config/tmux/tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
+# Bar layout and the per-monitor workspaces widget (clone of omarchy.workspaces).
+# Omarchy rewrites shell.json with mv, which replaces this link with a plain file;
+# the pre-dotfiles hook below copies such a file back into the repo first.
+"~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
+"~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
+
+# Third-party bar widget used in shell.json (installed by `omarchy plugin add`).
+[bootstrap.repos]
+"~/.config/omarchy/plugins/meviusisback.hw-monitor" = { url = "https://github.com/meviusisback/omarchy-hw-monitor.git" }
 
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).
 [bootstrap.hooks]
+# If Omarchy replaced the shell.json link with a newer plain file, keep its changes.
+# A fresh install's stock file is older than the clone and is just dropped.
+pre-dotfiles = "f=~/.config/omarchy/shell.json r=~/dotfiles/omarchy/shell/shell.json; if [ -f \"$f\" ] && [ ! -L \"$f\" ]; then if [ \"$f\" -nt \"$r\" ]; then cp \"$f\" \"$r\"; fi; rm \"$f\"; fi"
 post-packages = "~/dotfiles/personal/system/ufw-rules.sh"
