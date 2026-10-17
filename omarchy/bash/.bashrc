@@ -31,5 +31,4 @@ alias tmux-ls-config='tmuxifier load-session setup-and-dotfiles'
 [[ -f ~/dotfiles/personal/zsh/aliases.zsh ]] && source ~/dotfiles/personal/zsh/aliases.zsh
 
 # Tool paths
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PATH:$PNPM_HOME:$HOME/.npm-global/bin:$HOME/go/bin:$HOME/.fly/bin:$HOME/.mix/escripts"
+export PATH="$PATH:$HOME/.npm-global/bin:$HOME/go/bin:$HOME/.fly/bin:$HOME/.mix/escripts"
