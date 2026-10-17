@@ -73,7 +73,7 @@ show anything an Omarchy migration changed. `omarchy refresh <x>` replaces a fil
      `apply.sh`. Update the interface name in its `nftables.conf` first (`ip -br link`).
    - **Omarchy:** nothing to do. `mise bootstrap` runs `personal/system/ufw-rules.sh`, the ufw
      version of the same rules. Check with `sudo ufw status verbose`.
-7. Logins: `sudo tailscale up`, `netbird up`, 1Password, `gh auth login`, `aws sso login`,
+7. Logins: `netbird up`, 1Password, `gh auth login`, `aws sso login`,
    Claude Code (`curl -fsSL https://claude.ai/install.sh | bash`).
 8. Brave profiles: `~/dotfiles/personal/brave/setup-profiles.sh` (overwrites profile settings, run once).
 9. Copy data that is not in git from the old machine (it must be on and reachable over SSH):
