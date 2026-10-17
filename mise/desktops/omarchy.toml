@@ -23,6 +23,10 @@
 "~/.config/hypr/looknfeel.lua" = "~/dotfiles/omarchy/hypr/looknfeel.lua"
 # Monospace font. `omarchy font set` rewrites this file (through the link).
 "~/.config/fontconfig/fonts.conf" = "~/dotfiles/fontconfig/fonts.conf"
+# Default terminal: ghostty (`omarchy default terminal` writes this list through the link).
+"~/.config/xdg-terminals.list" = "~/dotfiles/omarchy/xdg-terminals.list"
+# Ghostty: Omarchy's config with 5px padding. `omarchy font set` replaces the link.
+"~/.config/ghostty/config" = "~/dotfiles/omarchy/ghostty/config"
 # File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
 "~/.config/yazi" = "~/dotfiles/yazi"
 # Omarchy's bash (not zsh) plus personal aliases.
