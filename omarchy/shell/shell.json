@@ -6,7 +6,7 @@
   },
   "bar": {
     "position": "top",
-    "transparent": true,
+    "transparent": false,
     "centerAnchor": "omarchy.clock",
     "layout": {
       "left": [
@@ -42,13 +42,17 @@
           "id": "omarchy.tray"
         },
         {
+          "id": "io.github.grichard99.omaproton-vpn"
+        },
+        {
           "id": "meviusisback.hw-monitor",
           "mode": "icons",
-          "showGpuTemp": false,
-          "showCpuTemp": true,
-          "showClocks": false,
           "ramFormat": "used",
-          "tempFormat": "degree"
+          "showClocks": false,
+          "showCpuTemp": true,
+          "showGpuTemp": false,
+          "tempFormat": "degree",
+          "topProcSort": "ram"
         },
         {
           "id": "omarchy.agents"
@@ -71,5 +75,28 @@
       ]
     }
   },
-  "plugins": []
+  "plugins": [
+    {
+      "id": "io.github.sirjul1337.lock-explorer",
+      "tourSeen": true,
+      "openAs": "panel",
+      "design": "poster",
+      "favorites": [
+        "dayline",
+        "poster",
+        "split",
+        "editorial",
+        "card"
+      ]
+    },
+    {
+      "id": "bobbynicholas.omaland"
+    }
+  ],
+  "disabledPlugins": [
+    "omarchy.lock"
+  ],
+  "cloneSourceRestores": [
+    "io.github.sirjul1337.lock-explorer"
+  ]
 }

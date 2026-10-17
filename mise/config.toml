@@ -1,4 +1,4 @@
-# Machine setup for Arch + i3. Replaces install.sh.
+# Machine setup for Arch (Omarchy or i3). Replaces install.sh.
 #
 # ~/.config/mise/config.toml links here. Per-machine and private config load from
 # ~/.config/mise/conf.d/ (see README):
@@ -19,21 +19,16 @@ uv = "0.8.0"
 git-lfs = "latest"
 # Global default; projects that need another version pin it in their own mise.toml.
 node = "26"
-gemini = "latest"
 "npm:@googleworkspace/cli" = "latest"
-codex = "latest"
-"npm:@playwright/test" = "latest"
 "npm:agent-browser" = "latest"
 "npm:ccusage" = "latest"
 "npm:cf" = "latest"
 "npm:chromedriver" = "latest"
 "npm:eas-cli" = "latest"
-opencode = "latest"
 "npm:playwright-mcp" = "latest"
 "npm:wrangler" = "latest"
 "pipx:harlequin" = "latest"
 stripe = "latest"
-herdr = "latest"
 powershell = "latest"
 flyctl = "latest"
 
@@ -48,118 +43,77 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 # --- System packages --------------------------------------------------------
 # Hardware-specific packages (GPU driver, CPU microcode) go in mise/machines/.
 # Desktop-specific packages (i3/X11 or Omarchy) go in mise/desktops/.
+# Packages, tools and services Omarchy already installs are declared only in
+# mise/desktops/i3.toml.
 # Arch: keep upgrading with `sudo pacman -Syu`, not `mise bootstrap packages upgrade`.
 [bootstrap.packages]
 "pacman:7zip" = "latest"
 "pacman:aarch64-linux-gnu-gcc" = "latest"
 "pacman:aws-cli-v2" = "latest"
-"pacman:base" = "latest"
-"pacman:base-devel" = "latest"
-"pacman:bat" = "latest"
 "pacman:bind" = "latest"
-"pacman:btop" = "latest"
-"pacman:btrfs-progs" = "latest"
 "pacman:caddy" = "latest"
 "pacman:cloudflared" = "latest"
-"pacman:cups" = "latest"
 "pacman:cups-pdf" = "latest"
 "pacman:dbeaver" = "latest"
 "pacman:direnv" = "latest"
 "pacman:dive" = "latest"
-"pacman:dkms" = "latest"
 "pacman:dmidecode" = "latest"
-"pacman:docker" = "latest"
-"pacman:docker-buildx" = "latest"
-"pacman:docker-compose" = "latest"
-"pacman:dosfstools" = "latest"
 "pacman:ethtool" = "latest"
-"pacman:eza" = "latest"
-"pacman:fastfetch" = "latest"
 "pacman:firefox" = "latest"
 "pacman:fop" = "latest"
 "pacman:fuse2" = "latest"
 "pacman:fwupd" = "latest"
-"pacman:fzf" = "latest"
 "pacman:gdb" = "latest"
 "pacman:gimp" = "latest"
-"pacman:git" = "latest"
 "pacman:git-filter-repo" = "latest"
 "pacman:glab" = "latest"
-"pacman:gst-plugin-pipewire" = "latest"
-"pacman:gum" = "latest"
 "pacman:hcloud" = "latest"
 "pacman:htop" = "latest"
 "pacman:img2pdf" = "latest"
-"pacman:inetutils" = "latest"
 "pacman:inkscape" = "latest"
-"pacman:inotify-tools" = "latest"
 "pacman:jpegoptim" = "latest"
-"pacman:jq" = "latest"
-"pacman:lazydocker" = "latest"
-"pacman:lazygit" = "latest"
-"pacman:libpulse" = "latest"
-"pacman:linux-firmware" = "latest"
 "pacman:lksctp-tools" = "latest"
-"pacman:llvm" = "latest"
 "pacman:lshw" = "latest"
 "pacman:lsof" = "latest"
-"pacman:man-db" = "latest"
 "pacman:mesa-utils" = "latest"
-"pacman:mise" = "latest"
 "pacman:nano" = "latest"
-"pacman:neovim" = "latest"
-"pacman:networkmanager" = "latest"
 "pacman:nmap" = "latest"
-"pacman:noto-fonts-emoji" = "latest"
 "pacman:nvtop" = "latest"
 "pacman:openscenegraph" = "latest"
 "pacman:optipng" = "latest"
 "pacman:oxipng" = "latest"
-"pacman:pacman-contrib" = "latest"
 "pacman:pandoc-cli" = "latest"
 "pacman:pgvector" = "latest"
-"pacman:pipewire" = "latest"
-"pacman:pipewire-alsa" = "latest"
-"pacman:pipewire-jack" = "latest"
-"pacman:pipewire-pulse" = "latest"
 "pacman:playerctl" = "latest"
 "pacman:podofo" = "latest"
 "pacman:postgis" = "latest"
 "pacman:postgresql" = "latest"
-"pacman:proton-vpn-gtk-app" = "latest"
+"pacman:proton-vpn-cli" = "latest"
 "pacman:python" = "latest"
 "pacman:python-build" = "latest"
 "pacman:python-pip" = "latest"
 "pacman:python-setuptools" = "latest"
-"pacman:qt6-wayland" = "latest"
 "pacman:raylib" = "latest"
-"pacman:ripgrep" = "latest"
 "pacman:rpi-imager" = "latest"
 "pacman:rsync" = "latest"
 "pacman:sane-airscan" = "latest"
 "pacman:scribus" = "latest"
 "pacman:smartmontools" = "latest"
 "pacman:tk" = "latest"
-"pacman:tmux" = "latest"
 "pacman:tokei" = "latest"
-"pacman:tree-sitter-cli" = "latest"
 "pacman:ttf-cascadia-code-nerd" = "latest"
 "pacman:udisks2" = "latest"
 "pacman:unixodbc" = "latest"
 "pacman:unpaper" = "latest"
-"pacman:unzip" = "latest"
 "pacman:vim" = "latest"
 "pacman:vlc" = "latest"
 "pacman:vlc-plugin-ffmpeg" = "latest"
 "pacman:wget" = "latest"
-"pacman:wireplumber" = "latest"
 "pacman:wireshark-qt" = "latest"
 "pacman:xdg-utils" = "latest"
 "pacman:xpdf" = "latest"
 "pacman:yazi" = "latest"
-"pacman:yt-dlp" = "latest"
 "pacman:zip" = "latest"
-"pacman:zram-generator" = "latest"
 "aur:ast-grep-bin" = "latest"
 "aur:flarectl-bin" = "latest"
 "aur:lazysql" = "latest"
@@ -169,9 +123,11 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "aur:ttf-vista-fonts" = "latest"
 
 # --- Accounts -----------------------------------------------------------------
+# No docker group: it equals passwordless root, and Omarchy leaves it out on purpose
+# (opt in with omarchy-setup-security-sudoless-docker). i3 machines add it.
 [bootstrap.users.dylan]
 group = "dylan"
-groups = ["wheel", "docker"]
+groups = ["wheel"]
 
 # --- Git checkouts ------------------------------------------------------------
 # tpm installs the other tmux plugins listed in .tmux.conf (post-dotfiles hook).
@@ -200,14 +156,9 @@ groups = ["wheel", "docker"]
 "~/.config/opencode/AGENTS.md" = "~/dotfiles/AGENTS.md"
 
 # --- System services ----------------------------------------------------------
-[bootstrap.services.NetworkManager]
-[bootstrap.services.docker]
 [bootstrap.services.postgresql]
-[bootstrap.services.cups]
 [bootstrap.services.sshd]
 [bootstrap.services.lm_sensors]
-# Weekly package cache cleanup
-[bootstrap.services."paccache.timer"]
 
 # --- Hooks (commands mise can't declare) ---------------------------------------
 [bootstrap.hooks.post-dotfiles]

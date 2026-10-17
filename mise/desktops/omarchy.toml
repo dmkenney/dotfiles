@@ -12,8 +12,6 @@
 "pacman:brave-bin" = "latest"
 "pacman:google-chrome" = "latest"
 "pacman:spotify" = "latest"
-"pacman:localsend" = "latest"
-"pacman:yay" = "latest"
 # Monitors off after idle (omarchy/hypr/hypridle.conf); Omarchy's shell never does it.
 "pacman:hypridle" = "latest"
 
@@ -23,8 +21,6 @@
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
 "~/.config/hypr/hypridle.conf" = "~/dotfiles/omarchy/hypr/hypridle.conf"
-# Default terminal: FiraCode font, no padding.
-"~/.config/foot/foot.ini" = "~/dotfiles/omarchy/foot/foot.ini"
 # File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
 "~/.config/yazi" = "~/dotfiles/yazi"
 # Omarchy's bash (not zsh) plus personal aliases.
@@ -38,9 +34,12 @@
 "~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
 "~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
 
-# Third-party bar widget used in shell.json (installed by `omarchy plugin add`).
+# Third-party shell plugins used in shell.json (installed by `omarchy plugin add`).
 [bootstrap.repos]
 "~/.config/omarchy/plugins/meviusisback.hw-monitor" = { url = "https://github.com/meviusisback/omarchy-hw-monitor.git" }
+"~/.config/omarchy/plugins/io.github.grichard99.omaproton-vpn" = { url = "https://github.com/grichard99/omaproton-vpn.git" }
+"~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer" = { url = "https://github.com/SirJul1337/omarchy-lock-explorer.git" }
+"~/.config/omarchy/plugins/bobbynicholas.omaland" = { url = "https://github.com/bobby-nicholas/omaland.git" }
 
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).

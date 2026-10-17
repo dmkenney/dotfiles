@@ -42,6 +42,50 @@
 "aur:yay" = "latest"
 # Omarchy ships libreoffice-fresh, which conflicts with -still
 "pacman:libreoffice-still" = "latest"
+# Omarchy installs these itself (install/omarchy-*.packages), so only i3 declares them.
+"pacman:base" = "latest"
+"pacman:base-devel" = "latest"
+"pacman:bat" = "latest"
+"pacman:btop" = "latest"
+"pacman:btrfs-progs" = "latest"
+"pacman:cups" = "latest"
+"pacman:dkms" = "latest"
+"pacman:docker" = "latest"
+"pacman:docker-buildx" = "latest"
+"pacman:docker-compose" = "latest"
+"pacman:dosfstools" = "latest"
+"pacman:eza" = "latest"
+"pacman:fastfetch" = "latest"
+"pacman:fzf" = "latest"
+"pacman:git" = "latest"
+"pacman:gst-plugin-pipewire" = "latest"
+"pacman:gum" = "latest"
+"pacman:inetutils" = "latest"
+"pacman:inotify-tools" = "latest"
+"pacman:jq" = "latest"
+"pacman:lazydocker" = "latest"
+"pacman:lazygit" = "latest"
+"pacman:libpulse" = "latest"
+"pacman:linux-firmware" = "latest"
+"pacman:llvm" = "latest"
+"pacman:man-db" = "latest"
+"pacman:mise" = "latest"
+"pacman:neovim" = "latest"
+"pacman:networkmanager" = "latest"
+"pacman:noto-fonts-emoji" = "latest"
+"pacman:pacman-contrib" = "latest"
+"pacman:pipewire" = "latest"
+"pacman:pipewire-alsa" = "latest"
+"pacman:pipewire-jack" = "latest"
+"pacman:pipewire-pulse" = "latest"
+"pacman:qt6-wayland" = "latest"
+"pacman:ripgrep" = "latest"
+"pacman:tmux" = "latest"
+"pacman:tree-sitter-cli" = "latest"
+"pacman:unzip" = "latest"
+"pacman:wireplumber" = "latest"
+"pacman:yt-dlp" = "latest"
+"pacman:zram-generator" = "latest"
 # Kernels (Omarchy ships linux-omarchy and its own boot setup)
 "pacman:linux" = "latest"
 "pacman:linux-headers" = "latest"
@@ -59,6 +103,24 @@
 # Boot: GRUB with a boot entry per btrfs snapshot
 "pacman:grub" = "latest"
 "pacman:grub-btrfs" = "latest"
+
+# Omarchy installs these itself: herdr from pacman, the rest as ~/.local/bin launchers.
+[tools]
+gemini = "latest"
+codex = "latest"
+"npm:@playwright/test" = "latest"
+opencode = "latest"
+herdr = "latest"
+
+# Omarchy enables these itself (docker via docker.socket; omarchy update prunes the cache).
+[bootstrap.services.NetworkManager]
+[bootstrap.services.docker]
+[bootstrap.services.cups]
+[bootstrap.services."paccache.timer"]
+
+[bootstrap.users.dylan]
+group = "dylan"
+groups = ["wheel", "docker"]
 
 [dotfiles]
 "~/.zshrc" = "~/dotfiles/zsh/.zshrc"
