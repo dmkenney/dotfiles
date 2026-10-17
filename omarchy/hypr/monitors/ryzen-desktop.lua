@@ -14,6 +14,11 @@ local function place_workspaces()
   for _, m in ipairs(hl.get_monitors()) do
     if m.name ~= primary then second = m.name end
   end
+  -- The catch-all rule above is not applied to a monitor plugged in while Hyprland
+  -- runs (it comes up at 0x0, blank). A rule naming the output is.
+  if second then
+    hl.monitor({ output = second, mode = "preferred", position = "auto-right", scale = 1 })
+  end
 
   for ws = 1, 10 do
     local name = tostring(ws)
