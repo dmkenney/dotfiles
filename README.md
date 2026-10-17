@@ -76,7 +76,16 @@ show anything an Omarchy migration changed. `omarchy refresh <x>` replaces a fil
 7. Logins: `sudo tailscale up`, `netbird up`, 1Password, `gh auth login`, `aws sso login`,
    Claude Code (`curl -fsSL https://claude.ai/install.sh | bash`).
 8. Brave profiles: `~/dotfiles/personal/brave/setup-profiles.sh` (overwrites profile settings, run once).
-9. Copy data that is not in git: `~/.ssh`, `~/.claude`, Postgres databases, unpushed repos.
+9. Copy data that is not in git from the old machine (it must be on and reachable over SSH):
+   ```sh
+   copy-from-old-machine <old-host>   # or name parts: brave claude documents tmux home postgres
+   ```
+   Copies Brave profiles plus the keyring key that decrypts their cookies and passwords,
+   `~/.claude`, `~/Documents` (projects; same paths, so Claude history still matches),
+   tmux-resurrect saves (restore with prefix + Ctrl-r), CLI logins,
+   app data (DBeaver, Zen, Cursor, ...), claude-squad/flow2 worktrees, and
+   all Postgres databases (dump kept in `~/backups`). Copying Brave replaces step 8.
+   Not covered: unpushed repos outside `~/Documents`.
 10. Reboot (new kernel modules, snapper, display manager).
 11. On Omarchy, keybindings keep the i3 layout on top of Omarchy's; see
     `omarchy/hypr/bindings.lua`. Super+F1 lists them all.

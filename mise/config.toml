@@ -117,6 +117,7 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:oxipng" = "latest"
 "pacman:pacman-contrib" = "latest"
 "pacman:pandoc-cli" = "latest"
+"pacman:pgvector" = "latest"
 "pacman:pipewire" = "latest"
 "pacman:pipewire-alsa" = "latest"
 "pacman:pipewire-jack" = "latest"
@@ -163,6 +164,7 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "aur:ast-grep-bin" = "latest"
 "aur:flarectl-bin" = "latest"
 "aur:lazysql" = "latest"
+"aur:pg_textsearch" = "latest"
 "aur:scc" = "latest"
 "aur:ttf-ms-fonts" = "latest"
 "aur:ttf-vista-fonts" = "latest"
@@ -186,6 +188,7 @@ groups = ["wheel", "docker"]
 "~/.local/bin/brave-sessions" = "~/dotfiles/bin/brave-sessions"
 "~/.local/bin/obsbot-enforce" = "~/dotfiles/bin/obsbot-enforce"
 "~/.local/bin/claude-settings-env" = "~/dotfiles/bin/claude-settings-env"
+"~/.local/bin/copy-from-old-machine" = "~/dotfiles/bin/copy-from-old-machine"
 # User systemd units (enabled in the post-dotfiles hook)
 "~/.config/systemd/user/brave-sessions.service" = "~/dotfiles/systemd/user/brave-sessions.service"
 "~/.config/systemd/user/brave-sessions.timer" = "~/dotfiles/systemd/user/brave-sessions.timer"
@@ -221,6 +224,8 @@ run = [
 run = [
   # postgresql won't start until its data directory is initialized.
   "sudo test -e /var/lib/postgres/data/PG_VERSION || sudo -iu postgres initdb -D /var/lib/postgres/data",
+  # pg_textsearch only loads from shared_preload_libraries. Restart only if this added it.
+  "sudo grep -q pg_textsearch /var/lib/postgres/data/postgresql.auto.conf || { echo \"shared_preload_libraries = 'pg_textsearch'\" | sudo -u postgres tee -a /var/lib/postgres/data/postgresql.auto.conf >/dev/null && sudo systemctl try-restart postgresql; }",
 ]
 
 [bootstrap.hooks.post-tools]
