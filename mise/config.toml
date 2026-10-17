@@ -157,6 +157,8 @@ groups = ["wheel"]
 "~/.codex/AGENTS.md" = "~/dotfiles/AGENTS.md"
 "~/.gemini/GEMINI.md" = "~/dotfiles/AGENTS.md"
 "~/.config/opencode/AGENTS.md" = "~/dotfiles/AGENTS.md"
+# opencode: local models through Ollama (localhost:11434), 64k context to match num_ctx
+"~/.config/opencode/opencode.json" = "~/dotfiles/opencode/opencode.json"
 
 # --- System services ----------------------------------------------------------
 [bootstrap.services.postgresql]
