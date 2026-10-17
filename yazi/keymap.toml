@@ -1,0 +1,5 @@
+# Enter goes into folders and opens files (stock Enter opens folders in $EDITOR).
+[[mgr.prepend_keymap]]
+on   = "<Enter>"
+run  = "plugin smart-enter"
+desc = "Enter folder or open file"

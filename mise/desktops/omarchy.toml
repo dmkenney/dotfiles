@@ -22,6 +22,8 @@
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
 # Default terminal: FiraCode font, no padding.
 "~/.config/foot/foot.ini" = "~/dotfiles/omarchy/foot/foot.ini"
+# File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
+"~/.config/yazi" = "~/dotfiles/yazi"
 # Omarchy's bash (not zsh) plus personal aliases.
 "~/.bashrc" = "~/dotfiles/omarchy/bash/.bashrc"
 # tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
