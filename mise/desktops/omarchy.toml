@@ -21,6 +21,10 @@
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
 "~/.config/hypr/hypridle.conf" = "~/dotfiles/omarchy/hypr/hypridle.conf"
+# Look and feel overrides. The Omaland plugin also writes this file (and hyprland.lua).
+"~/.config/hypr/looknfeel.lua" = "~/dotfiles/omarchy/hypr/looknfeel.lua"
+# Monospace font. `omarchy font set` rewrites this file (through the link).
+"~/.config/fontconfig/fonts.conf" = "~/dotfiles/fontconfig/fonts.conf"
 # File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
 "~/.config/yazi" = "~/dotfiles/yazi"
 # Omarchy's bash (not zsh) plus personal aliases.
@@ -30,7 +34,7 @@
 "~/.config/tmux/tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
 # Bar layout and the per-monitor workspaces widget (clone of omarchy.workspaces).
 # Omarchy rewrites shell.json with mv, which replaces this link with a plain file;
-# the pre-dotfiles hook below copies such a file back into the repo first.
+# the pre-dotfiles hook (bin/dotfiles-adopt) copies such a file back into the repo first.
 "~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
 "~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
 
@@ -41,13 +45,17 @@
 "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer" = { url = "https://github.com/SirJul1337/omarchy-lock-explorer.git" }
 "~/.config/omarchy/plugins/bobbynicholas.omaland" = { url = "https://github.com/bobby-nicholas/omaland.git" }
 
-# Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
-# (private, in the personal submodule).
 [bootstrap.hooks.post-dotfiles]
-run = ["systemctl --user enable --now hypridle.service"]
+run = [
+  "systemctl --user enable --now hypridle.service",
+  # Lock Explorer's launcher entry and Omarchy menu entry (Style > Lock Screen). Its
+  # installer refuses to write through symlinks, so it writes the menu file itself.
+  "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer/extras/install.sh",
+]
 
 [bootstrap.hooks]
-# If Omarchy replaced the shell.json link with a newer plain file, keep its changes.
-# A fresh install's stock file is older than the clone and is just dropped.
-pre-dotfiles = "f=~/.config/omarchy/shell.json r=~/dotfiles/omarchy/shell/shell.json; if [ -f \"$f\" ] && [ ! -L \"$f\" ]; then if [ \"$f\" -nt \"$r\" ]; then cp \"$f\" \"$r\"; fi; rm \"$f\"; fi"
+# Files that Omarchy or a plugin replaced with a plain file: keep newer changes, then relink.
+pre-dotfiles = "~/dotfiles/bin/dotfiles-adopt"
+# Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
+# (private, in the personal submodule).
 post-packages = "~/dotfiles/personal/system/ufw-rules.sh"

@@ -1,0 +1,33 @@
+#!/bin/bash
+# Keep changes made by programs that replace a dotfiles link with a plain file.
+#
+# Omarchy and some shell plugins write files atomically (write a temp file, then
+# rename it over the target), which turns a symlink into this repo into a plain
+# file. For each tracked file that is now a plain file, copy it back into the
+# repo if it is newer, then remove it so `mise bootstrap` links it again.
+# Runs as the pre-dotfiles hook in mise/desktops/omarchy.toml.
+#
+# Files written this way: shell.json (omarchy-shell-config), looknfeel.lua and
+# hyprland.lua (Omaland plugin).
+
+set -u
+repo="$HOME/dotfiles"
+
+pairs=(
+  ".config/omarchy/shell.json:omarchy/shell/shell.json"
+  ".config/hypr/looknfeel.lua:omarchy/hypr/looknfeel.lua"
+  ".config/hypr/hyprland.lua:omarchy/hypr/hyprland.lua"
+  ".config/fontconfig/fonts.conf:fontconfig/fonts.conf"
+)
+
+for pair in "${pairs[@]}"; do
+  live="$HOME/${pair%%:*}"
+  tracked="$repo/${pair#*:}"
+  [[ -f $live && ! -L $live ]] || continue
+  # A fresh install's stock file is older than the clone and is just dropped.
+  if [[ $live -nt $tracked ]]; then
+    cp -- "$live" "$tracked"
+    echo "dotfiles-adopt: kept changes to ~/${pair%%:*}"
+  fi
+  rm -- "$live"
+done
