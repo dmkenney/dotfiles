@@ -1,4 +1,4 @@
--- i3 muscle memory on top of Omarchy's defaults. See all bindings: Super+F1.
+-- i3 muscle memory on top of Omarchy's defaults. See all bindings: Super+F1 or Super+Shift+Ctrl+K.
 -- Unchanged from Omarchy (already match i3): Super+Return, Super+1..0,
 -- Super+Shift+1..0, Super+F, Super+arrows, Super+comma notification keys.
 
@@ -15,6 +15,7 @@ o.bind("SUPER + SHIFT + J", "Move window down", hl.dsp.window.swap({ direction =
 o.bind("SUPER + SHIFT + K", "Move window up", hl.dsp.window.swap({ direction = "u" }))
 o.bind("SUPER + SHIFT + L", "Move window right", hl.dsp.window.swap({ direction = "r" }))
 o.bind("SUPER + F1", "Keybindings", "omarchy-menu-keybindings")
+o.bind("SUPER + SHIFT + CTRL + K", "Keybindings", "omarchy-menu-keybindings")
 
 -- Split direction (i3 Super+C/V). Super+C/V stay Omarchy's universal copy/paste.
 o.bind("SUPER + E", "Toggle window split", hl.dsp.layout("togglesplit"))
