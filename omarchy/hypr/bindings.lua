@@ -27,6 +27,30 @@ hl.unbind("SUPER + SHIFT + SPACE")
 o.bind("SUPER + SHIFT + SPACE", "Toggle floating", hl.dsp.window.float({ action = "toggle" }))
 o.bind("SUPER + grave", "Dropdown terminal", "~/.config/hypr/dropdown.sh")
 
+-- Super+1..0 also move the pointer when the workspace is on the other monitor.
+-- no_warps (input.lua) leaves the pointer behind, and follow_mouse then hands focus
+-- back to the monitor under it, so Super+Return opened windows on the wrong workspace.
+local function switch_workspace(name)
+  return function()
+    hl.dispatch(hl.dsp.focus({ workspace = name }))
+    local ws = hl.get_workspace(name)
+    local target = ws and ws.monitor
+    local under = hl.get_monitor_at_cursor()
+    if target and not (under and under.name == target.name) then
+      hl.dispatch(hl.dsp.cursor.move({
+        x = target.position.x + target.width / target.scale / 2,
+        y = target.position.y + target.height / target.scale / 2,
+      }))
+    end
+  end
+end
+
+for ws = 1, 10 do
+  local key = "SUPER + code:" .. (ws + 9)
+  hl.unbind(key)
+  hl.bind(key, switch_workspace(tostring(ws)), { description = "Switch to workspace " .. ws })
+end
+
 -- Super+Tab: previous workspace (i3 back_and_forth). Omarchy uses it for "next".
 hl.unbind("SUPER + TAB")
 o.bind("SUPER + TAB", "Former workspace", hl.dsp.focus({ workspace = "previous" }))
