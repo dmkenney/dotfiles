@@ -1,6 +1,7 @@
 -- Two 1080p monitors side by side, no scaling. Workspaces pinned like i3:
 -- 1-6 on the left monitor, 7-10 on the right.
 -- Get output names with `hyprctl monitors all` and fill them in.
+-- The right monitor is not connected yet; "DP-1" is a placeholder.
 local left = "HDMI-A-1"
 local right = "DP-1"
 

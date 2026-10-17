@@ -24,7 +24,7 @@ o.bind("SUPER + SHIFT + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + D", "Apps menu", "omarchy-menu toggle apps")
 hl.unbind("SUPER + SHIFT + SPACE")
 o.bind("SUPER + SHIFT + SPACE", "Toggle floating", hl.dsp.window.float({ action = "toggle" }))
-o.bind("SUPER + grave", "Toggle scratchpad", hl.dsp.workspace.toggle_special("scratchpad"))
+o.bind("SUPER + grave", "Dropdown terminal", "~/.config/hypr/dropdown.sh")
 
 -- Super+Tab: previous workspace (i3 back_and_forth). Omarchy uses it for "next".
 hl.unbind("SUPER + TAB")
@@ -44,6 +44,8 @@ hl.define_submap("resize", function()
 end)
 
 -- Session (i3 Super+Shift+E exit). Config reloads automatically on save.
+-- Replaces Omarchy's HEY email webapp binding.
+hl.unbind("SUPER + SHIFT + E")
 o.bind("SUPER + SHIFT + E", "System menu", "omarchy-menu toggle system")
 
 -- Screenshots like i3: Print = full screen, Super+Print = region.

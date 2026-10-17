@@ -207,7 +207,6 @@ groups = ["wheel", "docker"]
 "~/.config/mise/config.toml" = "~/dotfiles/mise/config.toml"
 "~/.zshrc" = "~/dotfiles/zsh/.zshrc"
 "~/.p10k.zsh" = "~/dotfiles/zsh/.p10k.zsh"
-"~/.tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
 "~/.config/nvim" = "~/dotfiles/nvim"
 "~/.config/mise/conf.d/personal.toml" = "~/dotfiles/personal/mise.toml"
 # Scripts

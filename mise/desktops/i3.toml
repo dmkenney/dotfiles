@@ -27,6 +27,7 @@
 
 [dotfiles]
 "~/.Xmodmap" = "~/dotfiles/i3/.Xmodmap"
+"~/.tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
 "~/.gtkrc-2.0" = "~/dotfiles/gtk/.gtkrc-2.0"
 "~/.config/backgrounds" = "~/dotfiles/backgrounds"
 "~/.config/picom.conf" = "~/dotfiles/picom/picom.conf"

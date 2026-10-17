@@ -8,6 +8,10 @@
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors.lua"
+"~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
+# tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
+# would override ours (prefix k = kill-window). Replace it instead.
+"~/.config/tmux/tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
 
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).
