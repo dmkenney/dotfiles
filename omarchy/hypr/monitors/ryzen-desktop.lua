@@ -11,7 +11,9 @@ hl.monitor({ output = "", mode = "preferred", position = "auto-right", scale = 1
 
 local function place_workspaces()
   local second
-  for _, m in ipairs(hl.get_monitors()) do
+  -- pairs, not ipairs: the keybindings menu (omarchy-menu-keybindings) runs this file
+  -- against a stub hl whose results never end an ipairs loop, which hung the menu.
+  for _, m in pairs(hl.get_monitors()) do
     if m.name ~= primary then second = m.name end
   end
   -- The catch-all rule above is not applied to a monitor plugged in while Hyprland
