@@ -53,7 +53,12 @@ mise bootstrap --force-dotfiles
 # policy (theme color follows `omarchy theme set`) and copy-URL/yt-dlp hosts;
 # 1Password gets its Chromium extension; sshd gets a rate-limited ufw rule and
 # an authorized key. Each step is skipped once done, so re-runs stay quiet.
-[[ -f ~/.config/brave-flags.conf ]] || omarchy-install-browser brave
+# brave-flags.conf is a link into this repo (desktops/omarchy.toml), so check the
+# package. The installer copies Omarchy's stock flags through the link; keep ours.
+if ! pacman -Q brave-bin &>/dev/null; then
+  omarchy-install-browser brave
+  git -C "$dotfiles" checkout -- omarchy/brave/brave-flags.conf
+fi
 [[ -f ~/.config/chrome-flags.conf ]] || omarchy-install-browser chrome
 [[ -f ~/.config/environment.d/omarchy-firefox-wayland.conf ]] || omarchy-install-browser firefox
 [[ -f /usr/share/chromium/extensions/aeblfdkhhhdcdjpifhhbdiojplfjncoa.json ]] || omarchy-install-service-1password

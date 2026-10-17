@@ -41,6 +41,9 @@
 # the pre-dotfiles hook (bin/dotfiles-adopt) copies such a file back into the repo first.
 "~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
 "~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
+# Brave flags: Omarchy's flags plus a 0.9 UI scale (URL bar and tab text use fixed
+# pixel sizes and ignore the GTK font size).
+"~/.config/brave-flags.conf" = "~/dotfiles/omarchy/brave/brave-flags.conf"
 
 # Third-party shell plugins used in shell.json (installed by `omarchy plugin add`).
 [bootstrap.repos]
@@ -52,6 +55,8 @@
 [bootstrap.hooks.post-dotfiles]
 run = [
   "systemctl --user enable --now hypridle.service",
+  # GTK UI font (Files, GIMP, 1Password dialogs, ...). Stored in dconf, not a file.
+  "gsettings set org.gnome.desktop.interface font-name 'Adwaita Sans 9'",
   # Lock Explorer's launcher entry and Omarchy menu entry (Style > Lock Screen). Its
   # installer refuses to write through symlinks, so it writes the menu file itself.
   "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer/extras/install.sh",
