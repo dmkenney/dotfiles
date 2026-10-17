@@ -9,6 +9,8 @@
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
 "~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors.lua"
 "~/.config/hypr/dropdown.sh" = "~/dotfiles/omarchy/hypr/dropdown.sh"
+# Omarchy's bash (not zsh) plus personal aliases.
+"~/.bashrc" = "~/dotfiles/omarchy/bash/.bashrc"
 # tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
 # would override ours (prefix k = kill-window). Replace it instead.
 "~/.config/tmux/tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
