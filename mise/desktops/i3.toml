@@ -21,6 +21,8 @@
 "pacman:xorg-xrandr" = "latest"
 "pacman:lightdm" = "latest"
 "pacman:lightdm-gtk-greeter" = "latest"
+# Omarchy ships libreoffice-fresh, which conflicts with -still
+"pacman:libreoffice-still" = "latest"
 # Kernels (Omarchy ships linux-omarchy and its own boot setup)
 "pacman:linux" = "latest"
 "pacman:linux-headers" = "latest"
