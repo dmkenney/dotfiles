@@ -51,7 +51,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 [bootstrap.packages]
 "pacman:7zip" = "latest"
 "pacman:aarch64-linux-gnu-gcc" = "latest"
-"pacman:alacritty" = "latest"
 "pacman:base" = "latest"
 "pacman:base-devel" = "latest"
 "pacman:bat" = "latest"
@@ -71,7 +70,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:docker-buildx" = "latest"
 "pacman:docker-compose" = "latest"
 "pacman:dosfstools" = "latest"
-"pacman:earlyoom" = "latest"
 "pacman:ethtool" = "latest"
 "pacman:eza" = "latest"
 "pacman:fastfetch" = "latest"
@@ -81,11 +79,9 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:fwupd" = "latest"
 "pacman:fzf" = "latest"
 "pacman:gdb" = "latest"
-"pacman:ghostty" = "latest"
 "pacman:gimp" = "latest"
 "pacman:git" = "latest"
 "pacman:git-filter-repo" = "latest"
-"pacman:github-cli" = "latest"
 "pacman:glab" = "latest"
 "pacman:gst-plugin-pipewire" = "latest"
 "pacman:gum" = "latest"
@@ -95,7 +91,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:inetutils" = "latest"
 "pacman:inkscape" = "latest"
 "pacman:inotify-tools" = "latest"
-"pacman:iwd" = "latest"
 "pacman:jpegoptim" = "latest"
 "pacman:jq" = "latest"
 "pacman:lazydocker" = "latest"
@@ -113,9 +108,7 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:neovim" = "latest"
 "pacman:networkmanager" = "latest"
 "pacman:nmap" = "latest"
-"pacman:nodejs-lts-iron" = "latest"
 "pacman:noto-fonts-emoji" = "latest"
-"pacman:npm" = "latest"
 "pacman:nvtop" = "latest"
 "pacman:openscenegraph" = "latest"
 "pacman:optipng" = "latest"
@@ -138,7 +131,6 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:python-setuptools" = "latest"
 "pacman:qt6-wayland" = "latest"
 "pacman:raylib" = "latest"
-"pacman:reflector" = "latest"
 "pacman:ripgrep" = "latest"
 "pacman:rpi-imager" = "latest"
 "pacman:rsync" = "latest"
@@ -167,19 +159,12 @@ write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 "pacman:yt-dlp" = "latest"
 "pacman:zip" = "latest"
 "pacman:zram-generator" = "latest"
-"aur:1password" = "latest"
-"aur:1password-cli" = "latest"
 "aur:ast-grep-bin" = "latest"
-"aur:brave-bin" = "latest"
 "aur:flarectl-bin" = "latest"
-"aur:google-chrome" = "latest"
 "aur:lazysql" = "latest"
-"aur:localsend" = "latest"
 "aur:scc" = "latest"
-"aur:spotify" = "latest"
 "aur:ttf-ms-fonts" = "latest"
 "aur:ttf-vista-fonts" = "latest"
-"aur:yay" = "latest"
 
 # --- Accounts -----------------------------------------------------------------
 [bootstrap.users.dylan]
@@ -214,14 +199,12 @@ groups = ["wheel", "docker"]
 [bootstrap.services.NetworkManager]
 [bootstrap.services.docker]
 [bootstrap.services.postgresql]
-[bootstrap.services.earlyoom]
 [bootstrap.services.cups]
 [bootstrap.services.tailscaled]
 [bootstrap.services.sshd]
 [bootstrap.services.lm_sensors]
-# Weekly package cache cleanup and mirror refresh
+# Weekly package cache cleanup
 [bootstrap.services."paccache.timer"]
-[bootstrap.services."reflector.timer"]
 
 # --- Hooks (commands mise can't declare) ---------------------------------------
 [bootstrap.hooks.post-dotfiles]

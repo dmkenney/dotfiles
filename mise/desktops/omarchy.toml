@@ -5,6 +5,16 @@
 # mise/machines/<machine>.toml); without one, Omarchy's default monitors.lua stays.
 # New machine: omarchy/setup.sh does all of this.
 
+# Prebuilt in Omarchy's pacman repo (AUR on i3, see desktops/i3.toml).
+[bootstrap.packages]
+"pacman:1password" = "latest"
+"pacman:1password-cli" = "latest"
+"pacman:brave-bin" = "latest"
+"pacman:google-chrome" = "latest"
+"pacman:spotify" = "latest"
+"pacman:localsend" = "latest"
+"pacman:yay" = "latest"
+
 [dotfiles]
 "~/.config/hypr/hyprland.lua" = "~/dotfiles/omarchy/hypr/hyprland.lua"
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"

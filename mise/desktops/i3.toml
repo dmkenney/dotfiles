@@ -21,6 +21,25 @@
 "pacman:xorg-xrandr" = "latest"
 "pacman:lightdm" = "latest"
 "pacman:lightdm-gtk-greeter" = "latest"
+# Omarchy covers these another way: mirrors pinned to its stable snapshot (reflector
+# would replace them), systemd-oomd (earlyoom), NetworkManager (iwd), node and gh via
+# mise, alacritty/ghostty from its terminal menu (themed).
+"pacman:reflector" = "latest"
+"pacman:earlyoom" = "latest"
+"pacman:iwd" = "latest"
+"pacman:nodejs-lts-iron" = "latest"
+"pacman:npm" = "latest"
+"pacman:github-cli" = "latest"
+"pacman:alacritty" = "latest"
+"pacman:ghostty" = "latest"
+# Omarchy installs these from its own repo (see desktops/omarchy.toml)
+"aur:1password" = "latest"
+"aur:1password-cli" = "latest"
+"aur:brave-bin" = "latest"
+"aur:google-chrome" = "latest"
+"aur:spotify" = "latest"
+"aur:localsend" = "latest"
+"aur:yay" = "latest"
 # Omarchy ships libreoffice-fresh, which conflicts with -still
 "pacman:libreoffice-still" = "latest"
 # Kernels (Omarchy ships linux-omarchy and its own boot setup)
@@ -67,6 +86,8 @@
 
 [bootstrap.services.lightdm]
 [bootstrap.services.grub-btrfsd]
+[bootstrap.services.earlyoom]
+[bootstrap.services."reflector.timer"]
 [bootstrap.services."snapper-timeline.timer"]
 [bootstrap.services."snapper-cleanup.timer"]
 
