@@ -26,6 +26,11 @@ node = "26"
 "npm:eas-cli" = "latest"
 "npm:playwright-mcp" = "latest"
 "npm:wrangler" = "latest"
+# ansible-core has the commands; the ansible package adds the collections
+# (ansible.posix, community.general) the infrastructure playbooks use.
+# 2.18 because mise installs it under the global python (3.11) and 2.20+
+# needs 3.12; 2.18 is also what the infrastructure playbooks were run with.
+"pipx:ansible-core" = { version = "2.18", uvx_args = "--with ansible" }
 stripe = "latest"
 powershell = "latest"
 flyctl = "latest"
