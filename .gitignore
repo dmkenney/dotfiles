@@ -7,3 +7,6 @@ tmux/tmux-layouts/*
 # Explicitly include the following
 tmux/tmux-layouts/setup-and-dotfiles.session.sh
 ################################################################################
+
+# Claude Code session worktrees
+.claude/worktrees/
