@@ -58,6 +58,10 @@ pane_outer_borders = false
 # tmux had no scrollbar column beside its panes
 pane_scrollbars = false
 
+# Keep agents in use first: a fresh session (launch, /clear, /new) moves its
+# pane behind the agents in use, ahead of older empty ones
+keep_agents_in_use_first = true
+
 # Bottom pane height for the main-on-bottom layouts (prefix+alt+6, prefix+alt+8)
 main_pane_height = 10
 
