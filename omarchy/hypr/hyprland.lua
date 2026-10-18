@@ -27,3 +27,8 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+-- Spotify runs on Wayland (see spotify-flags.conf). Keep its main window drawing
+-- on a hidden workspace, or video in the miniplayer stalls with it.
+o.window("^spotify$", { render_unfocused = true })
+hl.config({ misc = { render_unfocused_fps = 60 } })
