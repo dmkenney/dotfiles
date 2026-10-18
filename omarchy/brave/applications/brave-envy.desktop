@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Brave - Envy
+GenericName=Web Browser
+Exec=brave --profile-directory="Profile 5" %U
+Icon=brave-desktop
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true

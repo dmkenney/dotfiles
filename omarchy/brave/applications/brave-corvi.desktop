@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Brave - Corvi
+GenericName=Web Browser
+Exec=brave --profile-directory="Profile 1" %U
+Icon=brave-desktop
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=true
