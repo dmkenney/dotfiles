@@ -50,6 +50,9 @@
 "~/.local/share/applications/brave-k-squared.desktop" = "~/dotfiles/omarchy/brave/applications/brave-k-squared.desktop"
 "~/.local/share/applications/brave-brightsite.desktop" = "~/dotfiles/omarchy/brave/applications/brave-brightsite.desktop"
 "~/.local/share/applications/brave-envy.desktop" = "~/dotfiles/omarchy/brave/applications/brave-envy.desktop"
+# Spotify flags: run on Wayland. Spotify forces --ozone-platform=x11 itself, and its
+# GPU process crashed in NVIDIA's Wayland EGL code while running on X11.
+"~/.config/spotify-flags.conf" = "~/dotfiles/omarchy/spotify/spotify-flags.conf"
 # Git-installed plugins and themes, recorded by omarchy/bin/sync-addons on theme
 # change, after `omarchy update`, and before mise links dotfiles.
 "~/.config/mise/conf.d/addons.toml" = "~/dotfiles/mise/addons.toml"
