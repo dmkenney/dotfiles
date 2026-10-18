@@ -1,0 +1,9 @@
+#!/bin/bash
+# Focus the space at a sidebar position. switch_workspace only covers 1..9,
+# so config.toml binds ctrl+alt+0,y,u,i,p to this for spaces 10..14.
+
+set -u
+herdr=${HERDR_BIN_PATH:-herdr}
+
+ws=$("$herdr" workspace list | jq -r --argjson n "$1" '.result.workspaces[] | select(.number == $n) | .workspace_id')
+[[ -n $ws ]] && "$herdr" workspace focus "$ws" >/dev/null

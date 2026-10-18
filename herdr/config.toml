@@ -1,0 +1,76 @@
+onboarding = false
+
+[theme]
+# tmux ran on the terminal's own palette (bg=default, fg=default, ANSI blue accents)
+name = "terminal"
+
+[theme.custom]
+# The active tab is drawn as panel_bg text on an accent background, so panel_bg
+# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
+panel_bg = "reset"
+surface_dim = "black"
+# Picker cursor (prefix+s); the terminal theme drew it invisible
+selection_bg = "blue"
+sidebar_bg = "#15171D"
+
+[terminal]
+# Matches -c "#{pane_current_path}" on every split, window, and session
+new_cwd = "follow"
+
+[ui]
+accent = "#3FC4DE"
+
+# tmux drew single-line dividers between adjacent panes and no outer frame
+pane_gaps = false
+pane_outer_borders = false
+
+# tmux had no scrollbar column beside its panes
+pane_scrollbars = false
+
+# kill-window and kill-session never asked
+confirm_close = false
+
+# automatic-rename gave windows a name without prompting
+prompt_new_tab_name = false
+
+# set -g mouse on
+mouse_capture = true
+
+# status-right had the zoom flag followed by #h
+tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
+
+# set -g set-titles on / set -g set-titles-string '#h:#W', where tmux's #W was
+# the basename of the pane cwd. This is what Hyprland shows in the group bar,
+# and it resolves on the server so remote sessions name the remote host.
+window_title = "{hostname}: {workspace}"
+
+# Room for pane and agent names in the sidebar
+sidebar_max_width = 40
+
+hide_tab_bar_when_single_tab = true
+
+# Toast when a background agent finishes or needs input
+[ui.toast]
+delivery = "herdr"
+
+# Bold name over a dimmed branch line so each workspace reads as one block.
+# $n is the ctrl+alt+1..9 number, set by ~/dotfiles/herdr/agent-numbers.
+[ui.sidebar.spaces]
+rows = [
+  ["state_icon", { token = "$n", bold = true }, { token = "workspace", bold = true }],
+  [{ token = "branch", dim = true }, "git_status"],
+]
+
+# Agents grouped under their space: $ws is set on the first agent of each space
+# only, and an empty row disappears, so the name shows once as a header.
+# $n is the alt+1..9 number. Both come from ~/dotfiles/herdr/agent-numbers.
+# The pane name shows prefix+shift+o renames.
+[ui.sidebar.agents]
+rows = [
+  ["machine", { token = "$ws", bold = true }],
+  ["state_icon", { token = "$n", bold = true }, "pane", { token = "agent", dim = true }],
+]
+
+# herdr comes from the Omarchy package repo, so its own update check only nags
+[update]
+version_check = false

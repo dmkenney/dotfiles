@@ -1,0 +1,106 @@
+onboarding = false
+
+[theme]
+# tmux ran on the terminal's own palette (bg=default, fg=default, ANSI blue accents)
+name = "terminal"
+
+[theme.custom]
+# The active tab is drawn as panel_bg text on an accent background, so panel_bg
+# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
+panel_bg = "reset"
+surface_dim = "black"
+# Picker cursor (prefix+s); the terminal theme drew it invisible
+selection_bg = "blue"
+sidebar_bg = "#15171D"
+
+[terminal]
+# Matches -c "#{pane_current_path}" on every split, window, and session
+new_cwd = "follow"
+
+[keys]
+prefix = "ctrl+space"
+
+# Move between panes with ctrl+h/j/k/l too. These keys no longer reach apps
+# in panes (shell ctrl+l clear, ctrl+k kill line, ctrl+j newline in Claude Code).
+focus_pane_left = ["prefix+h", "ctrl+h"]
+focus_pane_down = ["prefix+j", "ctrl+j"]
+focus_pane_up = ["prefix+k", "ctrl+k"]
+focus_pane_right = ["prefix+l", "ctrl+l"]
+
+# Step through agents (alt) and spaces (alt+shift) without the prefix,
+# matching the alt+1..9 and alt+shift+1..9 jumps.
+next_agent = "alt+j"
+previous_agent = "alt+k"
+next_workspace = "alt+shift+j"
+previous_workspace = "alt+shift+k"
+
+# Navigate mode (prefix+w): j/k agents, J/K spaces, ctrl+j/k panes,
+# digits agents, shift+digits spaces, m grabs a space to reorder it.
+navigate_agent_down = "j"
+navigate_agent_up = "k"
+navigate_workspace_down = ["shift+j", "down"]
+navigate_workspace_up = ["shift+k", "up"]
+navigate_pane_down = "ctrl+j"
+navigate_pane_up = "ctrl+k"
+navigate_focus_agent = "1..9"
+navigate_switch_workspace = "shift+1..9"
+
+[ui]
+accent = "#3FC4DE"
+
+# A done agent stays done until shown this long, so alt+j/alt+k can pass it
+seen_delay_ms = 750
+
+# tmux drew single-line dividers between adjacent panes and no outer frame
+pane_gaps = false
+pane_outer_borders = false
+
+# tmux had no scrollbar column beside its panes
+pane_scrollbars = false
+
+# Bottom pane height for the main-on-bottom layouts (prefix+alt+6, prefix+alt+8)
+main_pane_height = 10
+
+# kill-window and kill-session never asked
+confirm_close = false
+
+# automatic-rename gave windows a name without prompting
+prompt_new_tab_name = false
+
+# set -g mouse on
+mouse_capture = true
+
+# status-right had the zoom flag followed by #h
+tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
+
+# set -g set-titles on / set -g set-titles-string '#h:#W', where tmux's #W was
+# the basename of the pane cwd. This is what Hyprland shows in the group bar,
+# and it resolves on the server so remote sessions name the remote host.
+window_title = "{hostname}: {workspace}"
+
+# Room for pane and agent names in the sidebar
+sidebar_max_width = 40
+
+hide_tab_bar_when_single_tab = true
+
+# Toast when a background agent finishes or needs input
+[ui.toast]
+delivery = "flockr"
+
+# Bold name over a dimmed branch line so each workspace reads as one block.
+[ui.sidebar.spaces]
+rows = [
+  ["state_icon", "number", { token = "workspace", bold = true }],
+  [{ token = "branch", dim = true }, "git_status"],
+]
+
+# The grouped sort draws each space's name once over its agents.
+# The pane name shows prefix+shift+o renames.
+[ui.sidebar.agents]
+rows = [
+  ["machine", "state_icon", "number", "pane", { token = "agent", dim = true }],
+]
+
+# herdr comes from the Omarchy package repo, so its own update check only nags
+[update]
+version_check = false

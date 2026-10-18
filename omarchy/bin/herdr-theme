@@ -1,0 +1,53 @@
+#!/bin/bash
+# Match herdr, flockr and tmux to the current Omarchy theme:
+# - sidebar_bg: the theme's dark_bg when it has one, else its background darkened
+#   by 25%. Ghostty's background-opacity-cells keeps the color see-through.
+# - accent (focused pane lines, active tab): the theme's active_border_color, else
+#   its accent. tmux gets it as @accent (tmux only uses the accent).
+#
+# Runs from Omarchy's theme-set hook. Edits ~/.config/herdr/config.toml (linked into
+# ~/dotfiles/herdr) and ~/.config/flockr/config.toml in place, writes
+# ~/.config/tmux/accent.conf, and reloads each running server.
+
+set -u
+colors="$HOME/.local/state/omarchy/current/theme/colors.toml"
+
+[[ -f $colors ]] || exit 0
+
+value() {
+  sed -nE "s/^$1[[:space:]]*=[[:space:]]*\"(#[0-9A-Fa-f]{6})\".*/\1/p" "$colors" | head -n1
+}
+
+# set_key <config> <section> <key> <color>
+set_key() {
+  if grep -q "^$3 = " "$1"; then
+    sed -i --follow-symlinks "s/^$3 = .*/$3 = \"$4\"/" "$1"
+  elif grep -q "^\[$2\]$" "$1"; then
+    sed -i --follow-symlinks "/^\[$2\]$/a $3 = \"$4\"" "$1"
+  else
+    printf '\n[%s]\n%s = "%s"\n' "$2" "$3" "$4" >>"$1"
+  fi
+}
+
+sidebar=$(value dark_bg)
+if [[ -z $sidebar ]]; then
+  bg=$(value background)
+  [[ -n $bg ]] && sidebar=$(printf '#%02X%02X%02X' $((16#${bg:1:2} * 3 / 4)) $((16#${bg:3:2} * 3 / 4)) $((16#${bg:5:2} * 3 / 4)))
+fi
+
+accent=$(value active_border_color)
+[[ -n $accent ]] || accent=$(value accent)
+
+for app in herdr flockr; do
+  config="$HOME/.config/$app/config.toml"
+  [[ -f $config ]] || continue
+  [[ -n $sidebar ]] && set_key "$config" theme.custom sidebar_bg "$sidebar"
+  [[ -n $accent ]] && set_key "$config" ui accent "$accent"
+  "$app" server reload-config >/dev/null 2>&1 || true
+done
+
+if [[ -n $accent ]]; then
+  mkdir -p "$HOME/.config/tmux"
+  printf 'set -g @accent "%s"\n' "$accent" >"$HOME/.config/tmux/accent.conf"
+  tmux source-file "$HOME/.config/tmux/accent.conf" >/dev/null 2>&1 || true
+fi

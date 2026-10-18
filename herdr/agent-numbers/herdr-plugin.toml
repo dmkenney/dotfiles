@@ -1,0 +1,61 @@
+# Shows each agent's alt+1..9 number and each space's ctrl+alt+1..9 number
+# in the sidebar as the $n token.
+# Herdr has no built-in index token (upstream declined: herdrdev/herdr#2046).
+id = "dotfiles.agent-numbers"
+name = "Agent numbers"
+version = "0.1.0"
+min_herdr_version = "0.9.1"
+description = "Number agents and spaces in the sidebar to match focus_agent and switch_workspace"
+platforms = ["linux"]
+
+[[startup]]
+command = ["./agent-numbers"]
+
+# Anything that can add, remove or reorder an agent or space
+[[events]]
+on = "pane.agent_detected"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "pane.closed"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "pane.exited"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "pane.moved"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "tab.moved"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "tab.closed"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "workspace.created"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "workspace.moved"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "workspace.reordered"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "workspace.closed"
+command = ["./agent-numbers"]
+
+[[events]]
+on = "workspace.renamed"
+command = ["./agent-numbers"]

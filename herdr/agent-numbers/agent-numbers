@@ -1,0 +1,50 @@
+#!/bin/bash
+# Set the $n token on each agent pane to its position in `herdr agent list`,
+# which is the order focus_agent (alt+1..9) uses with the "spaces" sort.
+# Set $ws to the space name on the first agent of each space only, so the
+# sidebar shows the name once as a header over that space's agents.
+# Clears both on panes that no longer run an agent.
+
+set -u
+herdr=${HERDR_BIN_PATH:-herdr}
+
+# Events fire in bursts; one run at a time, and the last one wins.
+exec 9>"${HERDR_PLUGIN_STATE_DIR:-${XDG_RUNTIME_DIR:-/tmp}}/agent-numbers.lock"
+flock 9
+
+declare -A number header label
+while IFS=$'\t' read -r id name; do
+  label[$id]=$name
+done < <("$herdr" workspace list | jq -r '.result.workspaces[] | [.workspace_id, .label] | @tsv')
+
+i=0
+last=""
+while IFS=$'\t' read -r pane ws; do
+  i=$((i + 1))
+  ((i <= 9)) && number[$pane]=$i
+  [[ $ws != "$last" ]] && header[$pane]=${label[$ws]:-$ws}
+  last=$ws
+done < <("$herdr" agent list | jq -r '.result.agents[] | [.pane_id, .workspace_id] | @tsv')
+
+report() {
+  "$herdr" pane report-metadata "$1" --source dotfiles.agent-numbers "${@:2}" >/dev/null
+}
+
+for pane in $("$herdr" pane list | jq -r '.result.panes[].pane_id'); do
+  args=()
+  if [[ -n ${number[$pane]:-} ]]; then args+=(--token "n=${number[$pane]}"); else args+=(--clear-token n); fi
+  if [[ -n ${header[$pane]:-} ]]; then args+=(--token "ws=${header[$pane]}"); else args+=(--clear-token ws); fi
+  report "$pane" "${args[@]}"
+done
+
+# Spaces: $n is the ctrl+alt key for the space: 1..9 from switch_workspace,
+# then 0,y,u,i,p from the focus-space binds in config.toml.
+space_keys=(1 2 3 4 5 6 7 8 9 0 y u i p)
+"$herdr" workspace list | jq -r '.result.workspaces[] | "\(.workspace_id) \(.number)"' |
+  while read -r ws n; do
+    if ((n <= ${#space_keys[@]})); then
+      "$herdr" workspace report-metadata "$ws" --source dotfiles.agent-numbers --token "n=${space_keys[n - 1]}" >/dev/null
+    else
+      "$herdr" workspace report-metadata "$ws" --source dotfiles.agent-numbers --clear-token n >/dev/null
+    fi
+  done
