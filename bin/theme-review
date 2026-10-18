@@ -1,0 +1,117 @@
+#!/bin/bash
+# Step through user-installed Omarchy themes one at a time: apply it, show its
+# switcher preview in a notification, then ask Keep / Delete.
+#
+#   theme-review          review themes not yet kept
+#   theme-review --all    review every user theme again
+#
+# Kept themes are remembered in ~/.local/state/theme-review/kept so a second
+# run picks up where the last one stopped. Stock themes are never touched.
+
+set -uo pipefail
+
+THEMES_DIR="$HOME/.config/omarchy/themes"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/theme-review"
+KEPT="$STATE_DIR/kept"
+mkdir -p "$STATE_DIR"
+touch "$KEPT"
+
+[[ ${1-} == --all ]] && : > "$KEPT"
+
+# Same lookup as omarchy-theme-switcher: preview.* first, else the first background.
+preview_for() {
+  local dir="$1" f
+  for f in preview.png preview.jpg preview.jpeg preview.webp preview.gif preview.bmp; do
+    f=$(find -L "$dir" -maxdepth 1 -type f -iname "$f" -print -quit 2>/dev/null)
+    [[ -n $f ]] && { printf '%s\n' "$f"; return; }
+  done
+  find -L "$dir/backgrounds" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print 2>/dev/null | sort | head -n 1
+}
+
+# Display name, as omarchy-theme-list prints it: "rose-pine-moon" -> "Rose Pine Moon".
+pretty() { sed -E 's/(^|-)([a-z])/\1\u\2/g; s/-/ /g' <<<"$1"; }
+
+# Ask in the terminal with one keypress, so nothing covers the screen. Without a
+# terminal (e.g. launched from a keybinding) fall back to the Omarchy menu.
+ask() {
+  local name="$1" i="$2" total="$3" key
+  if [[ -t 0 ]]; then
+    while true; do
+      printf '\r\e[K%s (%s/%s)  [k]eep  [d]elete  [s]kip  [q]uit: ' "$name" "$i" "$total" >&2
+      read -rsn1 key || key=q
+      case "$key" in
+        k|K) echo Keep; break ;;
+        d|D) echo Delete; break ;;
+        s|S) echo "Skip for now"; break ;;
+        q|Q) echo Stop; break ;;
+      esac
+    done
+    printf '\r\e[K' >&2
+  else
+    omarchy-menu-select "$name ($i/$total)" \
+      $'󰄬\tKeep' $'󰆴\tDelete' $'󰒭\tSkip for now' $'󰗼\tStop' -- --width 420 || echo Stop
+  fi
+}
+
+original=$(omarchy-theme-current | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+mapfile -t themes < <(
+  find "$THEMES_DIR" -mindepth 1 -maxdepth 1 -type d ! -xtype l -printf '%f\n' | sort |
+    grep -vxF -f "$KEPT"
+)
+
+total=${#themes[@]}
+if (( total == 0 )); then
+  echo "Nothing to review. Run with --all to start over."
+  exit 0
+fi
+
+notif_id=0
+kept=0 deleted=0 i=0
+
+for theme in "${themes[@]}"; do
+  i=$((i + 1))
+  name=$(pretty "$theme")
+  dir="$THEMES_DIR/$theme"
+
+  omarchy-theme-set "$theme" >/dev/null 2>&1
+
+  preview=$(preview_for "$dir")
+  args=(-p -t 0 -r "$notif_id" -g 󰸌)
+  [[ -n $preview ]] && args+=(--image "$preview")
+  notif_id=$(omarchy-notification-send "${args[@]}" "$name" "Theme $i of $total") || notif_id=0
+
+  choice=$(ask "$name" "$i" "$total")
+
+  case "$choice" in
+    Keep)
+      echo "$theme" >>"$KEPT"
+      kept=$((kept + 1))
+      echo "kept     $name"
+      ;;
+    Delete)
+      rm -rf -- "$dir"
+      deleted=$((deleted + 1))
+      echo "deleted  $name"
+      ;;
+    "Skip for now")
+      echo "skipped  $name"
+      ;;
+    *)
+      echo "stopped at $name"
+      break
+      ;;
+  esac
+done
+
+# Go back to the theme in use before the review, if it survived.
+if [[ -d $THEMES_DIR/$original || -d ${OMARCHY_PATH:-/usr/share/omarchy}/themes/$original ]]; then
+  omarchy-theme-set "$original" >/dev/null 2>&1
+  back="Back on $(pretty "$original")."
+else
+  back="$(pretty "$original") was deleted; staying on the last theme shown."
+fi
+
+summary="Kept $kept, deleted $deleted. $back"
+omarchy-notification-send -r "$notif_id" -g 󰸌 "Theme review done" "$summary" >/dev/null || true
+echo "$summary"

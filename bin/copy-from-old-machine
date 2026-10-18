@@ -1,0 +1,103 @@
+#!/bin/bash
+# Copy data that is not in git from the old machine over SSH (README step 9).
+# Usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [tmux] [home] [postgres]
+# With no parts given, copies all of them. Nothing on this machine is deleted, and
+# ~/.claude only gains files it doesn't have, so it is safe to re-run.
+# Needs: SSH to the old host, the old host's sudo password (postgres), and this
+# machine's sudo password (postgres). Run after `mise bootstrap`, so postgresql,
+# pgvector and pg_textsearch are installed.
+set -euo pipefail
+
+host=${1:?usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [tmux] [home] [postgres]}
+shift
+if (($#)); then parts=("$@"); else parts=(brave claude documents tmux home postgres); fi
+rs=(rsync -aHs --info=stats1 -e ssh)
+remote_dbus='DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus'
+
+brave() {
+  if pgrep -x brave >/dev/null; then echo "brave: close Brave here first" >&2; exit 1; fi
+  "${rs[@]}" --exclude='Singleton*' --exclude='Cache/' --exclude='Code Cache/' --exclude='GPUCache/' \
+    --exclude='*ShaderCache/' --exclude='Graphite*Cache/' --exclude='Dawn*Cache/' \
+    --exclude='Crash Reports/' --exclude='*.log' \
+    "$host:.config/BraveSoftware/" ~/.config/BraveSoftware/
+  "${rs[@]}" "$host:.local/share/brave-session-backups/" ~/.local/share/brave-session-backups/
+  # Cookies and saved passwords are encrypted with this keyring secret. Without it
+  # Brave starts here logged out of everything.
+  if ! secret-tool lookup application brave >/dev/null 2>&1; then
+    ssh "$host" "$remote_dbus secret-tool lookup application brave" </dev/null |
+      secret-tool store --label='Brave Safe Storage' application brave
+  fi
+}
+
+claude() {
+  # Session history is keyed by project path, so ~/Documents must keep the same paths.
+  # Skips live state (daemon, sessions, jobs) and keeps this machine's settings.json.
+  "${rs[@]}" --ignore-existing --exclude='/daemon*' --exclude='/sessions/' --exclude='/session-env/' \
+    --exclude='/shell-snapshots/' --exclude='/jobs/' --exclude='/cache/' --exclude='/debug/' \
+    --exclude='/plugins/' --exclude='/settings.json' --exclude='/history.jsonl' --exclude='/CLAUDE.md' \
+    "$host:.claude/" ~/.claude/
+  scp -q "$host:.claude/settings.json" ~/.claude/settings.json.old-machine
+  local old; old=$(mktemp)
+  scp -q "$host:.claude/history.jsonl" "$old"
+  cat "$old" ~/.claude/history.jsonl 2>/dev/null | awk '!seen[$0]++' > ~/.claude/history.jsonl.new
+  mv ~/.claude/history.jsonl.new ~/.claude/history.jsonl
+  rm -f "$old"
+}
+
+documents() {
+  "${rs[@]}" "$host:Documents/" ~/Documents/
+}
+
+tmux() {
+  # tmux-resurrect saves. Restore with prefix + Ctrl-r; pane paths match because
+  # ~/Documents keeps the same paths.
+  mkdir -p ~/.local/share/tmux
+  "${rs[@]}" "$host:.local/share/tmux/resurrect/" ~/.local/share/tmux/resurrect/
+}
+
+home() {
+  # CLI logins, app data and tool worktrees that live in $HOME but not in git.
+  # Skipped on purpose: toolchains and caches (rustup, cargo, npm, pnpm, gradle, ...) that
+  # installers rebuild, and zsh/i3/X config.
+  local p paths=(
+    .gnupg .aws/credentials .aws/sso .config/gcloud .fly .hex .config/stripe .docker/config.json
+    .config/.wrangler .cloudflared .config/cloudflare .config/b2 .ovh.conf ".config/Bitwarden CLI"
+    .config/op .config/bws .npmrc .xurl .ms-365-mcp-server .config/ms-365-mcp-server
+    .config/ksquared-m365 .config/ksquared .config/mcp-publisher .config/brightsite .config/fizzy
+    .config/obsbot-control .config/lazysql .config/configstore .config/subfinder .local/share/gh
+    .erlang.cookie .ollama .cert .testcontainers.properties
+    .local/share/brightsite .local/share/corvi .local/share/DBeaverData .local/share/livebook
+    .local/share/fonts .local/share/caddy .local/share/direnv
+    .zen .config/Cursor .cursor .config/GIMP .config/libreoffice .brightsite-browser-profile
+    .agent-browser .hyperframes .factory .kilocode .expo .ansible
+    .claude-squad .flow .flow2 .flow2-validation
+    bin tmp shots Library setup-scripts Desktop
+    set-img-tunnel-secret.sh set-cluster-secrets.sh remove-tailscale.sh
+  )
+  for p in "${paths[@]}"; do
+    mkdir -p "$(dirname ~/"$p")"
+    "${rs[@]}" --ignore-existing "$host:$p" "$(dirname ~/"$p")/" || echo "home: skipped $p" >&2
+  done
+  fc-cache -f >/dev/null
+}
+
+postgres() {
+  # /var/tmp, not /tmp: /tmp is RAM and the dump is several GB.
+  local dump=~/backups/pg_all-$(date +%F).sql
+  mkdir -p ~/backups
+  echo "postgres: dumping on $host (its sudo password)"
+  ssh -t "$host" 'sudo -u postgres pg_dumpall -f /var/tmp/pg_all.sql && sudo chmod 644 /var/tmp/pg_all.sql'
+  scp "$host:/var/tmp/pg_all.sql" "$dump"
+  ssh -t "$host" 'sudo rm /var/tmp/pg_all.sql'
+  echo "postgres: restoring here (this machine's sudo password)"
+  # Errors other than "already exists" mean a missing extension: add it to mise/config.toml.
+  sudo -u postgres psql -q -d postgres < "$dump" 2>&1 | grep ERROR | grep -v 'already exists' || true
+  echo "postgres: dump kept at $dump"
+}
+
+for part in "${parts[@]}"; do
+  case $part in
+    brave|claude|documents|tmux|home|postgres) echo "== $part"; "$part" ;;
+    *) echo "unknown part: $part" >&2; exit 1 ;;
+  esac
+done

@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# syncthing-setup — sync Claude Code history and tmux-resurrect saves between machines
+# over NetBird only.
+#
+# Usage: syncthing-setup
+#
+# Peers come from ~/dotfiles/personal/syncthing/devices, one per line:
+#   <netbird-name> <device-id> <address>      e.g. tcp://dk-desktop.netbird.selfhosted:22000
+# A new machine prints its own line; add it to that file, commit, then run this
+# again on every machine.
+#
+# Discovery, relays and NAT traversal are off, so devices connect only through the
+# addresses in the devices file. The firewall opens 22000/tcp on the NetBird
+# interface only (personal/system/ufw-rules.sh, nftables in the infrastructure repo).
+# Safe to re-run: existing devices and folders are left as they are.
+set -euo pipefail
+
+devices_file=~/dotfiles/personal/syncthing/devices
+resurrect_dir="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect"
+
+# id|path
+folders=(
+  "claude-projects|$HOME/.claude/projects"
+  "tmux-resurrect|$resurrect_dir"
+)
+
+st() { syncthing cli "$@"; }
+
+systemctl --user enable --now syncthing.service
+for _ in $(seq 60); do
+  st show system >/dev/null 2>&1 && break
+  sleep 0.5
+done
+st show system >/dev/null
+
+my_id=$(st show system | jq -r .myID)
+
+st config options global-ann-enabled set false
+st config options local-ann-enabled set false
+st config options relays-enabled set false
+st config options natenabled set false
+st config options uraccepted set -- -1
+# TCP only: drop the QUIC and relay listen addresses a new config can start with.
+while (( $(st config options raw-listen-addresses list | wc -l) > 1 )); do
+  st config options raw-listen-addresses "$(st config options raw-listen-addresses list | tail -1)" delete
+done
+st config options raw-listen-addresses 0 set tcp://:22000
+
+known_devices=$(st config devices list)
+peers=()
+if [[ -f $devices_file ]]; then
+  while read -r name id address; do
+    [[ -z $name || $name == \#* ]] && continue
+    if [[ $id == "$my_id" ]]; then
+      st config devices "$my_id" name set "$name"
+      continue
+    fi
+    peers+=("$id")
+    grep -qx "$id" <<<"$known_devices" && continue
+    st config devices add --device-id "$id" --name "$name" --addresses "$address"
+    echo "syncthing-setup: added device $name"
+  done <"$devices_file"
+fi
+
+known_folders=$(st config folders list)
+for entry in "${folders[@]}"; do
+  id=${entry%%|*} path=${entry#*|}
+  mkdir -p "$path"
+  if ! grep -qx "$id" <<<"$known_folders"; then
+    st config folders add --id "$id" --label "$id" --path "$path"
+    echo "syncthing-setup: added folder $id ($path)"
+  fi
+  shared=$(st config folders "$id" devices list)
+  for peer in "${peers[@]}"; do
+    grep -qx "$peer" <<<"$shared" || st config folders "$id" devices add --device-id "$peer"
+  done
+done
+
+if ! grep -q "$my_id" "$devices_file" 2>/dev/null; then
+  echo "syncthing-setup: this machine is not in $devices_file. Add:"
+  echo "  <netbird-name> $my_id tcp://<netbird-name>.netbird.selfhosted:22000"
+fi
