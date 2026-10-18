@@ -1,15 +1,83 @@
 # Omarchy (Hyprland on Wayland), installed from the Omarchy ISO.
 # Omarchy installs its own desktop, sddm, limine and snapper; this file only adds
 # overrides. Linked as ~/.config/mise/conf.d/desktop.toml on machines that use it.
-# Fill in monitor names in omarchy/hypr/monitors.lua (`hyprctl monitors all`).
+# Monitor layouts are per machine (omarchy/hypr/monitors/<machine>.lua, linked from
+# mise/machines/<machine>.toml); without one, Omarchy's default monitors.lua stays.
+# New machine: omarchy/setup.sh does all of this.
+
+# Prebuilt in Omarchy's pacman repo (AUR on i3, see desktops/i3.toml).
+# Brave, Chrome, Firefox, 1Password and sshd are installed by Omarchy's helpers in
+# omarchy/setup.sh, which also set them up (flags, theme policy, firewall).
+[bootstrap.packages]
+"pacman:spotify" = "latest"
+# Monitors off after idle (omarchy/hypr/hypridle.conf); Omarchy's shell never does it.
+"pacman:hypridle" = "latest"
 
 [dotfiles]
 "~/.config/hypr/hyprland.lua" = "~/dotfiles/omarchy/hypr/hyprland.lua"
 "~/.config/hypr/bindings.lua" = "~/dotfiles/omarchy/hypr/bindings.lua"
 "~/.config/hypr/input.lua" = "~/dotfiles/omarchy/hypr/input.lua"
-"~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors.lua"
+"~/.config/hypr/hypridle.conf" = "~/dotfiles/omarchy/hypr/hypridle.conf"
+# Look and feel overrides. The Omaland plugin also writes this file (and hyprland.lua).
+"~/.config/hypr/looknfeel.lua" = "~/dotfiles/omarchy/hypr/looknfeel.lua"
+# Monospace font. `omarchy font set` rewrites this file (through the link).
+"~/.config/fontconfig/fonts.conf" = "~/dotfiles/fontconfig/fonts.conf"
+# Default terminal: ghostty (`omarchy default terminal` writes this list through the link).
+"~/.config/xdg-terminals.list" = "~/dotfiles/omarchy/xdg-terminals.list"
+# Ghostty: Omarchy's config with 5px padding. `omarchy font set` replaces the link.
+"~/.config/ghostty/config" = "~/dotfiles/omarchy/ghostty/config"
+# btop: Omarchy's theme ("current"), GPU box. btop rewrites this on exit (through the link).
+"~/.config/btop/btop.conf" = "~/dotfiles/omarchy/btop/btop.conf"
+# File manager: Enter goes into folders (smart-enter plugin, pinned in package.toml).
+"~/.config/yazi" = "~/dotfiles/yazi"
+# Omarchy's bash (not zsh) plus personal aliases.
+"~/.bashrc" = "~/dotfiles/omarchy/bash/.bashrc"
+# tmux loads ~/.config/tmux/tmux.conf after ~/.tmux.conf, so Omarchy's file there
+# would override ours (prefix k = kill-window). Replace it instead.
+"~/.config/tmux/tmux.conf" = "~/dotfiles/tmux/.tmux.conf"
+# Bar layout. Omarchy rewrites shell.json with mv, which replaces this link with a
+# plain file; the pre-dotfiles hook (bin/dotfiles-adopt) copies such a file back into
+# the repo first.
+"~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
+# Brave flags: Omarchy's flags. UI font comes from the GTK font-name (family only;
+# URL bar and tab text use fixed pixel sizes).
+"~/.config/brave-flags.conf" = "~/dotfiles/omarchy/brave/brave-flags.conf"
+# Launcher entries per Brave profile ("Brave - K Squared", ...). Profile directories
+# ("Profile 3") come from this machine's Brave Local State.
+"~/.local/share/applications/brave-default.desktop" = "~/dotfiles/omarchy/brave/applications/brave-default.desktop"
+"~/.local/share/applications/brave-corvi.desktop" = "~/dotfiles/omarchy/brave/applications/brave-corvi.desktop"
+"~/.local/share/applications/brave-fitbook.desktop" = "~/dotfiles/omarchy/brave/applications/brave-fitbook.desktop"
+"~/.local/share/applications/brave-k-squared.desktop" = "~/dotfiles/omarchy/brave/applications/brave-k-squared.desktop"
+"~/.local/share/applications/brave-brightsite.desktop" = "~/dotfiles/omarchy/brave/applications/brave-brightsite.desktop"
+"~/.local/share/applications/brave-envy.desktop" = "~/dotfiles/omarchy/brave/applications/brave-envy.desktop"
+# Git-installed plugins and themes, recorded by omarchy/bin/sync-addons on theme
+# change, after `omarchy update`, and before mise links dotfiles.
+"~/.config/mise/conf.d/addons.toml" = "~/dotfiles/mise/addons.toml"
+"~/.config/omarchy/hooks/theme-set.d/sync-addons.hook" = "~/dotfiles/omarchy/bin/sync-addons"
+"~/.config/omarchy/hooks/post-update.d/sync-addons.hook" = "~/dotfiles/omarchy/bin/sync-addons"
+"~/.config/omarchy/hooks/theme-set.d/herdr-theme.hook" = "~/dotfiles/omarchy/bin/herdr-theme"
 
+[bootstrap.hooks.post-dotfiles]
+run = [
+  "systemctl --user enable --now hypridle.service",
+  # GTK UI font (Files, GIMP, 1Password dialogs, ...). Stored in dconf, not a file.
+  "gsettings set org.gnome.desktop.interface font-name 'Noto Sans 9'",
+  # Lock Explorer's launcher entry and Omarchy menu entry (Style > Lock Screen). Its
+  # installer refuses to write through symlinks, so it writes the menu file itself.
+  "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer/extras/install.sh",
+  # Pigeon's ntfy topics from 1Password. shell.json in git has none (they are credentials).
+  "~/dotfiles/omarchy/bin/pigeon-topics",
+]
+
+[bootstrap.hooks.pre-dotfiles]
+run = [
+  # Files that Omarchy or a plugin replaced with a plain file: keep newer changes, then relink.
+  "~/dotfiles/bin/dotfiles-adopt",
+  # Record newly installed plugins/themes and the current theme (mise/addons.toml, omarchy/theme).
+  "~/dotfiles/omarchy/bin/sync-addons",
+]
+
+[bootstrap.hooks]
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).
-[bootstrap.hooks]
 post-packages = "~/dotfiles/personal/system/ufw-rules.sh"

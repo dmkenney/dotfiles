@@ -1,11 +1,24 @@
-# New desktop: Ryzen 9 9950X, RTX 5070 Ti, Gigabyte B850 AORUS ELITE WIFI7 ICE.
+# New desktop: Ryzen 9 9950X, RTX 5070 Ti, Gigabyte B850 AORUS ELITE WIFI7 ICE. Omarchy.
+# host: dk-desktop
 # RTX 50 series (Blackwell) only works with NVIDIA's open kernel modules.
-# -dkms builds them for both linux and linux-lts.
+# Omarchy installs nvidia-open-dkms and nvidia-utils itself (install/hardware/nvidia.sh).
 
 [bootstrap.packages]
 "pacman:amd-ucode" = "latest"
-"pacman:nvidia-open-dkms" = "latest"
-"pacman:nvidia-utils" = "latest"
-"aur:netbird-bin" = "latest"
+"pacman:nvidia-settings" = "latest"
 # RGB on the coolers and RAM
 "pacman:openrgb" = "latest"
+
+[dotfiles]
+"~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors/ryzen-desktop.lua"
+"~/.config/hypr/autostart.lua" = "~/dotfiles/omarchy/hypr/autostart/ryzen-desktop.lua"
+# OpenRGB profile (loaded at login by autostart.lua) and ARGB header LED counts.
+# In personal: the profile records hardware serials.
+"~/.config/OpenRGB/rainbow.orp" = "~/dotfiles/personal/openrgb/ryzen-desktop/rainbow.orp"
+"~/.config/OpenRGB/sizes.ors" = "~/dotfiles/personal/openrgb/ryzen-desktop/sizes.ors"
+
+# The AMD SMBus driver (RAM RGB) fails on an ACPI resource conflict without this.
+[bootstrap.hooks.post-packages]
+run = [
+  "grep -q acpi_enforce_resources=lax /etc/default/limine || { sudo sed -i '0,/^KERNEL_CMDLINE\\[default\\]+=\"/s//&acpi_enforce_resources=lax /' /etc/default/limine && sudo limine-update; }",
+]

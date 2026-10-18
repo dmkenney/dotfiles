@@ -1,0 +1,77 @@
+#!/bin/bash
+# Record git-installed Omarchy plugins and themes, and the current theme, in this repo
+# so other machines get them.
+#
+# - Every git clone in ~/.config/omarchy/plugins/ and themes/ that no mise config file
+#   in this repo declares yet is added to mise/addons.toml as a [bootstrap.repos] entry.
+#   `mise bootstrap` clones those on every Omarchy machine. To limit one to certain
+#   machines, move its line to mise/roles/<role>.toml; it then stays out of addons.toml.
+# - The current theme goes to omarchy/theme; omarchy/setup.sh applies it.
+# Entries in mise/addons.toml whose folder is gone (removed with `omarchy plugin
+# remove`, theme-review, ...) are dropped, so deleting an add-on here stops tracking
+# it everywhere. Role files are never edited. Under `mise bootstrap` this runs after
+# the repos step has cloned everything, so a missing folder means it was deleted.
+#
+# Runs from Omarchy's theme-set and post-update hooks and from mise's pre-dotfiles
+# hook (mise/desktops/omarchy.toml). Changes show up in `git status`; commit them.
+
+set -u
+repo="$HOME/dotfiles"
+addons="$repo/mise/addons.toml"
+omarchy="$HOME/.config/omarchy"
+added=()
+removed=()
+
+[[ -d $omarchy ]] || exit 0
+
+# Every add-on path any mise config in the repo already declares.
+declared=$(cat "$repo"/mise/*.toml "$repo"/mise/*/*.toml "$repo"/personal/mise.toml 2>/dev/null |
+  grep -oE '^"~/\.config/omarchy/(plugins|themes)/[^"]+"' | tr -d '"')
+
+new_entries=""
+for dir in "$omarchy"/plugins/* "$omarchy"/themes/*; do
+  # Links (our own plugins in this repo) and non-git folders are not add-ons.
+  [[ -d $dir && ! -L $dir && -d $dir/.git ]] || continue
+  path="~/.config/omarchy/${dir#"$omarchy"/}"
+  grep -qxF "$path" <<<"$declared" && continue
+  url=$(git -C "$dir" remote get-url origin 2>/dev/null) || continue
+  new_entries+="\"$path\" = { url = \"$url\" }"$'\n'
+  added+=("$path")
+done
+
+# Keep addons.toml entries whose folder still exists.
+existing=""
+if [[ -f $addons ]]; then
+  while IFS= read -r line; do
+    path=${line%%\"\ =*}
+    path=${path#\"}
+    if [[ -d ${path/#\~/$HOME} ]]; then
+      existing+="$line"$'\n'
+    else
+      removed+=("$path")
+    fi
+  done < <(grep -E '^"~/\.config/omarchy/' "$addons")
+fi
+
+if (( ${#added[@]} || ${#removed[@]} )); then
+  {
+    cat <<'HEADER'
+# Omarchy plugins and themes installed from git, cloned on every Omarchy machine by
+# `mise bootstrap`. Maintained by omarchy/bin/sync-addons, which adds new installs and
+# drops entries whose folder is gone; edit freely.
+# Machine-type-only add-ons go in mise/roles/<role>.toml instead.
+# Linked as ~/.config/mise/conf.d/addons.toml.
+
+[bootstrap.repos]
+HEADER
+    printf '%s\n%s' "$existing" "$new_entries" | grep -v '^$' | sort -u
+  } > "$addons.tmp" && mv "$addons.tmp" "$addons"
+  (( ${#added[@]} )) && printf 'sync-addons: recorded %s\n' "${added[@]}"
+  (( ${#removed[@]} )) && printf 'sync-addons: dropped %s (folder gone)\n' "${removed[@]}"
+fi
+
+theme=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
+if [[ -n $theme && $theme != "$(cat "$repo/omarchy/theme" 2>/dev/null)" ]]; then
+  printf '%s\n' "$theme" > "$repo/omarchy/theme"
+  echo "sync-addons: theme $theme"
+fi

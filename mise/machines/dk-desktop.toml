@@ -4,3 +4,4 @@
 "pacman:intel-ucode" = "latest"
 "aur:nvidia-470xx-dkms" = "latest"
 "aur:nvidia-470xx-utils" = "latest"
+"pacman:nvidia-settings" = "latest"

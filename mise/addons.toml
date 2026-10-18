@@ -1,0 +1,48 @@
+# Omarchy plugins and themes installed from git, cloned on every Omarchy machine by
+# `mise bootstrap`. Maintained by omarchy/bin/sync-addons, which adds new installs and
+# drops entries whose folder is gone; edit freely.
+# Machine-type-only add-ons go in mise/roles/<role>.toml instead.
+# Linked as ~/.config/mise/conf.d/addons.toml.
+
+[bootstrap.repos]
+"~/.config/omarchy/plugins/bobbynicholas.omaland" = { url = "https://github.com/bobby-nicholas/omaland.git" }
+"~/.config/omarchy/plugins/io.github.grichard99.omaproton-vpn" = { url = "https://github.com/grichard99/omaproton-vpn.git" }
+"~/.config/omarchy/plugins/io.github.ilyazar.syncthing" = { url = "https://github.com/omarchy-QOL/syncshell" }
+"~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer" = { url = "https://github.com/SirJul1337/omarchy-lock-explorer.git" }
+"~/.config/omarchy/plugins/meviusisback.hw-monitor" = { url = "https://github.com/meviusisback/omarchy-hw-monitor.git" }
+"~/.config/omarchy/plugins/mikebenner.netbird" = { url = "https://github.com/mikebenner/omarchy-netbird" }
+"~/.config/omarchy/plugins/robzolkos.github" = { url = "https://github.com/robzolkos/omarchy-github.git" }
+"~/.config/omarchy/plugins/xyzlab.pigeon" = { url = "https://github.com/chr0nzz/omarchy-pigeon.git" }
+"~/.config/omarchy/themes/aetheria" = { url = "https://github.com/JJDizz1L/aetheria.git" }
+"~/.config/omarchy/themes/arc-blueberry" = { url = "https://github.com/vale-c/omarchy-arc-blueberry" }
+"~/.config/omarchy/themes/atelier" = { url = "https://github.com/atif-1402/omarchy-atelier-theme" }
+"~/.config/omarchy/themes/ayaka" = { url = "https://github.com/abhijeet-swami/omarchy-ayaka-theme" }
+"~/.config/omarchy/themes/azure-glow" = { url = "https://github.com/Hydradevx/omarchy-azure-glow-theme" }
+"~/.config/omarchy/themes/blackturq" = { url = "https://github.com/HANCORE-linux/omarchy-blackturq-theme.git" }
+"~/.config/omarchy/themes/bluedotrb" = { url = "https://github.com/dotsilva/omarchy-bluedotrb-theme" }
+"~/.config/omarchy/themes/blueridge-dark" = { url = "https://github.com/hipsterusername/omarchy-blueridge-dark-theme" }
+"~/.config/omarchy/themes/event-horizon" = { url = "https://github.com/OldJobobo/omarchy-event-horizon-theme.git" }
+"~/.config/omarchy/themes/flexoki-dark" = { url = "https://github.com/euandeas/omarchy-flexoki-dark-theme.git" }
+"~/.config/omarchy/themes/fuchsblau" = { url = "https://github.com/fuchsblau/omarchy-fuchsblau-theme" }
+"~/.config/omarchy/themes/futurism" = { url = "https://github.com/bjarneo/omarchy-futurism-theme" }
+"~/.config/omarchy/themes/infernium-dark" = { url = "https://github.com/RiO7MAKK3R/omarchy-infernium-dark-theme" }
+"~/.config/omarchy/themes/lamplight" = { url = "https://github.com/thisisgm/omarchy-lamplight-theme" }
+"~/.config/omarchy/themes/monokai" = { url = "https://github.com/bjarneo/omarchy-monokai-theme" }
+"~/.config/omarchy/themes/neon-dusk" = { url = "https://github.com/daniel-felipe/omarchy-neon-dusk-theme" }
+"~/.config/omarchy/themes/neo-sploosh" = { url = "https://github.com/monoooki/omarchy-neo-sploosh-theme" }
+"~/.config/omarchy/themes/one-dark-pro" = { url = "https://github.com/sc0ttman/omarchy-one-dark-pro-theme.git" }
+"~/.config/omarchy/themes/one-dark" = { url = "https://github.com/joaopinto15/omarchy-one-dark-theme" }
+"~/.config/omarchy/themes/periphery" = { url = "https://github.com/r-bart/omarchy-periphery-theme" }
+"~/.config/omarchy/themes/pina" = { url = "https://github.com/bjarneo/omarchy-pina-theme" }
+"~/.config/omarchy/themes/rainynight" = { url = "https://github.com/atif-1402/omarchy-rainynight-theme.git" }
+"~/.config/omarchy/themes/rose-pine-dark" = { url = "https://github.com/guilhermetk/omarchy-rose-pine-dark" }
+"~/.config/omarchy/themes/shadesofjade" = { url = "https://github.com/HANCORE-linux/omarchy-shadesofjade-theme" }
+"~/.config/omarchy/themes/solarizedosaka" = { url = "https://github.com/motorsss/omarchy-solarizedosaka-theme" }
+"~/.config/omarchy/themes/solarized" = { url = "https://github.com/Gazler/omarchy-solarized-theme" }
+"~/.config/omarchy/themes/starry-night" = { url = "https://github.com/juangalt/omarchy-starry-night-theme" }
+"~/.config/omarchy/themes/starsend" = { url = "https://github.com/r-bart/omarchy-starsend-theme" }
+"~/.config/omarchy/themes/van-gogh" = { url = "https://github.com/Nirmal314/omarchy-van-gogh-theme" }
+"~/.config/omarchy/themes/vault" = { url = "https://github.com/r-bart/omarchy-vault-theme" }
+"~/.config/omarchy/themes/velvetnight" = { url = "https://github.com/HANCORE-linux/omarchy-velvetnight-theme" }
+"~/.config/omarchy/themes/void" = { url = "https://github.com/vyrx-dev/omarchy-void-theme" }
+"~/.config/omarchy/themes/vulkanite" = { url = "https://github.com/kyerpotts/omarchy-vulkanite-theme" }

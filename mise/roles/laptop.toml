@@ -1,0 +1,11 @@
+# Role: laptop. Linked as ~/.config/mise/conf.d/role-laptop.toml on machines whose
+# file in mise/machines/ has "laptop" in its "# roles:" line (omarchy/setup.sh links it).
+#
+# Put laptop-only things here: packages, services, and plugins or themes moved out of
+# mise/addons.toml (sync-addons leaves an add-on alone once any file declares it).
+#
+# [bootstrap.packages]
+# "pacman:tlp" = "latest"
+#
+# [bootstrap.repos]
+# "~/.config/omarchy/plugins/<id>" = { url = "https://github.com/<owner>/<repo>.git" }
