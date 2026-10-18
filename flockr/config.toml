@@ -34,6 +34,17 @@ previous_agent = "alt+k"
 next_workspace = "alt+shift+j"
 previous_workspace = "alt+shift+k"
 
+# Layout presets on prefix+ctrl+1..8. Ghostty binds alt+1..9 to its own tab
+# switching, so the default prefix+alt+1..8 never reached flockr.
+layout_even_horizontal = "prefix+ctrl+1"
+layout_even_vertical = "prefix+ctrl+2"
+layout_main_horizontal = "prefix+ctrl+3"
+layout_main_vertical = "prefix+ctrl+4"
+layout_tiled = "prefix+ctrl+5"
+layout_main_horizontal_mirrored = "prefix+ctrl+6"
+layout_main_vertical_mirrored = "prefix+ctrl+7"
+layout_tiled_main_bottom = "prefix+ctrl+8"
+
 # Navigate mode (prefix+w): j/k agents, J/K spaces, ctrl+j/k panes,
 # digits agents, shift+digits spaces, m grabs a space to reorder it.
 navigate_agent_down = "j"
@@ -62,7 +73,7 @@ pane_scrollbars = false
 # pane behind the agents in use, ahead of older empty ones
 keep_agents_in_use_first = true
 
-# Bottom pane height for the main-on-bottom layouts (prefix+alt+6, prefix+alt+8)
+# Bottom pane height for the main-on-bottom layouts (prefix+ctrl+6, prefix+ctrl+8)
 main_pane_height = 10
 
 # kill-window and kill-session never asked
