@@ -91,14 +91,14 @@ delivery = "flockr"
 [ui.sidebar.spaces]
 rows = [
   ["state_icon", "number", { token = "workspace", bold = true }],
-  [{ token = "branch", dim = true }, "git_status"],
+  [{ token = "branch", dim = true }, "git_status", "diff_stat"],
 ]
 
 # The grouped sort draws each space's name once over its agents.
 # The pane name shows prefix+shift+o renames.
 [ui.sidebar.agents]
 rows = [
-  ["machine", "state_icon", "number", "pane", { token = "agent", dim = true }],
+  ["machine", "state_icon", "number", "pane", { token = "agent", dim = true }, { token = "branch", dim = true }],
 ]
 
 # herdr comes from the Omarchy package repo, so its own update check only nags
