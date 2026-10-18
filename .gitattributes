@@ -1,0 +1,2 @@
+# Pigeon ntfy topics are credentials; omarchy/bin/pigeon-topics defines this filter.
+omarchy/shell/shell.json filter=pigeon-secrets

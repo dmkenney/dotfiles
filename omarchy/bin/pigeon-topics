@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# pigeon-topics — subscribe the Pigeon bar widget (xyzlab.pigeon) to the alerting
+# ntfy topics in 1Password.
+#
+# Usage: pigeon-topics
+#
+# Alertmanager and Uptime Kuma publish to ntfy.sh on random topics kept in the
+# 1Password item "Alerting ntfy Topics" (K Squared Consulting); see the alertmanager
+# role in the infrastructure repo. A topic is the credential: anyone who knows it
+# can read and publish. Pigeon reads its settings only from shell.json, which is
+# public in this repo, so the pigeon-secrets git filter (.gitattributes) drops
+# them from shell.json on commit. This script sets that filter up before it
+# writes any topic, then sets the topics on this machine.
+#
+# shell.json from git has no topics: run this again after it is replaced from
+# the repo (the post-dotfiles hook does).
+set -euo pipefail
+
+repo=~/dotfiles
+fields=(homelab brightsite corvi ksquared)
+
+git -C "$repo" config filter.pigeon-secrets.clean \
+  "jq --indent 2 'walk(if type == \"object\" and .id? == \"xyzlab.pigeon\" then del(.topics, .token, .username, .password) else . end)'"
+git -C "$repo" config filter.pigeon-secrets.smudge cat
+git -C "$repo" config filter.pigeon-secrets.required true
+
+topics=$(for f in "${fields[@]}"; do
+  op read "op://K Squared Consulting/Alerting ntfy Topics/$f"
+done | paste -sd,)
+
+omarchy bar set xyzlab.pigeon server https://ntfy.sh >/dev/null
+omarchy bar set xyzlab.pigeon topics "$topics" >/dev/null
+echo "Pigeon subscribed to: ${fields[*]}"

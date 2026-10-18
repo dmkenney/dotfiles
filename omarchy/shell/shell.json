@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
+  "bar": {
+    "position": "top",
+    "transparent": false,
+    "centerAnchor": "omarchy.clock",
+    "layout": {
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces",
+          "persistent": []
+        }
+      ],
+      "center": [
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "id": "omarchy.clock",
+          "format": "h:mm AP",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "omarchy.system-update"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "xyzlab.pigeon",
+          "server": "https://ntfy.sh"
+        },
+        {
+          "id": "io.github.ilyazar.syncthing"
+        },
+        {
+          "id": "mikebenner.netbird"
+        },
+        {
+          "id": "io.github.grichard99.omaproton-vpn"
+        },
+        {
+          "id": "meviusisback.hw-monitor",
+          "mode": "icons",
+          "ramFormat": "used",
+          "showClocks": false,
+          "showCpuTemp": true,
+          "showGpuTemp": false,
+          "tempFormat": "degree",
+          "topProcSort": "ram"
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "omarchy.monitor"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "omarchy.network"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "omarchy.power"
+        }
+      ]
+    }
+  },
+  "plugins": [
+    {
+      "id": "io.github.sirjul1337.lock-explorer",
+      "tourSeen": true,
+      "openAs": "panel",
+      "design": "poster",
+      "favorites": [
+        "dayline",
+        "poster",
+        "split",
+        "editorial",
+        "card"
+      ]
+    },
+    {
+      "id": "bobbynicholas.omaland"
+    }
+  ],
+  "disabledPlugins": [
+    "omarchy.lock"
+  ],
+  "cloneSourceRestores": [
+    "io.github.sirjul1337.lock-explorer"
+  ]
+}
