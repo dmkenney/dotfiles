@@ -1,12 +1,21 @@
 #!/bin/bash
-# Start or stop a Voxtype meeting transcript (mic + desktop audio).
-# --screen also records the screen through Omarchy's recorder: click a monitor
-# or drag a region. On stop, the transcript is saved to ~/Documents/meetings.
-# Bound to Super+Ctrl+M and Super+Ctrl+Shift+M in omarchy/hypr/bindings.lua.
+# Voxtype meeting transcript (mic + desktop audio), with an optional screen recording.
+#
+#   meeting-toggle          stop the running meeting, or open the Meeting menu
+#   meeting-toggle audio    start: transcript only
+#   meeting-toggle screen   start: also record a monitor or region (Omarchy's picker)
+#   meeting-toggle window   start: also record one window (xdg-desktop-portal picker)
+#
+# On stop, the transcript is saved to ~/Documents/meetings. Super+Ctrl+M runs this
+# (omarchy/hypr/bindings.lua); the menu is in omarchy/extensions/omarchy-menu.jsonc.
 
 out_dir=~/Documents/meetings
 
-if voxtype meeting status 2>/dev/null | grep -q 'Meeting Status: \(starting\|recording\|paused\)'; then
+running() {
+  voxtype meeting status 2>/dev/null | grep -q 'Meeting Status: \(starting\|recording\|paused\)'
+}
+
+stop_meeting() {
   voxtype meeting stop >/dev/null
   omarchy-capture-screenrecording --status >/dev/null 2>&1 && omarchy-capture-screenrecording --stop-recording
 
@@ -23,15 +32,35 @@ if voxtype meeting status 2>/dev/null | grep -q 'Meeting Status: \(starting\|rec
   else
     notify-send -u critical "Meeting stopped" "Transcript export failed. Try: voxtype meeting export latest"
   fi
+}
+
+case $1 in
+  "")
+    if running; then stop_meeting; else omarchy-menu summon meeting; fi
+    exit 0
+    ;;
+  audio | screen | window) ;;
+  *) echo "Usage: meeting-toggle [audio|screen|window]" >&2; exit 1 ;;
+esac
+
+if running; then
+  notify-send "Meeting already running" "Press Super+Ctrl+M to stop it"
   exit 0
 fi
 
 voxtype meeting start >/dev/null || { notify-send -u critical "Meeting failed to start"; exit 1; }
 
-if [[ $1 == "--screen" ]]; then
-  notify-send "Meeting transcript started" "Pick a monitor or region to record"
-  # Desktop audio and mic go into the video too; the transcript records them separately.
-  omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
-else
-  notify-send "Meeting transcript started" "Press Super+Ctrl+M again to stop"
-fi
+# Desktop audio and mic go into the video too; the transcript records them separately.
+case $1 in
+  audio)
+    notify-send "Meeting transcript started" "Press Super+Ctrl+M to stop"
+    ;;
+  screen)
+    notify-send "Meeting transcript started" "Pick a monitor or region to record"
+    omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
+    ;;
+  window)
+    notify-send "Meeting transcript started" "Pick a window to record"
+    OMARCHY_SCREENRECORD_USE_PORTAL=true omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
+    ;;
+esac

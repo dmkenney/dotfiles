@@ -82,9 +82,8 @@ o.bind("SUPER + CTRL + ALT + A", "Agents", { panel = "omarchy.agents" })
 o.bind("SUPER + CTRL + ALT + M", "Hardware monitor", { panel = "meviusisback.hw-monitor" })
 o.bind("SUPER + CTRL + ALT + Y", "Syncthing", { panel = "io.github.ilyazar.syncthing" })
 
--- Voxtype meeting transcript; press again to stop (see bin/meeting-toggle).
+-- Voxtype meeting: opens the Meeting menu, or stops a running meeting (see bin/meeting-toggle).
 o.bind("SUPER + CTRL + M", "Meeting transcript", "meeting-toggle")
-o.bind("SUPER + CTRL + SHIFT + M", "Meeting transcript + screen recording", "meeting-toggle --screen")
 
 -- Flockr instead of Herdr (was: omarchy-launch-terminal-herdr).
 o.rebind("SUPER + CTRL + RETURN", "Flockr", "omarchy-launch-terminal flockr")

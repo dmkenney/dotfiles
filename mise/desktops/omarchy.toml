@@ -39,6 +39,8 @@
 # plain file; the pre-dotfiles hook (bin/dotfiles-adopt) copies such a file back into
 # the repo first.
 "~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
+# Omarchy menu additions (Trigger > Meeting for bin/meeting-toggle).
+"~/.config/omarchy/extensions/omarchy-menu.jsonc" = "~/dotfiles/omarchy/extensions/omarchy-menu.jsonc"
 # Brave flags: Omarchy's flags. UI font comes from the GTK font-name (family only;
 # URL bar and tab text use fixed pixel sizes).
 "~/.config/brave-flags.conf" = "~/dotfiles/omarchy/brave/brave-flags.conf"
