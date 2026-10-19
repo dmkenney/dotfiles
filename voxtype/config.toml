@@ -96,6 +96,21 @@ on_transcription = false
 [parakeet]
 model = "parakeet-tdt-0.6b-v3"
 
+[text.replacements]
+"omarkey" = "Omarchy"
+"oh markey" = "Omarchy"
+"oh marky" = "Omarchy"
+"omarch" = "Omarchy"
+"box type" = "Voxtype"
+"vox type" = "Voxtype"
+"kuda" = "CUDA"
+"vulcan" = "Vulkan"
+"c u d n n" = "cuDNN"
+"paracrete" = "Parakeet"
+"olam" = "Ollama"
+"deep seek" = "DeepSeek"
+"super whisper" = "Superwhisper"
+
 # [text]
 # Text processing options (word replacements, spoken punctuation)
 #
