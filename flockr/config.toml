@@ -99,6 +99,9 @@ sidebar_max_width = 40
 hide_tab_bar_when_single_tab = true
 
 # Toast when a background agent finishes or needs input
+sidebar_position = "left"
+sidebar_collapsed_mode = "compact"
+show_agent_labels_on_pane_borders = false
 [ui.toast]
 delivery = "flockr"
 
@@ -111,11 +114,22 @@ rows = [
 
 # The grouped sort draws each space's name once over its agents.
 # The pane name shows prefix+shift+o renames.
+row_gap = 0
+border = "none"
 [ui.sidebar.agents]
 rows = [
   ["machine", "state_icon", "number", "pane", { token = "agent", dim = true }, { token = "branch", dim = true }],
 ]
 
 # herdr comes from the Omarchy package repo, so its own update check only nags
+row_gap = 0
+border = "none"
 [update]
 version_check = false
+
+[ui.sidebar]
+grab = "marker"
+header = "band"
+header_counts = false
+divider = "handle"
+buttons = "chip"
