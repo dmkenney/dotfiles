@@ -143,6 +143,7 @@ groups = ["wheel"]
 # Scripts
 "~/.local/bin/brave-sessions" = "~/dotfiles/bin/brave-sessions"
 "~/.local/bin/obsbot-enforce" = "~/dotfiles/bin/obsbot-enforce"
+"~/.local/bin/meeting-toggle" = "~/dotfiles/bin/meeting-toggle"
 "~/.local/bin/claude-settings-env" = "~/dotfiles/bin/claude-settings-env"
 "~/.local/bin/syncthing-setup" = "~/dotfiles/bin/syncthing-setup"
 "~/.local/bin/copy-from-old-machine" = "~/dotfiles/bin/copy-from-old-machine"

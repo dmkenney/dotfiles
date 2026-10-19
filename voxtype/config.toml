@@ -96,6 +96,11 @@ on_transcription = false
 [parakeet]
 model = "parakeet-tdt-0.6b-v3"
 
+# Meeting transcripts (mic as "You", desktop audio as "Remote"). Only records
+# between `voxtype meeting start` and `stop`; see bin/meeting-toggle.
+[meeting]
+enabled = true
+
 [text.replacements]
 "omarkey" = "Omarchy"
 "oh markey" = "Omarchy"

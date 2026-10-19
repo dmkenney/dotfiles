@@ -1,0 +1,37 @@
+#!/bin/bash
+# Start or stop a Voxtype meeting transcript (mic + desktop audio).
+# --screen also records the screen through Omarchy's recorder: click a monitor
+# or drag a region. On stop, the transcript is saved to ~/Documents/meetings.
+# Bound to Super+Ctrl+M and Super+Ctrl+Shift+M in omarchy/hypr/bindings.lua.
+
+out_dir=~/Documents/meetings
+
+if voxtype meeting status 2>/dev/null | grep -q 'Meeting Status: \(starting\|recording\|paused\)'; then
+  voxtype meeting stop >/dev/null
+  omarchy-capture-screenrecording --status >/dev/null 2>&1 && omarchy-capture-screenrecording --stop-recording
+
+  # The daemon finishes transcribing the last chunk after stop.
+  for _ in $(seq 30); do
+    voxtype meeting status 2>/dev/null | grep -q 'No meeting' && break
+    sleep 1
+  done
+
+  mkdir -p "$out_dir"
+  file="$out_dir/$(date +%F-%H%M).md"
+  if voxtype meeting export latest --timestamps --speakers --metadata -o "$file" >/dev/null 2>&1; then
+    notify-send "Meeting stopped" "Transcript: $file"
+  else
+    notify-send -u critical "Meeting stopped" "Transcript export failed. Try: voxtype meeting export latest"
+  fi
+  exit 0
+fi
+
+voxtype meeting start >/dev/null || { notify-send -u critical "Meeting failed to start"; exit 1; }
+
+if [[ $1 == "--screen" ]]; then
+  notify-send "Meeting transcript started" "Pick a monitor or region to record"
+  # Desktop audio and mic go into the video too; the transcript records them separately.
+  omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
+else
+  notify-send "Meeting transcript started" "Press Super+Ctrl+M again to stop"
+fi
