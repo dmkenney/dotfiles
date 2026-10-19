@@ -1,33 +1,21 @@
 {
-  "version": 1,
-  "idle": {
-    "screensaver": 150,
-    "lock": 300
-  },
   "bar": {
-    "position": "top",
-    "transparent": false,
-    "centerAnchor": "omarchy.clock",
+    "background": "glassy",
     "layout": {
-      "left": [
-        {
-          "id": "omarchy.menu"
-        },
-        {
-          "id": "omarchy.workspaces",
-          "persistent": []
-        }
-      ],
       "center": [
         {
-          "id": "omarchy.indicators"
-        },
-        {
-          "id": "omarchy.clock",
-          "format": "h:mm AP",
+          "format": "ddd d MMM h:mm AP",
           "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
           "verticalFormat": "HH\n—\nmm"
-        },
+        }
+      ],
+      "centerBegin": [
+        {
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
         {
           "id": "omarchy.keyboard-layout"
         },
@@ -38,22 +26,33 @@
           "id": "omarchy.system-update"
         }
       ],
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces",
+          "persistent": []
+        }
+      ],
       "right": [
         {
-          "id": "omarchy.tray"
+          "id": "dylan.tray"
+        },
+        {
+          "id": "io.github.dmkenney.omacus",
+          "barLabel": "none",
+          "readOnly": false
+        },
+        {
+          "id": "robzolkos.github"
         },
         {
           "id": "xyzlab.pigeon",
           "server": "https://ntfy.sh"
         },
         {
-          "id": "io.github.ilyazar.syncthing"
-        },
-        {
           "id": "mikebenner.netbird"
-        },
-        {
-          "id": "io.github.grichard99.omaproton-vpn"
         },
         {
           "id": "meviusisback.hw-monitor",
@@ -64,6 +63,12 @@
           "showGpuTemp": false,
           "tempFormat": "degree",
           "topProcSort": "ram"
+        },
+        {
+          "id": "io.github.ilyazar.syncthing"
+        },
+        {
+          "id": "io.github.grichard99.omaproton-vpn"
         },
         {
           "id": "omarchy.agents"
@@ -78,19 +83,31 @@
           "id": "omarchy.network"
         },
         {
+          "id": "omarchy.microphone"
+        },
+        {
           "id": "omarchy.audio"
         },
         {
           "id": "omarchy.power"
         }
-      ]
-    }
+      ],
+      "tray": []
+    },
+    "position": "top"
+  },
+  "cloneSourceRestores": [
+    "io.github.sirjul1337.lock-explorer"
+  ],
+  "disabledPlugins": [
+    "omarchy.lock"
+  ],
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
   },
   "plugins": [
     {
-      "id": "io.github.sirjul1337.lock-explorer",
-      "tourSeen": true,
-      "openAs": "panel",
       "design": "poster",
       "favorites": [
         "dayline",
@@ -98,16 +115,14 @@
         "split",
         "editorial",
         "card"
-      ]
+      ],
+      "id": "io.github.sirjul1337.lock-explorer",
+      "openAs": "panel",
+      "tourSeen": true
     },
     {
       "id": "bobbynicholas.omaland"
     }
   ],
-  "disabledPlugins": [
-    "omarchy.lock"
-  ],
-  "cloneSourceRestores": [
-    "io.github.sirjul1337.lock-explorer"
-  ]
+  "version": 1
 }
