@@ -56,6 +56,7 @@ auto_prune = false
 "pacman:bind" = "latest"
 "pacman:caddy" = "latest"
 "pacman:cloudflared" = "latest"
+"pacman:cudnn" = "latest"
 "pacman:cups-pdf" = "latest"
 "pacman:dbeaver" = "latest"
 "pacman:direnv" = "latest"
@@ -161,6 +162,8 @@ groups = ["wheel"]
 "~/.config/herdr/config.toml" = "~/dotfiles/herdr/config.toml"
 # flockr, the herdr fork built from ~/Projects/flockr. The theme hook rewrites its accent.
 "~/.config/flockr/config.toml" = "~/dotfiles/flockr/config.toml"
+# Voxtype dictation: Parakeet on CUDA (needs cudnn and `voxtype setup onnx --enable`), paste mode, no streaming
+"~/.config/voxtype/config.toml" = "~/dotfiles/voxtype/config.toml"
 
 # --- System services ----------------------------------------------------------
 [bootstrap.services.postgresql]
