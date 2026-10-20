@@ -41,7 +41,6 @@ history.enabled = false
 write_targets.tools = "~/.config/mise/conf.d/local-tools.toml"
 
 [settings.upgrade]
-auto_prune = false
 
 # --- System packages --------------------------------------------------------
 # Hardware-specific packages (GPU driver, CPU microcode) go in mise/machines/.
