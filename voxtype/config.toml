@@ -66,6 +66,9 @@ mode = "paste"
 paste_keys = "shift+insert"
 restore_clipboard = true
 
+# Trailing space so back-to-back dictations don't run sentences together
+append_text = " "
+
 # Fall back to clipboard if typing fails
 fallback_to_clipboard = true
 
