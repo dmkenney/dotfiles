@@ -33,7 +33,7 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
    It links mise to this repo (Omarchy's `mise use -g` pins move to the untracked
    `~/.config/mise/conf.d/local-tools.toml`) and runs `mise bootstrap --force-dotfiles`.
    Safe to re-run.
-4. Logins and data: steps 7 and 9 below.
+4. Logins and data: steps 7 and 9 below. Printer (optional): step 10.
 
 Omarchy updates replace `/usr/share/omarchy` only; the files here are thin overrides loaded
 after Omarchy's defaults. After `omarchy update`, `git status` here and `mise bootstrap status`
@@ -91,6 +91,8 @@ show anything an Omarchy migration changed. `omarchy refresh <x>` replaces a fil
    app data (DBeaver, Zen, Cursor, ...), claude-squad/flow2 worktrees, and
    all Postgres databases (dump kept in `~/backups`). Copying Brave replaces step 8.
    Not covered: unpushed repos outside `~/Documents`.
-10. Reboot (new kernel modules, snapper, display manager).
-11. On Omarchy, keybindings keep the i3 layout on top of Omarchy's; see
+10. Optional, at home: `~/dotfiles/bin/setup-printer` adds the Lexmark CX331adwe and makes
+    it the default printer.
+11. Reboot (new kernel modules, snapper, display manager).
+12. On Omarchy, keybindings keep the i3 layout on top of Omarchy's; see
     `omarchy/hypr/bindings.lua`. Super+F1 lists them all.

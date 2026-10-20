@@ -1,0 +1,16 @@
+#!/bin/bash
+# Add the home Lexmark CX331adwe to CUPS (driverless IPP Everywhere) and make it
+# the default printer. Uses the printer's mDNS name, not its IP, so a new DHCP
+# lease doesn't break it. Needs the printer on the network and cups running.
+# Not run by mise bootstrap. Safe to re-run.
+set -euo pipefail
+
+name=Lexmark_CX331adwe
+uri='ipps://Lexmark%20CX331adwe._ipps._tcp.local/'
+
+if ! lpstat -v "$name" >/dev/null 2>&1; then
+  pkexec lpadmin -p "$name" -D "Lexmark CX331adwe" -v "$uri" -m everywhere -E
+fi
+lpoptions -d "$name" >/dev/null
+
+echo "setup-printer: $name is the default printer"
