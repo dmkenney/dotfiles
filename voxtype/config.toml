@@ -128,6 +128,19 @@ enabled = true
 "olam" = "Ollama"
 "deep seek" = "DeepSeek"
 "super whisper" = "Superwhisper"
+"bright site" = "BrightSite"
+"brightsite" = "BrightSite"
+"clawed code" = "Claude Code"
+"claude code" = "Claude Code"
+"cloud code" = "Claude Code"
+"hyperland" = "Hyprland"
+"hyper land" = "Hyprland"
+"hyperlint" = "Hyprland"
+"hyper-wm" = "hyprwm"
+"hyper wm" = "hyprwm"
+"ghostie" = "Ghostty"
+"ghosty" = "Ghostty"
+"maine" = "main"
 
 # [text]
 # Text processing options (word replacements, spoken punctuation)
