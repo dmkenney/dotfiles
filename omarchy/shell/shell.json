@@ -60,7 +60,7 @@
           "ramFormat": "used",
           "showClocks": false,
           "showCpuTemp": true,
-          "showGpuTemp": false,
+          "showGpuTemp": true,
           "tempFormat": "degree",
           "topProcSort": "ram"
         },
