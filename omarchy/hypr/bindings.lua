@@ -22,7 +22,7 @@ o.bind("SUPER + SHIFT + CTRL + K", "Keybindings", "omarchy-menu-keybindings")
 o.bind("SUPER + E", "Toggle window split", hl.dsp.layout("togglesplit"))
 
 -- Window basics
-o.bind("SUPER + SHIFT + Q", "Close window", hl.dsp.window.close())
+o.rebind("SUPER + SHIFT + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + D", "Apps menu", "omarchy-menu toggle apps")
 hl.unbind("SUPER + SHIFT + SPACE")
 o.bind("SUPER + SHIFT + SPACE", "Toggle floating", hl.dsp.window.float({ action = "toggle" }))
