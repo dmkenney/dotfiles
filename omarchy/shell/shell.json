@@ -56,6 +56,7 @@
         },
         {
           "id": "meviusisback.hw-monitor",
+          "gpu": "nvidia",
           "mode": "icons",
           "ramFormat": "used",
           "showClocks": false,
