@@ -1,0 +1,19 @@
+#!/bin/bash
+# Screenshot the focused window with no clicking. Copies it to the clipboard and
+# shows it bottom-right for 10 seconds as an omasnap pin (omasnap itself has no
+# focused-window mode). Like Omarchy's own screenshots, nothing is saved to disk;
+# the image only lives in a temp file while the pin shows it. Shift+Print runs
+# this (omarchy/hypr/bindings.lua).
+
+file=$(mktemp --tmpdir="${XDG_RUNTIME_DIR:-/tmp}" screenshot-XXXXXX.png)
+trap 'rm -f "$file"' EXIT
+
+geometry=$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')
+grim -g "$geometry" "$file" || exit 1
+wl-copy --type image/png < "$file"
+
+omasnap --pin "$file" &
+pin=$!
+sleep 10
+address=$(hyprctl clients -j | jq -r --argjson pid "$pin" '.[] | select(.pid == $pid) | .address')
+[[ -n $address ]] && hyprctl dispatch "hl.dsp.window.close({ window = \"address:$address\" })" >/dev/null

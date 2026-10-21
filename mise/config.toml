@@ -147,6 +147,7 @@ groups = ["wheel"]
 "~/.local/bin/syncthing-setup" = "~/dotfiles/bin/syncthing-setup"
 "~/.local/bin/copy-from-old-machine" = "~/dotfiles/bin/copy-from-old-machine"
 "~/.local/bin/theme-review" = "~/dotfiles/bin/theme-review"
+"~/.local/bin/screenshot-active-window" = "~/dotfiles/bin/screenshot-active-window"
 "~/.local/bin/workspace-layout-toggle" = "~/dotfiles/bin/workspace-layout-toggle"
 # User systemd units (enabled in the post-dotfiles hook)
 "~/.config/systemd/user/brave-sessions.service" = "~/dotfiles/systemd/user/brave-sessions.service"
