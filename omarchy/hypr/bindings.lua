@@ -54,6 +54,9 @@ hl.unbind("PRINT")
 hl.unbind("SUPER + PRINT")
 o.bind("PRINT", "Screenshot full screen", "omarchy-capture-screenshot fullscreen")
 o.bind("SUPER + PRINT", "Screenshot region", "omarchy-capture-screenshot region")
+-- Shift+Print: the focused window, straight to the clipboard (omasnap needs a click).
+o.bind("SHIFT + PRINT", "Screenshot active window",
+  [[grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | wl-copy --type image/png && notify-send "Screenshot" "Active window copied"]])
 o.bind("SUPER + SHIFT + PRINT", "Color picker", "pkill hyprpicker || hyprpicker -a")
 
 -- File manager: Yazi (vim keys, image/video previews) instead of Nautilus.
