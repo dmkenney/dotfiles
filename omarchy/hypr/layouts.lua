@@ -60,29 +60,32 @@ local function stack(targets, x, y, w, h)
   end
 end
 
--- center: first window in a fixed middle column, then left, then right, later
--- ones stacking on alternate sides.
-local center_width = 0.30
+-- center (middle 30%) and center-40 (middle 40%): first window in a fixed
+-- middle column, then left, then right, later ones stacking on alternate sides.
+local function register_center(name, width)
+  register(name, {
+    recalculate = function(ctx)
+      local area = ctx.area
+      if #ctx.targets == 0 then return end
 
-register("center", {
-  recalculate = function(ctx)
-    local area = ctx.area
-    if #ctx.targets == 0 then return end
+      local middle_w = area.w * width
+      local side_w = (area.w - middle_w) / 2
+      local left, middle, right = {}, {}, {}
+      for i, target in ipairs(ctx.targets) do
+        table.insert(i == 1 and middle or (i % 2 == 0 and left or right), target)
+      end
 
-    local middle_w = area.w * center_width
-    local side_w = (area.w - middle_w) / 2
-    local left, middle, right = {}, {}, {}
-    for i, target in ipairs(ctx.targets) do
-      table.insert(i == 1 and middle or (i % 2 == 0 and left or right), target)
-    end
+      stack(left, area.x, area.y, side_w, area.h)
+      stack(middle, area.x + side_w, area.y, middle_w, area.h)
+      stack(right, area.x + side_w + middle_w, area.y, side_w, area.h)
+    end,
 
-    stack(left, area.x, area.y, side_w, area.h)
-    stack(middle, area.x + side_w, area.y, middle_w, area.h)
-    stack(right, area.x + side_w + middle_w, area.y, side_w, area.h)
-  end,
+    layout_msg = ratio_msg(function() return width end, function(v) width = v end, 0.15, 0.8),
+  })
+end
 
-  layout_msg = ratio_msg(function() return center_width end, function(v) center_width = v end, 0.15, 0.8),
-})
+register_center("center", 0.30)
+register_center("center-40", 0.40)
 
 -- columns: every window gets an equal-width column.
 register("columns", {

@@ -1,7 +1,8 @@
 #!/bin/bash
 # Omarchy's omarchy-hyprland-workspace-layout-toggle with the custom Lua layouts
-# (omarchy/hypr/layouts.lua) and master added to the cycle: center, columns, thirds,
-# grid, spiral, stack, main-dwindle, master, dwindle, scrolling (no floating).
+# (omarchy/hypr/layouts.lua) and master added to the cycle: center, center-40,
+# columns, thirds, grid, spiral, stack, main-dwindle, master, dwindle, scrolling
+# (no floating).
 # Super+Alt+L runs this, Super+Alt+Shift+L goes back (omarchy/hypr/bindings.lua).
 # Saves the mode the same way Omarchy does, so it survives a reload and the bar
 # shows it.
@@ -13,7 +14,7 @@ workspace=$(hyprctl activeworkspace -j | jq -r '.id')
 modes_dir="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/workspace-layouts"
 mode_file="$modes_dir/$workspace.lua"
 
-cycle=(lua:center lua:columns lua:thirds lua:grid lua:spiral lua:stack lua:main-dwindle master dwindle scrolling)
+cycle=(lua:center lua:center-40 lua:columns lua:thirds lua:grid lua:spiral lua:stack lua:main-dwindle master dwindle scrolling)
 # Omarchy's omarchy-hyprland-workspace-layout-current can't read a "lua:" mode back.
 current=$(sed -n 's/.*mode = "\([a-z:-]*\)".*/\1/p' "$mode_file" 2>/dev/null)
 [[ -n $current ]] || current=$(omarchy-hyprland-workspace-layout-default)
