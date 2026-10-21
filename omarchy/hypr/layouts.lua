@@ -43,6 +43,13 @@ local function register(name, provider)
     if ws then slot_order[ws] = addresses end
     return recalculate(ctx)
   end
+  -- Ignore layout messages a layout doesn't handle (like Super+E's togglesplit)
+  -- instead of rejecting them, which Hyprland shows as a runtime error.
+  local layout_msg = provider.layout_msg
+  provider.layout_msg = function(ctx, msg)
+    if layout_msg then layout_msg(ctx, msg) end
+    return true
+  end
   hl.layout.register(name, provider)
 end
 
