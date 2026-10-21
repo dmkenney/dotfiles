@@ -49,6 +49,23 @@
 --   },
 -- })
 
+-- Ultrawide: the main window in the middle 40%, others in columns either side.
+-- New windows open at the sides so the middle one stays put, and it stays
+-- centered when it is alone on a workspace.
+hl.config({
+  general = {
+    layout = "master",
+  },
+
+  master = {
+    orientation = "center",
+    slave_count_for_center_master = 0,
+    always_keep_position = true,
+    mfact = 0.4,
+    new_status = "slave",
+  },
+})
+
 -- >>> omaland managed block >>>
 -- Written by Omaland. Safe to hand-edit: Omaland re-reads this block
 -- every time it opens, and only ever rewrites what's between the fences.
