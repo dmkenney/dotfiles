@@ -113,6 +113,9 @@ o.bind("SUPER + CTRL + ALT + A", "Agents", { panel = "omarchy.agents" })
 o.bind("SUPER + CTRL + ALT + M", "Hardware monitor", { panel = "meviusisback.hw-monitor" })
 o.bind("SUPER + CTRL + ALT + Y", "Syncthing", { panel = "io.github.ilyazar.syncthing" })
 
+-- Dictation toggle stops itself after 5 minutes (bin/dictation-toggle).
+o.rebind("SUPER + CTRL + X", "Toggle dictation", "dictation-toggle")
+
 -- Voxtype meeting: opens the Meeting menu, or stops a running meeting (see bin/meeting-toggle).
 o.bind("SUPER + CTRL + M", "Meeting transcript", "meeting-toggle")
 

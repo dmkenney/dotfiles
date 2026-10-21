@@ -1,0 +1,19 @@
+#!/bin/bash
+# Voxtype dictation toggle that stops itself after 5 minutes. Super+Ctrl+X runs this
+# (omarchy/hypr/bindings.lua). Voxtype has one global max_duration_secs, set high in
+# voxtype/config.toml so push-to-talk (Right Alt, F9) records until the key is released.
+
+limit=300
+timer="${XDG_RUNTIME_DIR:-/tmp}/dictation-toggle.timer"
+
+# Any toggle cancels the previous recording's timer.
+[[ -f $timer ]] && kill "$(<"$timer")" 2>/dev/null
+rm -f "$timer"
+
+if [[ $(voxtype status) == "recording" ]]; then
+  voxtype record stop
+else
+  voxtype record start || exit 1
+  setsid bash -c "sleep $limit; [[ \$(voxtype status) == recording ]] && voxtype record stop; rm -f '$timer'" >/dev/null 2>&1 &
+  echo $! >"$timer"
+fi
