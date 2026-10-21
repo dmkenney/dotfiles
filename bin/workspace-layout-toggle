@@ -1,0 +1,38 @@
+#!/bin/bash
+# Omarchy's omarchy-hyprland-workspace-layout-toggle with master (the centered
+# ultrawide layout, omarchy/hypr/looknfeel.lua) added to the cycle:
+# master -> dwindle -> scrolling -> floating. Super+Alt+L runs this, Super+Alt+Shift+L
+# goes back (omarchy/hypr/bindings.lua). Saves the mode the same way Omarchy does,
+# so it survives a reload and the bar shows it.
+
+direction=${1:-next}
+workspace=$(hyprctl activeworkspace -j | jq -r '.id')
+[[ $workspace =~ ^[0-9]+$ ]] || exit 1
+
+modes_dir="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/workspace-layouts"
+mode_file="$modes_dir/$workspace.lua"
+
+cycle=(master dwindle scrolling floating)
+current=$(omarchy-hyprland-workspace-layout-current)
+for i in "${!cycle[@]}"; do [[ ${cycle[i]} == "$current" ]] && index=$i; done
+step=1; [[ $direction == back ]] && step=-1
+new=${cycle[(( (${index:-0} + step + ${#cycle[@]}) % ${#cycle[@]} ))]}
+
+apply="o.workspace_mode({ workspace = \"$workspace\", mode = \"$new\" })"
+hyprctl eval "$apply" >/dev/null 2>&1 || { notify-send "Layout" "Couldn't switch to $new"; exit 1; }
+
+# Back on the default, the workspace follows it again; otherwise remember the mode.
+if [[ $new == "$(omarchy-hyprland-workspace-layout-default)" ]]; then
+  rm -f "$mode_file"
+else
+  mkdir -p "$modes_dir" && printf '%s\n' "$apply" >"$mode_file"
+fi
+
+notify-send -h string:x-canonical-private-synchronous:workspace-layout "Layout" "Workspace layout: $new"
+omarchy-shell -q omarchy.workspaces refresh
+omarchy-shell -q omarchy.dock refresh
+
+# Floating titlebars come from a plugin that only loads with the config.
+if [[ $new == floating ]] && ! hyprctl plugin list -j 2>/dev/null | jq -e 'any(.[]?; .name == "hyprbars")' >/dev/null 2>&1; then
+  hyprctl reload >/dev/null
+fi

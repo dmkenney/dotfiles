@@ -17,6 +17,12 @@ o.bind("SUPER + SHIFT + L", "Move window right", hl.dsp.window.swap({ direction 
 o.bind("SUPER + F1", "Keybindings", "omarchy-menu-keybindings")
 o.bind("SUPER + SHIFT + CTRL + K", "Keybindings", "omarchy-menu-keybindings")
 
+-- Layout cycle with master (the centered ultrawide layout) added to Omarchy's
+-- dwindle/scrolling/floating (bin/workspace-layout-toggle).
+hl.unbind("SUPER + ALT + L")
+o.bind("SUPER + ALT + L", "Cycle workspace layout", "workspace-layout-toggle")
+o.bind("SUPER + ALT + SHIFT + L", "Cycle workspace layout back", "workspace-layout-toggle back")
+
 -- Split direction (i3 Super+C/V). Super+C/V stay Omarchy's universal copy/paste.
 o.bind("SUPER + E", "Toggle window split", hl.dsp.layout("togglesplit"))
 
