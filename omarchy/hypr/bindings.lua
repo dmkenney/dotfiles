@@ -17,7 +17,7 @@ o.bind("SUPER + SHIFT + L", "Move window right", hl.dsp.window.swap({ direction 
 o.bind("SUPER + F1", "Keybindings", "omarchy-menu-keybindings")
 o.bind("SUPER + SHIFT + CTRL + K", "Keybindings", "omarchy-menu-keybindings")
 
--- Layout cycle with master (the centered ultrawide layout) added to Omarchy's
+-- Layout cycle with the custom layouts (layouts.lua) and master added to Omarchy's
 -- dwindle/scrolling/floating (bin/workspace-layout-toggle).
 hl.unbind("SUPER + ALT + L")
 o.bind("SUPER + ALT + L", "Cycle workspace layout", "workspace-layout-toggle")

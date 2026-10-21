@@ -19,6 +19,7 @@ require("default.hypr.omarchy")
 require("hypr.monitors")
 require("hypr.input")
 require("hypr.bindings")
+require("hypr.layouts")
 require("hypr.looknfeel")
 require("hypr.autostart")
 

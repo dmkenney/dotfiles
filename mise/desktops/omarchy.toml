@@ -20,6 +20,8 @@
 "~/.config/hypr/hypridle.conf" = "~/dotfiles/omarchy/hypr/hypridle.conf"
 # Look and feel overrides. The Omaland plugin also writes this file (and hyprland.lua).
 "~/.config/hypr/looknfeel.lua" = "~/dotfiles/omarchy/hypr/looknfeel.lua"
+# Custom Lua layouts (lua:center, lua:thirds, ...).
+"~/.config/hypr/layouts.lua" = "~/dotfiles/omarchy/hypr/layouts.lua"
 # Monospace font. `omarchy font set` rewrites this file (through the link).
 "~/.config/fontconfig/fonts.conf" = "~/dotfiles/fontconfig/fonts.conf"
 # Default terminal: ghostty (`omarchy default terminal` writes this list through the link).

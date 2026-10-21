@@ -49,20 +49,10 @@
 --   },
 -- })
 
--- Ultrawide: the main window in the middle 40%, others in columns either side.
--- New windows open at the sides so the middle one stays put, and it stays
--- centered when it is alone on a workspace.
+-- Default layout: the ultrawide "center" layout from layouts.lua.
 hl.config({
   general = {
-    layout = "master",
-  },
-
-  master = {
-    orientation = "center",
-    slave_count_for_center_master = 0,
-    always_keep_position = true,
-    mfact = 0.4,
-    new_status = "slave",
+    layout = "lua:center",
   },
 })
 
