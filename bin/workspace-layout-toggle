@@ -16,7 +16,7 @@ mode_file="$modes_dir/$workspace.lua"
 
 cycle=(lua:center lua:center-40 lua:columns lua:thirds lua:grid lua:spiral lua:stack lua:main-dwindle master dwindle scrolling)
 # Omarchy's omarchy-hyprland-workspace-layout-current can't read a "lua:" mode back.
-current=$(sed -n 's/.*mode = "\([a-z:-]*\)".*/\1/p' "$mode_file" 2>/dev/null)
+current=$(sed -n 's/.*mode = "\([a-z0-9:-]*\)".*/\1/p' "$mode_file" 2>/dev/null)
 [[ -n $current ]] || current=$(omarchy-hyprland-workspace-layout-default)
 for i in "${!cycle[@]}"; do [[ ${cycle[i]} == "$current" ]] && index=$i; done
 step=1; [[ $direction == back ]] && step=-1
