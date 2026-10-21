@@ -1,7 +1,6 @@
 -- i3 muscle memory on top of Omarchy's defaults. See all bindings: Super+F1 or Super+Shift+Ctrl+K.
 -- Unchanged from Omarchy (already match i3): Super+Return, Super+F, Super+arrows,
--- Super+comma notification keys. Super+1..0 are per monitor; a machine's monitors.lua
--- may map them across monitors i3-style.
+-- Super+comma notification keys. Super+1..0 are per monitor.
 
 -- Focus and move with H/J/K/L. Omarchy uses J (split), K (help), L (layout).
 hl.unbind("SUPER + J")
