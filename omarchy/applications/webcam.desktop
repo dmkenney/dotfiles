@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Webcam
+Comment=Live view of the OBSBOT webcam (mpv, 1920x1080 MJPEG; the default 640x480 mode squashes it)
+Exec=mpv --profile=low-latency --untimed --title=Webcam --wayland-app-id=webcam --demuxer-lavf-o=video_size=1920x1080,input_format=mjpeg av://v4l2:/dev/video0
+Icon=camera-web
+Terminal=false
+Categories=AudioVideo;Video;
