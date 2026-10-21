@@ -15,6 +15,37 @@ local function ratio_msg(get, set, min, max)
   end
 end
 
+-- Slot order per workspace, as JSON ({"31": ["0x...", ...]}). Hyprland can't
+-- report it, and these layouts place windows by it, so session restore
+-- (OmaSession) reads it to reopen windows in the same slots.
+local slot_order = {}
+
+function window_slot_order()
+  local parts = {}
+  for ws, addresses in pairs(slot_order) do
+    parts[#parts + 1] = string.format('"%d":["%s"]', ws, table.concat(addresses, '","'))
+  end
+  return "{" .. table.concat(parts, ",") .. "}"
+end
+
+-- hl.layout.register, also recording each workspace's slot order.
+local function register(name, provider)
+  local recalculate = provider.recalculate
+  provider.recalculate = function(ctx)
+    local ws, addresses = nil, {}
+    for _, target in ipairs(ctx.targets) do
+      local window = target.window
+      if window then
+        ws = ws or (window.workspace and window.workspace.id)
+        addresses[#addresses + 1] = window.address
+      end
+    end
+    if ws then slot_order[ws] = addresses end
+    return recalculate(ctx)
+  end
+  hl.layout.register(name, provider)
+end
+
 -- Place targets as equal rows inside one column box.
 local function stack(targets, x, y, w, h)
   for j, target in ipairs(targets) do
@@ -26,7 +57,7 @@ end
 -- ones stacking on alternate sides.
 local center_width = 0.30
 
-hl.layout.register("center", {
+register("center", {
   recalculate = function(ctx)
     local area = ctx.area
     if #ctx.targets == 0 then return end
@@ -47,7 +78,7 @@ hl.layout.register("center", {
 })
 
 -- columns: every window gets an equal-width column.
-hl.layout.register("columns", {
+register("columns", {
   recalculate = function(ctx)
     for i, target in ipairs(ctx.targets) do
       target:place(ctx:column(i, #ctx.targets))
@@ -56,7 +87,7 @@ hl.layout.register("columns", {
 })
 
 -- thirds: three fixed equal columns, filled left, middle, right, then stacking.
-hl.layout.register("thirds", {
+register("thirds", {
   recalculate = function(ctx)
     local area = ctx.area
     local columns = { {}, {}, {} }
@@ -70,7 +101,7 @@ hl.layout.register("thirds", {
 })
 
 -- grid: an even grid, with more columns than rows to suit the wide screen.
-hl.layout.register("grid", {
+register("grid", {
   recalculate = function(ctx)
     local n, area = #ctx.targets, ctx.area
     if n == 0 then return end
@@ -89,7 +120,7 @@ local spiral_ratio = 0.58
 local spiral_sides = { "left", "top", "right", "bottom" }
 local spiral_opposite = { left = "right", right = "left", top = "bottom", bottom = "top" }
 
-hl.layout.register("spiral", {
+register("spiral", {
   recalculate = function(ctx)
     local n, area = #ctx.targets, ctx.area
     for i, target in ipairs(ctx.targets) do
@@ -110,7 +141,7 @@ hl.layout.register("spiral", {
 -- Alone, it takes the whole screen.
 local stack_main = 0.70
 
-hl.layout.register("stack", {
+register("stack", {
   recalculate = function(ctx)
     local area, n = ctx.area, #ctx.targets
     if n == 0 then return end
@@ -132,7 +163,7 @@ hl.layout.register("stack", {
 -- Alone, it takes the whole screen.
 local main_dwindle_main = 0.35
 
-hl.layout.register("main-dwindle", {
+register("main-dwindle", {
   recalculate = function(ctx)
     local area, n = ctx.area, #ctx.targets
     if n == 0 then return end
