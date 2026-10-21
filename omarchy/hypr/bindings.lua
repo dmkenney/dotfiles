@@ -38,15 +38,39 @@ o.bind("SUPER + TAB", "Former workspace", hl.dsp.focus({ workspace = "previous" 
 
 -- Resize mode (i3 Super+R)
 o.bind("SUPER + R", "Resize mode", hl.dsp.submap("resize"))
+-- Lua layouts (layouts.lua) ignore window resizes, so there H/L grow or shrink
+-- the layout's own split instead.
 hl.define_submap("resize", function()
   local step = 40
   for _, k in ipairs({ { "h", -step, 0 }, { "l", step, 0 }, { "k", 0, -step }, { "j", 0, step },
                        { "left", -step, 0 }, { "right", step, 0 }, { "up", 0, -step }, { "down", 0, step } }) do
-    hl.bind(k[1], hl.dsp.window.resize({ x = k[2], y = k[3], relative = true }), { repeating = true })
+    hl.bind(k[1], function()
+      local workspace = hl.get_active_workspace()
+      if k[2] ~= 0 and workspace and workspace.tiled_layout:match("^lua:") then
+        hl.dispatch(hl.dsp.layout(k[2] > 0 and "grow" or "shrink"))
+      else
+        hl.dispatch(hl.dsp.window.resize({ x = k[2], y = k[3], relative = true }))
+      end
+    end, { repeating = true })
   end
   hl.bind("return", hl.dsp.submap("reset"))
   hl.bind("escape", hl.dsp.submap("reset"))
   hl.bind("SUPER + R", hl.dsp.submap("reset"))
+  -- Any other key leaves too (and is swallowed), so other shortcuts never seem dead.
+  hl.bind("catchall", hl.dsp.submap("reset"))
+end)
+
+-- Show a notice for as long as resize mode is on.
+local resize_notice
+hl.on("keybinds.submap", function(submap)
+  local name = type(submap) == "table" and submap.name or submap
+  if resize_notice then
+    resize_notice:dismiss()
+    resize_notice = nil
+  end
+  if name == "resize" then
+    resize_notice = hl.notification.create({ text = "Resize mode: H/L/J/K or arrows. Esc to exit.", timeout = 3600000 })
+  end
 end)
 
 -- Session (i3 Super+Shift+E exit). Config reloads automatically on save.
