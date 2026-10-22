@@ -23,6 +23,9 @@
           "id": "omarchy.weather"
         },
         {
+          "id": "meviusisback.mouse-settings"
+        },
+        {
           "id": "omarchy.system-update"
         }
       ],
@@ -31,13 +34,19 @@
           "id": "omarchy.menu"
         },
         {
-          "id": "omarchy.workspaces",
+          "id": "dylan.workspaces",
           "persistent": []
         }
       ],
       "right": [
         {
           "id": "dylan.tray"
+        },
+        {
+          "id": "io.github.dmkenney.keylight-usb"
+        },
+        {
+          "id": "brenoperucchi.omasession"
         },
         {
           "id": "io.github.dmkenney.omacus",
@@ -75,7 +84,7 @@
           "id": "omarchy.agents"
         },
         {
-          "id": "omarchy.monitor"
+          "id": "dylan.monitor"
         },
         {
           "id": "omarchy.bluetooth"
