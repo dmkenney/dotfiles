@@ -30,6 +30,8 @@ require("default.hypr.toggles")
 -- o.window("qemu", { workspace = "5" })
 
 -- Spotify runs on Wayland (see spotify-flags.conf). Keep its main window drawing
--- on a hidden workspace, or video in the miniplayer stalls with it.
-o.window("^spotify$", { render_unfocused = true })
+-- on a hidden workspace, or video in the miniplayer stalls with it. Ignore its
+-- activation requests: it sends one whenever the shell restarts, and Omarchy's
+-- global focus_on_activate then jumped to Spotify's workspace.
+o.window("^spotify$", { render_unfocused = true, focus_on_activate = false })
 hl.config({ misc = { render_unfocused_fps = 60 } })
