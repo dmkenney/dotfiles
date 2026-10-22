@@ -8,6 +8,10 @@
 # shows it.
 
 direction=${1:-next}
+
+# Two quick presses run one after the other, so neither loses its step.
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/workspace-layout-toggle.lock"
+flock 9
 workspace=$(hyprctl activeworkspace -j | jq -r '.id')
 [[ $workspace =~ ^[0-9]+$ ]] || exit 1
 
