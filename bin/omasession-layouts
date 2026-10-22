@@ -1,0 +1,115 @@
+#!/usr/bin/python3
+"""Back up OmaSession's named layouts to the private dotfiles repo, per machine.
+
+  omasession-layouts backup            copy changed layouts, commit and push (timer)
+  omasession-layouts restore [MACHINE] copy back layouts missing here
+  omasession-layouts list              machines and the layouts each has
+
+Layouts are what `omasession save <name>` (or the panel's Save as) writes. They
+name this machine's monitors and workspaces, so each machine gets its own folder:
+personal/omasession/<machine>/, where <machine> is the mise/machines file this
+host uses (ryzen-desktop), or the hostname. Restore pulls in another machine's
+layouts by naming it. Neither command deletes or overwrites a layout. The files
+hold window titles and folder paths, which is why they go in the private repo.
+"""
+import filecmp
+import os
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+SESSIONS = Path(os.environ.get("OMASESSION_SESSION_DIR",
+                               Path.home() / ".local/share/omasession/sessions"))
+PERSONAL = Path.home() / "dotfiles/personal"
+BACKUP = PERSONAL / "omasession"
+# Not layouts: the rolling save, its previous copy, history, internal and temp files.
+RESERVED = re.compile(r"(^last$|\.prev$|^history-|^omasession\.|\.staging$|^\.)")
+
+
+def machine() -> str:
+    link = Path.home() / ".config/mise/conf.d/machine.toml"
+    try:
+        return link.resolve(strict=True).stem
+    except OSError:
+        return os.uname().nodename
+
+
+def layouts(folder: Path) -> list[str]:
+    if not folder.is_dir():
+        return []
+    return sorted(p.stem for p in folder.glob("*.toml") if not RESERVED.search(p.stem))
+
+
+def copy_pair(name: str, src: Path, dst: Path, overwrite: bool) -> bool:
+    """Copy <name>.toml and its .titles.json; True if anything changed."""
+    changed = False
+    dst.mkdir(parents=True, exist_ok=True)
+    for suffix in (".toml", ".titles.json"):
+        a, b = src / f"{name}{suffix}", dst / f"{name}{suffix}"
+        if not a.is_file() or (b.exists() and (not overwrite or filecmp.cmp(a, b, shallow=False))):
+            continue
+        tmp = b.with_name(f".{b.name}.tmp")
+        shutil.copyfile(a, tmp)
+        os.replace(tmp, b)
+        changed = True
+    return changed
+
+
+def git(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", str(PERSONAL), *args], capture_output=True, text=True)
+
+
+def backup() -> int:
+    here = BACKUP / machine()
+    changed = [n for n in layouts(SESSIONS) if copy_pair(n, SESSIONS, here, overwrite=True)]
+    if not changed:
+        return 0
+    print(f"backed up {', '.join(changed)} to {here}")
+    rel = str(here.relative_to(PERSONAL))
+    git("add", "--", rel)
+    msg = f"omasession: back up {machine()} layouts ({', '.join(changed)})"
+    # Commits only this machine's folder, whatever else is staged in the repo.
+    done = git("commit", "-q", "-m", msg, "--", rel)
+    if done.returncode != 0:
+        print(f"commit failed: {done.stderr.strip() or done.stdout.strip()}", file=sys.stderr)
+        return 1
+    pushed = git("push", "-q")
+    if pushed.returncode != 0:
+        print(f"committed, push failed (next run retries): {pushed.stderr.strip()}", file=sys.stderr)
+    return 0
+
+
+def restore(name: str) -> int:
+    src = BACKUP / name
+    if not layouts(src):
+        print(f"no layouts backed up for {name!r}; have: {', '.join(machines()) or 'none'}",
+              file=sys.stderr)
+        return 1
+    added = [n for n in layouts(src) if not (SESSIONS / f"{n}.toml").exists()
+             and copy_pair(n, src, SESSIONS, overwrite=False)]
+    print(f"restored {', '.join(added)}" if added else "nothing missing here")
+    return 0
+
+
+def machines() -> list[str]:
+    return sorted(p.name for p in BACKUP.iterdir() if p.is_dir()) if BACKUP.is_dir() else []
+
+
+def main() -> int:
+    cmd = sys.argv[1] if len(sys.argv) > 1 else ""
+    if cmd == "backup":
+        return backup()
+    if cmd == "restore":
+        return restore(sys.argv[2] if len(sys.argv) > 2 else machine())
+    if cmd == "list":
+        for m in machines():
+            print(f"{m}{' (this machine)' if m == machine() else ''}: {', '.join(layouts(BACKUP / m)) or '-'}")
+        return 0
+    print(__doc__.strip().split("\n\n")[1], file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

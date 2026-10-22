@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up OmaSession's named layouts to the private dotfiles repo
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/omasession-layouts backup
+Nice=19

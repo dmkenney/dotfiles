@@ -66,10 +66,16 @@
 "~/.config/omarchy/hooks/theme-set.d/sync-addons.hook" = "~/dotfiles/omarchy/bin/sync-addons"
 "~/.config/omarchy/hooks/post-update.d/sync-addons.hook" = "~/dotfiles/omarchy/bin/sync-addons"
 "~/.config/omarchy/hooks/theme-set.d/herdr-theme.hook" = "~/dotfiles/omarchy/bin/herdr-theme"
+# OmaSession named layouts: backed up per machine to personal/omasession/<machine>/
+# (bin/omasession-layouts). Restored here only when missing, on setup.
+"~/.local/bin/omasession-layouts" = "~/dotfiles/bin/omasession-layouts"
+"~/.config/systemd/user/omasession-layouts.service" = "~/dotfiles/systemd/user/omasession-layouts.service"
+"~/.config/systemd/user/omasession-layouts.timer" = "~/dotfiles/systemd/user/omasession-layouts.timer"
 
 [bootstrap.hooks.post-dotfiles]
 run = [
   "systemctl --user enable --now hypridle.service",
+  "~/dotfiles/bin/omasession-layouts restore; systemctl --user daemon-reload && systemctl --user enable --now omasession-layouts.timer",
   # GTK UI font (Files, GIMP, 1Password dialogs, ...). Stored in dconf, not a file.
   "gsettings set org.gnome.desktop.interface font-name 'Noto Sans 9'",
   # Lock Explorer's launcher entry and Omarchy menu entry (Style > Lock Screen). Its
