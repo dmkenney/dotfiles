@@ -8,12 +8,13 @@
 # shows it.
 
 direction=${1:-next}
-
-# Two quick presses run one after the other, so neither loses its step.
-exec 9>"${XDG_RUNTIME_DIR:-/tmp}/workspace-layout-toggle.lock"
-flock 9
 workspace=$(hyprctl activeworkspace -j | jq -r '.id')
 [[ $workspace =~ ^[0-9]+$ ]] || exit 1
+
+# Two quick presses run one after the other, so neither loses its step. Held
+# only while the mode is read, applied and saved.
+exec 9>>"${XDG_RUNTIME_DIR:-/tmp}/workspace-layout-toggle.lock"
+flock 9
 
 modes_dir="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/workspace-layouts"
 mode_file="$modes_dir/$workspace.lua"
@@ -35,6 +36,7 @@ if [[ $new == "$(omarchy-hyprland-workspace-layout-default)" ]]; then
 else
   mkdir -p "$modes_dir" && printf '%s\n' "$apply" >"$mode_file"
 fi
+exec 9>&-
 
 notify-send -h string:x-canonical-private-synchronous:workspace-layout "Layout" "Workspace layout: $new"
 omarchy-shell -q omarchy.workspaces refresh
