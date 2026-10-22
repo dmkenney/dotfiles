@@ -29,3 +29,8 @@
 
 - Open ready for review, never `--draft`.
 - Describe what changed and how it was verified, including what wasn't verified.
+
+## Docker
+
+- Never run containers with `--privileged`, `--device`, or host `/dev` mounts unless Dylan asks for it in that session. A privileged container gets the host's real TTYs; a systemd container took `/dev/tty1` and killed the Hyprland session twice (2026-10-21).
+- To test systemd in a container: no `--privileged`; use `--cgroupns=private --tmpfs /run --tmpfs /run/lock`, set `ENV container=docker`, and mask `getty@tty1.service console-getty.service systemd-vconsole-setup.service getty.target`. Or use `podman run --systemd=always`.
