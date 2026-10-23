@@ -36,6 +36,11 @@ o.bind("SUPER + SHIFT + SPACE", "Toggle floating", hl.dsp.window.float({ action 
 hl.unbind("SUPER + TAB")
 o.bind("SUPER + TAB", "Former workspace", hl.dsp.focus({ workspace = "previous" }))
 
+-- Super+scroll steps through workspaces. A wheel still spinning while Super is
+-- held for another shortcut ran through all ten and back (2026-10-22).
+hl.unbind("SUPER + mouse_down")
+hl.unbind("SUPER + mouse_up")
+
 -- Resize mode (i3 Super+R)
 o.bind("SUPER + R", "Resize mode", hl.dsp.submap("resize"))
 -- Lua layouts (layouts.lua) ignore window resizes, so there H/L grow or shrink
