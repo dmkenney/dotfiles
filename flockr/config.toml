@@ -59,6 +59,10 @@ navigate_switch_workspace = "shift+1..9"
 [ui]
 accent = "#3FC4DE"
 
+# ctrl+h/j/k/l go to nvim instead (vim-tmux-navigator style). nvim moves
+# between its windows and calls `flockr pane focus` at its edge.
+pane_focus_passthrough = ["nvim", "vim"]
+
 # A done agent stays done until shown this long, so alt+j/alt+k can pass it
 seen_delay_ms = 750
 
