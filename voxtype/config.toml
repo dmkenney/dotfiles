@@ -106,6 +106,10 @@ model = "parakeet-tdt-0.6b-v2"
 [meeting]
 enabled = true
 
+[text]
+# Ending a dictation with "submit" drops the word and presses Return.
+smart_auto_submit = true
+
 [text.replacements]
 "omarkey" = "Omarchy"
 "oh markey" = "Omarchy"
