@@ -121,6 +121,8 @@ enabled = true
 "o markey" = "Omarchy"
 "o marky" = "Omarchy"
 "o marchy" = "Omarchy"
+"omachi" = "Omarchy"
+"o machi" = "Omarchy"
 "box type" = "Voxtype"
 "vox type" = "Voxtype"
 "kuda" = "CUDA"
@@ -143,6 +145,8 @@ enabled = true
 "ghostie" = "Ghostty"
 "ghosty" = "Ghostty"
 "maine" = "main"
+"ontra id" = "Entra ID"
+"ontra" = "Entra"
 
 # [text]
 # Text processing options (word replacements, spoken punctuation)
