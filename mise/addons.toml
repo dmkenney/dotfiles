@@ -6,10 +6,12 @@
 
 [bootstrap.repos]
 "~/.config/omarchy/plugins/bobbynicholas.omaland" = { url = "https://github.com/bobby-nicholas/omaland.git" }
+"~/.config/omarchy/plugins/brenoperucchi.omasession" = { url = "https://github.com/dmkenney/omasession" }
 "~/.config/omarchy/plugins/io.github.grichard99.omaproton-vpn" = { url = "https://github.com/grichard99/omaproton-vpn.git" }
 "~/.config/omarchy/plugins/io.github.ilyazar.syncthing" = { url = "https://github.com/omarchy-QOL/syncshell" }
 "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer" = { url = "https://github.com/SirJul1337/omarchy-lock-explorer.git" }
 "~/.config/omarchy/plugins/meviusisback.hw-monitor" = { url = "https://github.com/meviusisback/omarchy-hw-monitor.git" }
+"~/.config/omarchy/plugins/meviusisback.mouse-settings" = { url = "https://github.com/meviusisback/mouse-settings" }
 "~/.config/omarchy/plugins/mikebenner.netbird" = { url = "https://github.com/mikebenner/omarchy-netbird" }
 "~/.config/omarchy/plugins/robzolkos.github" = { url = "https://github.com/robzolkos/omarchy-github.git" }
 "~/.config/omarchy/plugins/xyzlab.pigeon" = { url = "https://github.com/chr0nzz/omarchy-pigeon.git" }
