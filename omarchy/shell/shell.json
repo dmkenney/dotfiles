@@ -40,7 +40,10 @@
       ],
       "right": [
         {
-          "id": "dylan.tray"
+          "id": "dylan.tray",
+          "hidden": [
+            "indicator-solaar"
+          ]
         },
         {
           "id": "io.github.dmkenney.keylight-usb"
