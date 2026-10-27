@@ -1,6 +1,6 @@
 {
   "bar": {
-    "background": "glassy",
+    "background": "none",
     "layout": {
       "center": [
         {
@@ -36,14 +36,25 @@
         {
           "id": "dylan.workspaces",
           "persistent": []
+        },
+        {
+          "gpu": "nvidia",
+          "id": "meviusisback.hw-monitor",
+          "mode": "icons",
+          "ramFormat": "used",
+          "showClocks": false,
+          "showCpuTemp": true,
+          "showGpuTemp": true,
+          "tempFormat": "degree",
+          "topProcSort": "ram"
         }
       ],
       "right": [
         {
-          "id": "dylan.tray",
           "hidden": [
             "indicator-solaar"
-          ]
+          ],
+          "id": "dylan.tray"
         },
         {
           "id": "io.github.dmkenney.keylight-usb"
@@ -52,8 +63,8 @@
           "id": "brenoperucchi.omasession"
         },
         {
-          "id": "io.github.dmkenney.omacus",
           "barLabel": "none",
+          "id": "io.github.dmkenney.omacus",
           "readOnly": false
         },
         {
@@ -65,17 +76,6 @@
         },
         {
           "id": "mikebenner.netbird"
-        },
-        {
-          "id": "meviusisback.hw-monitor",
-          "gpu": "nvidia",
-          "mode": "icons",
-          "ramFormat": "used",
-          "showClocks": false,
-          "showCpuTemp": true,
-          "showGpuTemp": true,
-          "tempFormat": "degree",
-          "topProcSort": "ram"
         },
         {
           "id": "io.github.ilyazar.syncthing"
