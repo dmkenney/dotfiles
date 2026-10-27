@@ -1,0 +1,66 @@
+#!/bin/bash
+# MX Vertical top button, run by Solaar (solaar/rules.yaml) on press and release.
+# Hold: push-to-talk, like Right Alt. Double tap: press Enter once any
+# transcription has been typed. A single tap cancels its brief recording.
+
+hold_ms=300
+double_ms=400
+dir="${XDG_RUNTIME_DIR:-/tmp}/mouse-dictate"
+mkdir -p "$dir"
+exec 9>"$dir/lock"
+flock 9
+
+# Monotonic, so a clock change can't fake a double tap.
+read -r up _ </proc/uptime
+now=$((${up/./} * 10))
+
+case "$1" in
+  press)
+    rm -f "$dir/started"
+    # Solaar runs each event in its own process, so a release can win the lock first.
+    if [[ -f $dir/released-early ]]; then
+      rm -f "$dir/released-early"
+      exit 0
+    fi
+    echo "$now" >"$dir/pressed"
+    # Don't cut off a transcription that is still being typed.
+    if [[ $(voxtype status) == "idle" ]]; then
+      omarchy-dictation start && touch "$dir/started"
+    fi
+    ;;
+  release)
+    if [[ ! -f $dir/pressed ]]; then
+      touch "$dir/released-early"
+      exit 0
+    fi
+    pressed=$(<"$dir/pressed")
+    rm -f "$dir/pressed"
+
+    if ((now - pressed >= hold_ms)); then
+      [[ -f $dir/started ]] && omarchy-dictation stop
+      rm -f "$dir/started" "$dir/tapped"
+      exit 0
+    fi
+
+    [[ -f $dir/started ]] && voxtype record cancel
+    rm -f "$dir/started"
+
+    tapped=$(cat "$dir/tapped" 2>/dev/null || echo -1000000)
+    if ((now - tapped <= double_ms)); then
+      rm -f "$dir/tapped"
+      # Wait outside the lock for the paste, then submit only if the same window still has focus.
+      window=$(hyprctl activewindow -j | jq -r .address)
+      setsid bash -c '
+        for _ in {1..120}; do
+          if [[ $(voxtype status) == idle ]]; then
+            [[ $(hyprctl activewindow -j | jq -r .address) == "$1" ]] && wtype -k Return
+            exit
+          fi
+          sleep 0.25
+        done' _ "$window" 9>&- >/dev/null 2>&1 &
+    else
+      echo "$now" >"$dir/tapped"
+    fi
+    ;;
+  *) echo "Usage: mouse-dictate <press|release>" >&2; exit 1 ;;
+esac

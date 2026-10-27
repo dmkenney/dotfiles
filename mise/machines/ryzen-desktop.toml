@@ -8,10 +8,15 @@
 "pacman:nvidia-settings" = "latest"
 # RGB on the coolers and RAM
 "pacman:openrgb" = "latest"
+# MX Vertical top button: hold to dictate, double tap for Enter (solaar/rules.yaml).
+# One-time, with the mouse connected: solaar config "MX Vertical" divert-keys "DPI Switch" Diverted
+"pacman:solaar" = "latest"
 
 [dotfiles]
 "~/.config/hypr/monitors.lua" = "~/dotfiles/omarchy/hypr/monitors/ryzen-desktop.lua"
 "~/.config/hypr/autostart.lua" = "~/dotfiles/omarchy/hypr/autostart/ryzen-desktop.lua"
+"~/.config/solaar/rules.yaml" = "~/dotfiles/solaar/rules.yaml"
+"~/.local/bin/mouse-dictate" = "~/dotfiles/bin/mouse-dictate"
 # OpenRGB profile (loaded at login by autostart.lua) and ARGB header LED counts.
 # In personal: the profile records hardware serials.
 "~/.config/OpenRGB/rainbow.orp" = "~/dotfiles/personal/openrgb/ryzen-desktop/rainbow.orp"

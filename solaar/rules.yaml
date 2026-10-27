@@ -1,0 +1,11 @@
+%YAML 1.3
+# MX Vertical top (DPI) button: hold to dictate, double tap for Enter (bin/mouse-dictate).
+# Needs the button diverted: solaar config "MX Vertical" divert-keys "DPI Switch" Diverted
+---
+- Key: [DPI Switch, pressed]
+- Execute: [mouse-dictate, press]
+...
+---
+- Key: [DPI Switch, released]
+- Execute: [mouse-dictate, release]
+...
