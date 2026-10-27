@@ -107,7 +107,7 @@ sidebar_position = "left"
 sidebar_collapsed_mode = "compact"
 show_agent_labels_on_pane_borders = false
 [ui.toast]
-delivery = "flockr"
+delivery = "system"
 
 # Bold name over a dimmed branch line so each workspace reads as one block.
 [ui.sidebar.spaces]
@@ -137,3 +137,10 @@ header = "band"
 header_counts = false
 divider = "handle"
 buttons = "chip"
+
+[session]
+resume_agents_on_restore = true
+
+[mobile]
+enabled = true
+listen = ["10.116.55.37"]
