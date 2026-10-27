@@ -126,3 +126,7 @@ o.bind("SUPER + CTRL + M", "Meeting transcript", "meeting-toggle")
 
 -- Flockr instead of Herdr (was: omarchy-launch-terminal-herdr).
 o.rebind("SUPER + CTRL + RETURN", "Flockr", "omarchy-launch-terminal flockr")
+
+-- Performance MX thumb pad (BTN_FORWARD, mouse:277): same as the MX Vertical top
+-- button in Solaar. Hold to dictate, double tap for Enter (bin/mouse-dictate).
+o.bind_hold("mouse:277", "Start dictation (mouse)", "mouse-dictate press", "Stop dictation (mouse)", "mouse-dictate release")
