@@ -39,7 +39,8 @@ claude() {
   scp -q "$host:.claude/settings.json" ~/.claude/settings.json.old-machine
   local old; old=$(mktemp)
   scp -q "$host:.claude/history.jsonl" "$old"
-  cat "$old" ~/.claude/history.jsonl 2>/dev/null | awk '!seen[$0]++' > ~/.claude/history.jsonl.new
+  touch ~/.claude/history.jsonl
+  cat "$old" ~/.claude/history.jsonl | awk '!seen[$0]++' > ~/.claude/history.jsonl.new
   mv ~/.claude/history.jsonl.new ~/.claude/history.jsonl
   rm -f "$old"
 }
