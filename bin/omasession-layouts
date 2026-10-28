@@ -84,9 +84,9 @@ def backup() -> int:
 def restore(name: str) -> int:
     src = BACKUP / name
     if not layouts(src):
-        print(f"no layouts backed up for {name!r}; have: {', '.join(machines()) or 'none'}",
-              file=sys.stderr)
-        return 1
+        # Normal on a new machine, so setup carries on.
+        print(f"no layouts backed up for {name!r}; have: {', '.join(machines()) or 'none'}")
+        return 0
     added = [n for n in layouts(src) if not (SESSIONS / f"{n}.toml").exists()
              and copy_pair(n, src, SESSIONS, overwrite=False)]
     print(f"restored {', '.join(added)}" if added else "nothing missing here")
