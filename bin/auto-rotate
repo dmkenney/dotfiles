@@ -3,7 +3,7 @@
 # Reads orientation from iio-sensor-proxy (monitor-sensor). Written for the Lua
 # config: iio-hyprland still sets the old `monitor=` keyword. A `hyprctl reload`
 # puts the panel back upright until the next turn.
-# Usage: auto-rotate [output]   (default eDP-1). Runs as auto-rotate.service on
+# Usage: auto-rotate [output]   (default eDP-1). Runs as dev.mise.auto-rotate.service on
 # machines with the laptop role (mise/roles/laptop.toml).
 set -euo pipefail
 

@@ -18,7 +18,7 @@
 "~/.local/bin/auto-rotate" = "~/dotfiles/bin/auto-rotate"
 
 # Rotate the panel, touchscreen and pen with the screen. Stop it with
-# `systemctl --user stop auto-rotate` to hold the current orientation.
+# `systemctl --user stop dev.mise.auto-rotate` to hold the current orientation.
 [bootstrap.linux.systemd.units.auto-rotate]
 description = "Rotate the laptop panel to follow the accelerometer"
 exec_start = "%h/.local/bin/auto-rotate"
