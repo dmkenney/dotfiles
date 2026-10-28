@@ -1,0 +1,34 @@
+#!/bin/bash
+# Rotate the laptop panel, touchscreen and pen to follow the accelerometer.
+# Reads orientation from iio-sensor-proxy (monitor-sensor). Written for the Lua
+# config: iio-hyprland still sets the old `monitor=` keyword. A `hyprctl reload`
+# puts the panel back upright until the next turn.
+# Usage: auto-rotate [output]   (default eDP-1). Runs as auto-rotate.service on
+# machines with the laptop role (mise/roles/laptop.toml).
+set -euo pipefail
+
+output=${1:-eDP-1}
+
+rotate() {
+  local transform scale
+  case $1 in
+    normal) transform=0 ;;
+    left-up) transform=1 ;;
+    bottom-up) transform=2 ;;
+    right-up) transform=3 ;;
+    *) return 0 ;;
+  esac
+  scale=$(hyprctl monitors -j | jq -r --arg o "$output" '.[] | select(.name == $o) | .scale')
+  [[ -n $scale ]] || return 0
+  hyprctl eval "hl.monitor({ output = \"$output\", mode = \"preferred\", position = \"auto\", scale = $scale, transform = $transform })
+hl.config({ input = { touchdevice = { transform = $transform }, tablet = { transform = $transform } } })" >/dev/null
+}
+
+# "=== Has accelerometer (orientation: normal)" at start, then
+# "    Accelerometer orientation changed: left-up" on each turn.
+monitor-sensor --accel | while read -r line; do
+  case $line in
+    *"orientation changed:"*) rotate "${line##*: }" ;;
+    *"accelerometer (orientation:"*) orientation=${line##*: }; rotate "${orientation%)}" ;;
+  esac
+done

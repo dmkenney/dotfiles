@@ -9,3 +9,21 @@
 #
 # [bootstrap.repos]
 # "~/.config/omarchy/plugins/<id>" = { url = "https://github.com/<owner>/<repo>.git" }
+
+# Accelerometer for auto-rotate (2-in-1s).
+[bootstrap.packages]
+"pacman:iio-sensor-proxy" = "latest"
+
+[dotfiles]
+"~/.local/bin/auto-rotate" = "~/dotfiles/bin/auto-rotate"
+
+# Rotate the panel, touchscreen and pen with the screen. Stop it with
+# `systemctl --user stop auto-rotate` to hold the current orientation.
+[bootstrap.linux.systemd.units.auto-rotate]
+description = "Rotate the laptop panel to follow the accelerometer"
+exec_start = "%h/.local/bin/auto-rotate"
+part_of = ["graphical-session.target"]
+after = ["graphical-session.target"]
+wanted_by = ["graphical-session.target"]
+restart = "on-failure"
+restart_sec = "5"
