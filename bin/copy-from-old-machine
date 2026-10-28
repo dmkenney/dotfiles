@@ -39,6 +39,8 @@ claude() {
     --exclude='/plugins/' --exclude='/settings.json' --exclude='/history.jsonl' --exclude='/CLAUDE.md' \
     "$host:.claude/" ~/.claude/
   scp -q "$host:.claude/settings.json" ~/.claude/settings.json.old-machine
+  # Account, per-project MCP servers and trust. Only when this machine has none yet.
+  [[ -e ~/.claude.json ]] || scp -q "$host:.claude.json" ~/.claude.json
   local old; old=$(mktemp)
   scp -q "$host:.claude/history.jsonl" "$old"
   touch ~/.claude/history.jsonl
