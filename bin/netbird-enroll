@@ -1,0 +1,34 @@
+#!/bin/bash
+# Join this machine to the K Squared NetBird mesh without a browser login.
+# Mints a one-off setup key (admin group, expires in an hour) with the Automation
+# service user's PAT from 1Password, then runs `netbird up` with it. The same
+# pattern the infrastructure repo uses for fleet hosts
+# (environments/home/knowledge/runbooks/netbird.md, "Enrollment pattern").
+# Does nothing if this machine is already logged in. Run by omarchy/setup.sh.
+set -euo pipefail
+
+management=https://netbird.ksquaredconsulting.com:443
+api=https://netbird.ksquaredconsulting.com/api
+group=admin
+
+if ! netbird status 2>/dev/null | grep -q NeedsLogin; then
+  echo "netbird-enroll: already logged in"
+  exit 0
+fi
+
+token_file=~/.config/op/service-account-token
+if [[ -z ${OP_SERVICE_ACCOUNT_TOKEN:-} && -s $token_file ]]; then
+  OP_SERVICE_ACCOUNT_TOKEN=$(<"$token_file")
+  export OP_SERVICE_ACCOUNT_TOKEN
+fi
+pat=$(op read "op://K Squared Consulting/NetBird Automation PAT/password")
+auth="Authorization: Token $pat"
+
+group_id=$(curl -fsS -H "$auth" "$api/groups" | jq -r --arg g "$group" '.[] | select(.name == $g) | .id')
+[[ -n $group_id ]] || { echo "netbird-enroll: no '$group' group" >&2; exit 1; }
+key=$(curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' "$api/setup-keys" \
+  -d "$(jq -n --arg n "$(hostname)" --arg g "$group_id" \
+    '{name: $n, type: "one-off", expires_in: 3600, usage_limit: 1, auto_groups: [$g]}')" | jq -r .key)
+
+netbird up --management-url "$management" --setup-key "$key"
+netbird status | grep -E '^(Management|NetBird IP):'

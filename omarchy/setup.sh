@@ -63,9 +63,21 @@ done
 
 mise trust "$dotfiles/mise/config.toml"
 
-# Read the recorded theme now: the bootstrap below runs sync-addons, which records
-# whatever theme this machine has at that moment.
+# Omarchy's dev channel, from the dmkenney/omarchy fork's `local` branch (upstream
+# PRs merged in). The Hyprland config here calls helpers only that branch has.
+# Asks to confirm, upgrades every package, and needs a reboot to take effect.
+channel=$( (source /etc/omarchy.conf 2>/dev/null; omarchy-channel-current) 2>/dev/null || true)
+if [[ $channel != dev ]]; then
+  [[ -d ~/omarchy/.git ]] || git clone --filter=blob:none -b local git@github.com:dmkenney/omarchy.git ~/omarchy
+  git -C ~/omarchy remote get-url upstream &>/dev/null ||
+    git -C ~/omarchy remote add upstream git@github.com:omacom/omarchy.git
+  omarchy channel set dev
+fi
+
+# Read the recorded theme now. The bootstrap below runs sync-addons, which would
+# otherwise record this machine's stock theme over it.
 theme=$(cat "$dotfiles/omarchy/theme" 2>/dev/null || true)
+export DOTFILES_SETUP=1
 
 # --force-dotfiles replaces Omarchy's stock copies (~/.bashrc, ~/.config/hypr/*.lua,
 # ~/.config/tmux/tmux.conf) with links into this repo. The stock versions stay in
@@ -102,6 +114,11 @@ if [[ ! -s $op_token ]]; then
   unset token
 fi
 
+# NetBird mesh, with a setup key minted through the API (needs the token above).
+if [[ -s $op_token ]]; then
+  "$dotfiles/bin/netbird-enroll" || echo "setup: NetBird enrollment failed; rerun ~/dotfiles/bin/netbird-enroll" >&2
+fi
+
 if command -v hyprctl >/dev/null && hyprctl version >/dev/null 2>&1; then
   # The theme was cloned by the bootstrap (mise/addons.toml) if it isn't a stock one.
   if [[ -n $theme && $theme != "$(cat ~/.local/state/omarchy/current/theme.name 2>/dev/null)" ]]; then
@@ -112,4 +129,8 @@ if command -v hyprctl >/dev/null && hyprctl version >/dev/null 2>&1; then
   hyprctl reload >/dev/null
   hyprctl configerrors
 fi
-echo "setup: done. Open a new terminal to load ~/.bashrc."
+if [[ $channel != dev ]]; then
+  echo "setup: done. Reboot to finish the switch to the dev channel."
+else
+  echo "setup: done. Open a new terminal to load ~/.bashrc."
+fi

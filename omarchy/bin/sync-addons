@@ -71,7 +71,9 @@ HEADER
 fi
 
 theme=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
-if [[ -n $theme && $theme != "$(cat "$repo/omarchy/theme" 2>/dev/null)" ]]; then
+# omarchy/setup.sh applies the recorded theme after its bootstrap; a new machine's
+# stock theme must not replace it first.
+if [[ -z ${DOTFILES_SETUP:-} && -n $theme && $theme != "$(cat "$repo/omarchy/theme" 2>/dev/null)" ]]; then
   printf '%s\n' "$theme" > "$repo/omarchy/theme"
   echo "sync-addons: theme $theme"
 fi
