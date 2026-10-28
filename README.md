@@ -21,19 +21,29 @@ sudo pacman -Syu               # system upgrades (not `mise bootstrap packages u
 
 ## New Omarchy machine
 
-1. Install from the Omarchy ISO.
-2. GitHub SSH access: copy `~/.ssh` from another machine, or sign in to 1Password and enable
-   its SSH agent. Check with `ssh -T git@github.com`.
-3. Put a `# host: <hostname>` line in the machine's file in `mise/machines/` (or pass the
-   machine name to the script), then:
+1. Install from the Omarchy ISO. No Wi-Fi option joins a hidden network; use a cable or
+   `nmcli connection add type wifi con-name <name> ssid <ssid> wifi.hidden yes wifi-sec.key-mgmt wpa-psk wifi-sec.psk <password>`.
+2. GitHub SSH access: `omarchy-install-service-1password`, sign in, then in 1Password turn on
+   Settings → Developer → Use the SSH agent and Integrate with 1Password CLI. Check with
+   `ssh -T git@github.com`.
+3. Put a `# host: <hostname>` line and the CPU's microcode package in the machine's file in
+   `mise/machines/` (or pass the machine name to the script), then:
    ```sh
    git clone --recursive git@github.com:dmkenney/dotfiles.git ~/dotfiles
    ~/dotfiles/omarchy/setup.sh            # or: ~/dotfiles/omarchy/setup.sh laptop
    ```
-   It links mise to this repo (Omarchy's `mise use -g` pins move to the untracked
-   `~/.config/mise/conf.d/local-tools.toml`) and runs `mise bootstrap --force-dotfiles`.
-   Safe to re-run.
-4. Logins and data: steps 7 and 9 below. Printer (optional): step 10.
+   It switches Omarchy to the dev channel (clones the `local` branch of dmkenney/omarchy to
+   `~/omarchy`; asks to confirm), links mise to this repo (Omarchy's `mise use -g` pins move
+   to the untracked `~/.config/mise/conf.d/local-tools.toml`), runs
+   `mise bootstrap --force-dotfiles`, installs the browsers, saves the 1Password service
+   account token and joins NetBird (`bin/netbird-enroll`). Safe to re-run. Reboot after the
+   first run.
+4. Data from the old machine (it must be on and reachable over SSH; close Brave on both):
+   ```sh
+   copy-from-old-machine <old-host>
+   ```
+   See step 9 below for what it copies. It also logs in the GitHub CLI with the old
+   machine's token. Printer (optional): step 10.
 
 Omarchy updates replace `/usr/share/omarchy` only; the files here are thin overrides loaded
 after Omarchy's defaults. After `omarchy update`, `git status` here and `mise bootstrap status`
@@ -78,19 +88,25 @@ show anything an Omarchy migration changed. `omarchy refresh <x>` replaces a fil
      `apply.sh`. Update the interface name in its `nftables.conf` first (`ip -br link`).
    - **Omarchy:** nothing to do. `mise bootstrap` runs `personal/system/ufw-rules.sh`, the ufw
      version of the same rules. Check with `sudo ufw status verbose`.
-7. Logins: `netbird up`, 1Password, `gh auth login`, `aws sso login`,
-   Claude Code (`curl -fsSL https://claude.ai/install.sh | bash`).
+7. Logins: `~/dotfiles/bin/netbird-enroll` (or `netbird up` to log in by browser), 1Password.
+   Claude Code: `curl -fsSL https://claude.ai/install.sh | bash` (Omarchy installs it already).
 8. Brave profiles: `~/dotfiles/personal/brave/setup-profiles.sh` (overwrites profile settings, run once).
 9. Copy data that is not in git from the old machine (it must be on and reachable over SSH):
    ```sh
-   copy-from-old-machine <old-host>   # or name parts: brave claude documents tmux home postgres
+   copy-from-old-machine <old-host>   # or name parts: brave claude documents projects tmux home gh postgres
    ```
-   Copies Brave profiles plus the keyring key that decrypts their cookies and passwords,
-   `~/.claude`, `~/Documents` (projects; same paths, so Claude history still matches),
-   tmux-resurrect saves (restore with prefix + Ctrl-r), CLI logins,
-   app data (DBeaver, Zen, Cursor, ...), claude-squad/flow2 worktrees, and
-   all Postgres databases (dump kept in `~/backups`). Copying Brave replaces step 8.
-   Not covered: unpushed repos outside `~/Documents`.
+   Copies Brave profiles plus the keyring key that decrypts their cookies and passwords
+   (close Brave on both machines first), `~/.claude` and `~/.claude.json`, `~/Documents` and
+   `~/Projects` (same paths, so Claude history still matches; build folders such as
+   `node_modules`, `target`, `_build`, `deps` and `.venv` are skipped), tmux-resurrect saves
+   (restore with prefix + Ctrl-r), CLI logins including the GitHub CLI, app data (DBeaver,
+   Zen, Cursor, ...), claude-squad/flow2 worktrees, and Postgres databases (dumps kept in
+   `~/backups`). Copying Brave replaces step 8. To leave things out:
+   ```sh
+   COPY_EXCLUDE=/projects/ksquared-marketing/video-studio/ copy-from-old-machine <old-host> documents
+   PG_DBS='^brightsite_' copy-from-old-machine <old-host> postgres
+   ```
+   Not covered: unpushed repos outside `~/Documents` and `~/Projects`.
 10. Optional, at home: `~/dotfiles/bin/setup-printer` adds the Lexmark CX331adwe and makes
     it the default printer.
 11. Reboot (new kernel modules, snapper, display manager).
