@@ -4,7 +4,7 @@
   "name": "Dedicated GPU",
   "version": "1.0.0",
   "author": "Dylan",
-  "description": "Shows whether a laptop's NVIDIA GPU is on and switches it on or off",
+  "description": "Switch a laptop between Integrated and NVIDIA graphics without a reboot",
   "kinds": [
     "bar-widget"
   ],
@@ -13,7 +13,7 @@
   },
   "barWidget": {
     "displayName": "Dedicated GPU",
-    "description": "Shows whether a laptop's NVIDIA GPU is on and switches it on or off",
+    "description": "Switch a laptop between Integrated and NVIDIA graphics without a reboot",
     "category": "System",
     "allowMultiple": false
   }

@@ -1,0 +1,4 @@
+# /dev/dri/igpu: the Intel GPU's card node, whatever number it gets at boot.
+# omarchy/laptop/env-hyprland points Hyprland at it (AQ_DRM_DEVICES can't take
+# the /dev/dri/by-path names: they contain colons, its list separator).
+SUBSYSTEM=="drm", KERNEL=="card[0-9]*", ATTRS{vendor}=="0x8086", ATTRS{class}=="0x030000", SYMLINK+="dri/igpu"

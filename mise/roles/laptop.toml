@@ -10,12 +10,24 @@
 # [bootstrap.repos]
 # "~/.config/omarchy/plugins/<id>" = { url = "https://github.com/<owner>/<repo>.git" }
 
-# Accelerometer for auto-rotate (2-in-1s).
 [bootstrap.packages]
+# Accelerometer for auto-rotate (2-in-1s).
 "pacman:iio-sensor-proxy" = "latest"
+# Switches the NVIDIA GPU off and on (Integrated / Hybrid); dylan.gpu bar widget.
+"pacman:supergfxctl" = "latest"
+
+[bootstrap.services.supergfxd]
+
+[bootstrap.files."/etc/udev/rules.d/61-igpu.rules"]
+source = "~/dotfiles/omarchy/laptop/61-igpu.rules"
+owner = "root"
+group = "root"
+mode = "0644"
 
 [dotfiles]
 "~/.local/bin/auto-rotate" = "~/dotfiles/bin/auto-rotate"
+"~/.local/bin/gpu-mode" = "~/dotfiles/bin/gpu-mode"
+"~/.config/uwsm/env-hyprland" = "~/dotfiles/omarchy/laptop/env-hyprland"
 
 # Rotate the panel, touchscreen and pen with the screen. Stop it with
 # `systemctl --user stop dev.mise.auto-rotate` to hold the current orientation.

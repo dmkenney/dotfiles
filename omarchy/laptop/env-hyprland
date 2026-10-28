@@ -1,0 +1,8 @@
+# Hybrid-GPU laptops (mise/roles/laptop.toml). Linked as ~/.config/uwsm/env-hyprland,
+# read by uwsm before Hyprland starts; takes effect at the next login.
+# Keep the NVIDIA GPU free so supergfxctl can power it off and on without a reboot
+# (the dylan.gpu bar widget). The laptop panel and outputs run on the Intel GPU.
+# Hyprland opens only the Intel GPU (udev symlink from omarchy/laptop/61-igpu.rules):
+export AQ_DRM_DEVICES=/dev/dri/igpu
+# Apps load Mesa's EGL only; NVIDIA's opens /dev/nvidiactl even when unused.
+export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json

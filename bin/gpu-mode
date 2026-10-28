@@ -1,0 +1,28 @@
+#!/bin/bash
+# Laptop dedicated GPU through supergfxctl, for the dylan.gpu bar widget.
+#   gpu-mode status            "<mode> <power>", e.g. "Hybrid active", "Integrated off";
+#                              "none" without a battery or supergfxd
+#   gpu-mode set <Integrated|Hybrid>
+# Live switching needs nothing holding the NVIDIA GPU; omarchy/laptop/env-hyprland
+# keeps Hyprland and EGL apps off it. supergfxctl reports anything still in the way.
+set -uo pipefail
+
+case ${1:-} in
+  status)
+    if ! ls /sys/class/power_supply | grep -q '^BAT' || ! command -v supergfxctl >/dev/null; then
+      echo none
+      exit 0
+    fi
+    mode=$(timeout 3 supergfxctl -g 2>/dev/null) || { echo none; exit 0; }
+    power=$(timeout 3 supergfxctl -S 2>/dev/null || echo unknown)
+    echo "$mode $power"
+    ;;
+  set)
+    case ${2:-} in Integrated|Hybrid) ;; *) echo "usage: gpu-mode set <Integrated|Hybrid>" >&2; exit 2 ;; esac
+    timeout 30 supergfxctl -m "$2" 2>&1
+    ;;
+  *)
+    echo "usage: gpu-mode status | set <Integrated|Hybrid>" >&2
+    exit 2
+    ;;
+esac
