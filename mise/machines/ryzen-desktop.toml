@@ -17,6 +17,8 @@
 "~/.config/hypr/autostart.lua" = "~/dotfiles/omarchy/hypr/autostart/ryzen-desktop.lua"
 "~/.config/solaar/rules.yaml" = "~/dotfiles/solaar/rules.yaml"
 "~/.local/bin/mouse-dictate" = "~/dotfiles/bin/mouse-dictate"
+# Key Light Air over USB: bar widget, developed in ~/Projects/omarchy-keylight-usb.
+"~/.config/omarchy/plugins/io.github.dmkenney.keylight-usb" = "~/Projects/omarchy-keylight-usb"
 # OpenRGB profile (loaded at login by autostart.lua) and ARGB header LED counts.
 # In personal: the profile records hardware serials.
 "~/.config/OpenRGB/rainbow.orp" = "~/dotfiles/personal/openrgb/ryzen-desktop/rainbow.orp"
@@ -27,3 +29,6 @@
 run = [
   "grep -q acpi_enforce_resources=lax /etc/default/limine || { sudo sed -i '0,/^KERNEL_CMDLINE\\[default\\]+=\"/s//&acpi_enforce_resources=lax /' /etc/default/limine && sudo limine-update; }",
 ]
+
+[bootstrap.repos]
+"~/Projects/omarchy-keylight-usb" = { url = "git@github.com:dmkenney/omarchy-keylight-usb.git" }

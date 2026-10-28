@@ -43,6 +43,13 @@
 "~/.config/omarchy/shell.json" = "~/dotfiles/omarchy/shell/shell.json"
 # Omarchy menu additions (Trigger > Meeting for bin/meeting-toggle).
 "~/.config/omarchy/extensions/omarchy-menu.jsonc" = "~/dotfiles/omarchy/extensions/omarchy-menu.jsonc"
+# Bar plugins of our own (workspaces, tray, monitor). Symlinked plugins don't
+# hot-reload: `omarchy restart shell` after editing them.
+"~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
+"~/.config/omarchy/plugins/dylan.tray" = "~/dotfiles/omarchy/plugins/dylan.tray"
+"~/.config/omarchy/plugins/dylan.monitor" = "~/dotfiles/omarchy/plugins/dylan.monitor"
+# Omacus (Incus in the bar): developed in ~/Projects/omacus, cloned there by the repos below.
+"~/.config/omarchy/plugins/io.github.dmkenney.omacus" = "~/Projects/omacus"
 # Brave flags: Omarchy's flags. UI font comes from the GTK font-name (family only;
 # URL bar and tab text use fixed pixel sizes).
 "~/.config/brave-flags.conf" = "~/dotfiles/omarchy/brave/brave-flags.conf"
@@ -98,3 +105,6 @@ run = [
 # Firewall: Omarchy uses ufw. Port of the infrastructure repo's nftables rules
 # (private, in the personal submodule).
 post-packages = "~/dotfiles/personal/system/ufw-rules.sh"
+
+[bootstrap.repos]
+"~/Projects/omacus" = { url = "git@github.com:dmkenney/omacus.git" }
