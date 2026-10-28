@@ -102,6 +102,9 @@
           "id": "omarchy.audio"
         },
         {
+          "id": "dylan.gpu"
+        },
+        {
           "id": "omarchy.power"
         }
       ],

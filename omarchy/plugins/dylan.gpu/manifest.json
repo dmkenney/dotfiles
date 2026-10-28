@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "dylan.gpu",
+  "name": "Dedicated GPU",
+  "version": "1.0.0",
+  "author": "Dylan",
+  "description": "Shows whether a laptop's NVIDIA GPU is on and switches it on or off",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Gpu.qml"
+  },
+  "barWidget": {
+    "displayName": "Dedicated GPU",
+    "description": "Shows whether a laptop's NVIDIA GPU is on and switches it on or off",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

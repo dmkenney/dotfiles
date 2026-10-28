@@ -48,6 +48,8 @@
 "~/.config/omarchy/plugins/dylan.workspaces" = "~/dotfiles/omarchy/plugins/dylan.workspaces"
 "~/.config/omarchy/plugins/dylan.tray" = "~/dotfiles/omarchy/plugins/dylan.tray"
 "~/.config/omarchy/plugins/dylan.monitor" = "~/dotfiles/omarchy/plugins/dylan.monitor"
+# Laptop NVIDIA GPU on/off; hidden on machines without a battery.
+"~/.config/omarchy/plugins/dylan.gpu" = "~/dotfiles/omarchy/plugins/dylan.gpu"
 # Omacus (Incus in the bar): developed in ~/Projects/omacus, cloned there by the repos below.
 "~/.config/omarchy/plugins/io.github.dmkenney.omacus" = "~/Projects/omacus"
 # Brave flags: Omarchy's flags. UI font comes from the GTK font-name (family only;
