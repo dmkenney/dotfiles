@@ -1,17 +1,24 @@
 #!/bin/bash
 # Copy data that is not in git from the old machine over SSH (README step 9).
-# Usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [tmux] [home] [postgres]
+# Usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [projects] [tmux] [home] [gh] [postgres]
 # With no parts given, copies all of them. Nothing on this machine is deleted, and
 # ~/.claude only gains files it doesn't have, so it is safe to re-run.
+#   COPY_EXCLUDE="pattern ..."  more rsync excludes for documents and projects, e.g.
+#                               COPY_EXCLUDE=/projects/ksquared-marketing/video-studio/
+#   PG_DBS=<regex>              databases to copy (default: all), e.g. PG_DBS='^brightsite_'
 # Needs: SSH to the old host, the old host's sudo password (postgres), and this
 # machine's sudo password (postgres). Run after `mise bootstrap`, so postgresql,
 # pgvector and pg_textsearch are installed.
 set -euo pipefail
 
-host=${1:?usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [tmux] [home] [postgres]}
+usage="usage: copy-from-old-machine <old-host> [brave] [claude] [documents] [projects] [tmux] [home] [gh] [postgres]"
+host=${1:?$usage}
 shift
-if (($#)); then parts=("$@"); else parts=(brave claude documents tmux home postgres); fi
+if (($#)); then parts=("$@"); else parts=(brave claude documents projects tmux home gh postgres); fi
 rs=(rsync -aHs --info=stats1 -e ssh)
+# Build output that each project's tooling recreates. Often larger than the source.
+skip=(--exclude=target/ --exclude=_build/ --exclude=deps/ --exclude=.venv/ --exclude=node_modules/)
+for e in ${COPY_EXCLUDE:-}; do skip+=(--exclude="$e"); done
 remote_dbus='DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus'
 
 brave() {
@@ -26,8 +33,9 @@ brave() {
   # Cookies and saved passwords are encrypted with this keyring secret. Without it
   # Brave starts here logged out of everything.
   if ! secret-tool lookup application brave >/dev/null 2>&1; then
-    ssh "$host" "$remote_dbus secret-tool lookup application brave" </dev/null |
-      secret-tool store --label='Brave Safe Storage' application brave
+    local key; key=$(ssh "$host" "$remote_dbus secret-tool lookup application brave" </dev/null)
+    [[ -n $key ]] || { echo "brave: no keyring key on $host" >&2; exit 1; }
+    printf '%s' "$key" | secret-tool store --label='Brave Safe Storage' application brave
   fi
 }
 
@@ -50,7 +58,11 @@ claude() {
 }
 
 documents() {
-  "${rs[@]}" "$host:Documents/" ~/Documents/
+  "${rs[@]}" "${skip[@]}" "$host:Documents/" ~/Documents/
+}
+
+projects() {
+  "${rs[@]}" "${skip[@]}" "$host:Projects/" ~/Projects/
 }
 
 tmux() {
@@ -86,23 +98,42 @@ home() {
   fc-cache -f >/dev/null
 }
 
+gh() {
+  # GitHub CLI login. The token is in the old host's keyring, not in ~/.config/gh.
+  mkdir -p ~/.config/gh
+  scp -q "$host:.config/gh/config.yml" ~/.config/gh/config.yml
+  ssh "$host" "$remote_dbus ~/.local/share/mise/shims/gh auth token" </dev/null |
+    command gh auth login --with-token --git-protocol ssh --hostname github.com
+  command gh auth status
+}
+
 postgres() {
-  # /var/tmp, not /tmp: /tmp is RAM and the dump is several GB.
-  local dump=~/backups/pg_all-$(date +%F).sql
-  mkdir -p ~/backups
+  # One compressed dump per database, in /var/tmp (/tmp is RAM), plus roles.
+  local dir=~/backups/pg-$(date +%F) remote=/var/tmp/pgcopy f db
+  mkdir -p "$dir"
   echo "postgres: dumping on $host (its sudo password)"
-  ssh -t "$host" 'sudo -u postgres pg_dumpall -f /var/tmp/pg_all.sql && sudo chmod 644 /var/tmp/pg_all.sql'
-  scp "$host:/var/tmp/pg_all.sql" "$dump"
-  ssh -t "$host" 'sudo rm /var/tmp/pg_all.sql'
+  ssh -t "$host" "sudo bash -c 'set -e; cd /tmp; rm -rf $remote; mkdir $remote; chown postgres $remote
+    sudo -u postgres pg_dumpall --globals-only -f $remote/globals.sql
+    for db in \$(sudo -u postgres psql -Atc \"select datname from pg_database where not datistemplate and datname <> '\''postgres'\''\" | grep -E \"${PG_DBS:-.}\"); do
+      sudo -u postgres pg_dump -Fc -d \"\$db\" -f \"$remote/\$db.dump\"
+    done
+    chmod -R a+rX $remote'"
+  "${rs[@]}" "$host:$remote/" "$dir/"
+  ssh -t "$host" "sudo rm -rf $remote"
   echo "postgres: restoring here (this machine's sudo password)"
   # Errors other than "already exists" mean a missing extension: add it to mise/config.toml.
-  sudo -u postgres psql -q -d postgres < "$dump" 2>&1 | grep ERROR | grep -v 'already exists' || true
-  echo "postgres: dump kept at $dump"
+  (cd /tmp && sudo -u postgres psql -q -d postgres < "$dir/globals.sql" 2>&1 | grep ERROR | grep -v 'already exists') || true
+  for f in "$dir"/*.dump; do
+    db=$(basename "$f" .dump)
+    echo "postgres: $db"
+    (cd /tmp && sudo -u postgres pg_restore --create -d postgres < "$f" 2>&1 | grep -v 'already exists') || true
+  done
+  echo "postgres: dumps kept in $dir"
 }
 
 for part in "${parts[@]}"; do
   case $part in
-    brave|claude|documents|tmux|home|postgres) echo "== $part"; "$part" ;;
+    brave|claude|documents|projects|tmux|home|gh|postgres) echo "== $part"; "$part" ;;
     *) echo "unknown part: $part" >&2; exit 1 ;;
   esac
 done
