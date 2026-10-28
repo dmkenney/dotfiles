@@ -78,9 +78,10 @@ run = [
   "~/dotfiles/bin/omasession-layouts restore; systemctl --user daemon-reload && systemctl --user enable --now omasession-layouts.timer",
   # GTK UI font (Files, GIMP, 1Password dialogs, ...). Stored in dconf, not a file.
   "gsettings set org.gnome.desktop.interface font-name 'Noto Sans 9'",
-  # Lock Explorer's launcher entry and Omarchy menu entry (Style > Lock Screen). Its
-  # installer refuses to write through symlinks, so it writes the menu file itself.
-  "~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer/extras/install.sh",
+  # Lock Explorer's launcher entry and icon. Its menu entry (Style > Lock Screen) is
+  # in omarchy/extensions/omarchy-menu.jsonc; the plugin's extras/install.sh refuses
+  # to edit that file because it is a link, so copy just these two.
+  "cd ~/.config/omarchy/plugins/io.github.sirjul1337.lock-explorer/extras && install -Dm644 lock-screen-explorer.desktop -t ~/.local/share/applications && install -Dm644 lock-screen-explorer.svg -t ~/.local/share/icons/hicolor/scalable/apps",
   # Pigeon's ntfy topics from 1Password. shell.json in git has none (they are credentials).
   "~/dotfiles/omarchy/bin/pigeon-topics",
 ]
