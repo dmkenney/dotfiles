@@ -16,6 +16,8 @@ remote_dbus='DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus'
 
 brave() {
   if pgrep -x brave >/dev/null; then echo "brave: close Brave here first" >&2; exit 1; fi
+  # A running Brave rewrites its databases mid-copy, leaving them inconsistent.
+  if ssh "$host" pgrep -x brave >/dev/null; then echo "brave: close Brave on $host first" >&2; exit 1; fi
   "${rs[@]}" --exclude='Singleton*' --exclude='Cache/' --exclude='Code Cache/' --exclude='GPUCache/' \
     --exclude='*ShaderCache/' --exclude='Graphite*Cache/' --exclude='Dawn*Cache/' \
     --exclude='Crash Reports/' --exclude='*.log' \
