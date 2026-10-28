@@ -195,9 +195,12 @@ run = [
   "sudo grep -q pg_textsearch /var/lib/postgres/data/postgresql.auto.conf || { echo \"shared_preload_libraries = 'pg_textsearch'\" | sudo -u postgres tee -a /var/lib/postgres/data/postgresql.auto.conf >/dev/null && sudo systemctl try-restart postgresql; }",
 ]
 
+# Agent skills. Hooks run on every bootstrap and `skills add` reinstalls each time,
+# so each line checks for one skill from its package first. Update with
+# `npx skills update -g`.
 [bootstrap.hooks.post-tools]
 run = [
-  "npx -y skills add coreyhaines31/marketingskills --global --all -y",
-  "npx -y skills add mager/frontend-design --global --all -y",
-  "npx -y skills add JuliusBrussee/caveman --global --all -y",
+  "[ -d ~/.agents/skills/ab-testing ] || npx -y skills add coreyhaines31/marketingskills --global --all -y",
+  "[ -d ~/.agents/skills/frontend-design ] || npx -y skills add mager/frontend-design --global --all -y",
+  "[ -d ~/.agents/skills/caveman ] || npx -y skills add JuliusBrussee/caveman --global --all -y",
 ]
