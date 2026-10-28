@@ -1,6 +1,8 @@
-# Laptop. Omarchy.
+# Laptop: Intel Core i7-8565U (Whiskey Lake). Omarchy.
 # host: (set to the laptop's hostname so omarchy/setup.sh finds this file)
 # roles: laptop
-# Omarchy installs GPU drivers itself but not CPU microcode: add intel-ucode or
-# amd-ucode for the laptop's CPU, plus any hardware package Omarchy misses.
+# Omarchy installs GPU drivers itself but not CPU microcode.
 # No monitor layout: Omarchy's default monitors.lua (auto scale) suits a laptop panel.
+
+[bootstrap.packages]
+"pacman:intel-ucode" = "latest"
