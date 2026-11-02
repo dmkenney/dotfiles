@@ -19,17 +19,23 @@
 "~/.local/bin/mouse-dictate" = "~/dotfiles/bin/mouse-dictate"
 # Key Light Air over USB: bar widget, developed in ~/Projects/omarchy-keylight-usb.
 "~/.config/omarchy/plugins/io.github.dmkenney.keylight-usb" = "~/Projects/omarchy-keylight-usb"
-# OpenRGB profiles: rainbow is loaded at login by autostart.lua; desk-lights switches
+# OpenRGB profiles: rainbow is loaded at login by openrgb-server.service; desk-lights switches
 # to off and back when hypridle turns the monitors off and on.
 # In personal: the profiles record hardware serials.
 "~/.config/OpenRGB/profiles/rainbow.json" = "~/dotfiles/personal/openrgb/ryzen-desktop/rainbow.json"
 "~/.config/OpenRGB/profiles/off.json" = "~/dotfiles/personal/openrgb/ryzen-desktop/off.json"
 "~/.local/bin/desk-lights" = "~/dotfiles/bin/desk-lights"
+"~/.config/systemd/user/openrgb-server.service" = "~/dotfiles/systemd/user/openrgb-server.service"
 
 # The AMD SMBus driver (RAM RGB) fails on an ACPI resource conflict without this.
 [bootstrap.hooks.post-packages]
 run = [
   "grep -q acpi_enforce_resources=lax /etc/default/limine || { sudo sed -i '0,/^KERNEL_CMDLINE\\[default\\]+=\"/s//&acpi_enforce_resources=lax /' /etc/default/limine && sudo limine-update; }",
+]
+
+[bootstrap.hooks.post-dotfiles]
+run = [
+  "systemctl --user daemon-reload && systemctl --user enable --now openrgb-server.service",
 ]
 
 [bootstrap.repos]

@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenRGB SDK server (tower RGB, switched by desk-lights)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+# Load the profile after the RGB devices are ready.
+ExecStartPre=/bin/sleep 10
+ExecStart=/usr/bin/openrgb --server -p rainbow
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

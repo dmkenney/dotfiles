@@ -2,7 +2,7 @@
 # Turn the desk lights off and back on: the tower RGB (OpenRGB profiles "off" and
 # "rainbow") and the Key Light. Called by hypridle when the monitors turn off and on.
 #
-# Talks to the OpenRGB server started at login (autostart/ryzen-desktop.lua) over its
+# Talks to the OpenRGB server started at login (openrgb-server.service) over its
 # SDK port. The openrgb CLI rescans every device on each run (40+ seconds here), so
 # it is too slow for this.
 #
@@ -74,8 +74,10 @@ def keylight(state):
 def tower(state):
     try:
         load_profile(PROFILES[state])
+        return True
     except OSError as e:
         print(f"desk-lights: OpenRGB server: {e}", file=sys.stderr)
+        return False
 
 
 def main():
@@ -84,11 +86,10 @@ def main():
     state = sys.argv[1]
     if state == "tower":
         if os.path.exists(TOWER_OFF):
-            os.remove(TOWER_OFF)
-            tower("on")
-        else:
+            if tower("on"):
+                os.remove(TOWER_OFF)
+        elif tower("off"):
             open(TOWER_OFF, "w").close()
-            tower("off")
         return
     if state == "off" or not os.path.exists(TOWER_OFF):
         tower(state)
