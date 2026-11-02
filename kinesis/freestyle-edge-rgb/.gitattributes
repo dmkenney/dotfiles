@@ -1,0 +1,2 @@
+# The keyboard firmware expects CRLF; keep these files byte-for-byte.
+* -text

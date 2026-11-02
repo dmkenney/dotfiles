@@ -1,0 +1,102 @@
+#!/usr/bin/python3
+# Turn the desk lights off and back on: the tower RGB (OpenRGB profiles "off" and
+# "rainbow") and the Key Light. Called by hypridle when the monitors turn off and on.
+#
+# Talks to the OpenRGB server started at login (autostart/ryzen-desktop.lua) over its
+# SDK port. The openrgb CLI rescans every device on each run (40+ seconds here), so
+# it is too slow for this.
+#
+# The Key Light comes back on only if it was on when the lights went off.
+#
+# "tower" toggles only the tower RGB (keyboard hotkey HK8). While it is toggled off,
+# "on" leaves it off.
+
+import os
+import socket
+import struct
+import subprocess
+import sys
+
+OPENRGB = ("127.0.0.1", 6742)
+PROFILES = {"off": "off", "on": "rainbow"}
+RUNTIME_DIR = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
+KEYLIGHT_WAS_ON = os.path.join(RUNTIME_DIR, "desk-lights-keylight-was-on")
+TOWER_OFF = os.path.join(RUNTIME_DIR, "desk-lights-tower-off")
+
+# OpenRGB SDK packet ids (OpenRGB NetworkProtocol.h).
+REQUEST_CONTROLLER_COUNT = 0
+REQUEST_PROTOCOL_VERSION = 40
+SET_CLIENT_NAME = 50
+REQUEST_LOAD_PROFILE = 152
+
+
+def packet(pkt_id, data=b""):
+    return b"ORGB" + struct.pack("<III", 0, pkt_id, len(data)) + data
+
+
+def reply(s):
+    def read(n):
+        data = b""
+        while len(data) < n:
+            chunk = s.recv(n - len(data))
+            if not chunk:
+                raise OSError("connection closed")
+            data += chunk
+        return data
+
+    size = struct.unpack("<I", read(16)[12:16])[0]
+    return read(size)
+
+
+def load_profile(name):
+    with socket.create_connection(OPENRGB, timeout=5) as s:
+        s.sendall(packet(REQUEST_PROTOCOL_VERSION, struct.pack("<I", 4)))
+        reply(s)
+        s.sendall(packet(SET_CLIENT_NAME, b"desk-lights\0"))
+        s.sendall(packet(REQUEST_LOAD_PROFILE, name.encode() + b"\0"))
+        # Load has no reply. The server handles a client's packets in order, so
+        # waiting for this one means the load is done before we disconnect.
+        s.sendall(packet(REQUEST_CONTROLLER_COUNT))
+        reply(s)
+
+
+def keylight(state):
+    if state == "off":
+        status = subprocess.run(["keylight", "status"], capture_output=True, text=True).stdout
+        if '"on": true' in status:
+            open(KEYLIGHT_WAS_ON, "w").close()
+            subprocess.run(["keylight", "off"])
+    elif os.path.exists(KEYLIGHT_WAS_ON):
+        os.remove(KEYLIGHT_WAS_ON)
+        subprocess.run(["keylight", "on"])
+
+
+def tower(state):
+    try:
+        load_profile(PROFILES[state])
+    except OSError as e:
+        print(f"desk-lights: OpenRGB server: {e}", file=sys.stderr)
+
+
+def main():
+    if len(sys.argv) != 2 or sys.argv[1] not in (*PROFILES, "tower"):
+        sys.exit("usage: desk-lights off|on|tower")
+    state = sys.argv[1]
+    if state == "tower":
+        if os.path.exists(TOWER_OFF):
+            os.remove(TOWER_OFF)
+            tower("on")
+        else:
+            open(TOWER_OFF, "w").close()
+            tower("off")
+        return
+    if state == "off" or not os.path.exists(TOWER_OFF):
+        tower(state)
+    try:
+        keylight(state)
+    except FileNotFoundError:
+        pass  # no keylight CLI on this machine
+
+
+if __name__ == "__main__":
+    main()

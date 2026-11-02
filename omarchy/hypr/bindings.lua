@@ -130,3 +130,11 @@ o.rebind("SUPER + CTRL + RETURN", "Flockr", "omarchy-launch-terminal flockr")
 -- Performance MX thumb pad (BTN_FORWARD, mouse:277): same as the MX Vertical top
 -- button in Solaar. Hold to dictate, double tap for Enter (bin/mouse-dictate).
 o.bind_hold("mouse:277", "Start dictation (mouse)", "mouse-dictate press", "Stop dictation (mouse)", "mouse-dictate release")
+
+-- Freestyle Edge hotkeys send F13 and F16-F18 (remapped on the keyboard, see
+-- kinesis/freestyle-edge-rgb). Bound by keycode because xkb gives them XF86 names.
+-- F14/F15 are XF86Launch5/6 (Spotify above) and F20-F23 are mic mute and touchpad.
+o.bind("code:191", "Key Light toggle", "keylight toggle")                                   -- HK0, F13
+o.bind("code:194", "Key Light dimmer", "keylight brightness -5", { repeating = true })      -- HK1, F16
+o.bind("code:195", "Key Light brighter", "keylight brightness +5", { repeating = true })    -- HK2, F17
+o.bind("code:196", "Tower lights toggle", "desk-lights tower")                               -- HK8, F18
