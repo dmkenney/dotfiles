@@ -31,6 +31,8 @@ node = "26"
 stripe = "latest"
 powershell = "latest"
 flyctl = "latest"
+# Builds flockr (post-tools hook).
+rust = "stable"
 
 [settings]
 experimental = true
@@ -134,6 +136,7 @@ groups = ["wheel"]
 # tpm installs the other tmux plugins listed in .tmux.conf (post-dotfiles hook).
 [bootstrap.repos]
 "~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm" }
+"~/Projects/flockr" = { url = "git@github.com:flockr-sh/flockr.git" }
 
 # --- Dotfiles (symlinks into this repo) --------------------------------------
 [dotfiles]
@@ -203,4 +206,7 @@ run = [
   "[ -d ~/.agents/skills/ab-testing ] || npx -y skills add coreyhaines31/marketingskills --global --all -y",
   "[ -d ~/.agents/skills/frontend-design ] || npx -y skills add mager/frontend-design --global --all -y",
   "[ -d ~/.agents/skills/caveman ] || npx -y skills add JuliusBrussee/caveman --global --all -y",
+  # flockr runs from its own build. Build once; rebuild by hand after pulling.
+  "[ -x ~/Projects/flockr/target/release/flockr ] || { cd ~/Projects/flockr && mise trust -q . && mise install -q && mise exec -- cargo build --release --locked; }",
+  "ln -sfn ~/Projects/flockr/target/release/flockr ~/.local/bin/flockr",
 ]
