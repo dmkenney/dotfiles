@@ -28,6 +28,7 @@ mode = "0644"
 "~/.local/bin/auto-rotate" = "~/dotfiles/bin/auto-rotate"
 "~/.local/bin/gpu-mode" = "~/dotfiles/bin/gpu-mode"
 "~/.config/uwsm/env-hyprland" = "~/dotfiles/omarchy/laptop/env-hyprland"
+"~/.config/systemd/user/voxtype.service.d/laptop.conf" = "~/dotfiles/omarchy/laptop/voxtype-laptop.conf"
 
 # Rotate the panel, touchscreen and pen with the screen. Stop it with
 # `systemctl --user stop dev.mise.auto-rotate` to hold the current orientation.
