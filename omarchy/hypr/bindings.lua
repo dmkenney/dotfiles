@@ -138,3 +138,9 @@ o.bind("code:191", "Key Light toggle", "keylight toggle")                       
 o.bind("code:194", "Key Light dimmer", "keylight brightness -5", { repeating = true })      -- HK1, F16
 o.bind("code:195", "Key Light brighter", "keylight brightness +5", { repeating = true })    -- HK2, F17
 o.bind("code:196", "Tower lights toggle", "desk-lights tower")                               -- HK8, F18
+
+-- Dictation keys from before Alt + Space and Right Alt became the defaults.
+-- Remove these lines to give the keys back to applications.
+if o.dictation_installed and o.dictation_installed() then
+  o.bind_hold("F9", "Start dictation (push-to-talk)", "omarchy-dictation start", "Stop dictation (push-to-talk)", "omarchy-dictation stop")
+end
