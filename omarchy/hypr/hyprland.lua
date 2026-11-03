@@ -35,3 +35,9 @@ require("default.hypr.toggles")
 -- global focus_on_activate then jumped to Spotify's workspace.
 o.window("^spotify$", { render_unfocused = true, focus_on_activate = false })
 hl.config({ misc = { render_unfocused_fps = 60 } })
+
+-- Spotify's miniplayer is a separate "chromium-browser" window titled
+-- "<episode> • <show>". Omarchy tags that class as a browser and tiles it, so
+-- swap the browser tag for its picture-in-picture one to float and pin it.
+o.window({ class = "^chromium-browser$", title = ".+ • .+" }, { tag = "-chromium-based-browser" })
+o.window({ class = "^chromium-browser$", title = ".+ • .+" }, { tag = "+pip" })
