@@ -29,7 +29,6 @@ hl.config({
     },
     left_handed = false,
     scroll_factor = 1.00,
-    scroll_method = "",
     scroll_button = 0,
     scroll_button_lock = false,
     mouse_refocus = true,
