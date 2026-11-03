@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # Turn the desk lights off and back on: the tower RGB (OpenRGB profiles "off" and
-# "rainbow") and the Key Light. Called by hypridle when the monitors turn off and on.
+# "rainbow"), the monitor's back lighting, and the Key Light. Called by hypridle
+# when the monitors turn off and on.
 #
 # Talks to the OpenRGB server started at login (openrgb-server.service) over its
 # SDK port. The openrgb CLI rescans every device on each run (40+ seconds here), so
@@ -8,8 +9,8 @@
 #
 # The Key Light comes back on only if it was on when the lights went off.
 #
-# "tower" toggles only the tower RGB (keyboard hotkey HK8). While it is toggled off,
-# "on" leaves it off.
+# "tower" toggles only the tower RGB and the monitor's back lighting (keyboard
+# hotkey HK8). While they are toggled off, "on" leaves them off.
 
 import os
 import socket
@@ -71,7 +72,21 @@ def keylight(state):
         subprocess.run(["keylight", "on"])
 
 
+def monitor_lighting(state):
+    # Samsung Odyssey G95NC back lighting (Core Lighting+) is DDC code F8:
+    # 1 on, 0 off. Found by diffing the codes before and after the menu toggle.
+    try:
+        subprocess.run(
+            ["ddcutil", "--model", "Odyssey G95NC", "--noverify", "setvcp", "F8",
+             "1" if state == "on" else "0"],
+            capture_output=True,
+        )
+    except FileNotFoundError:
+        pass  # no ddcutil on this machine
+
+
 def tower(state):
+    monitor_lighting(state)
     try:
         load_profile(PROFILES[state])
         return True
