@@ -237,6 +237,10 @@ smart_auto_submit = true
 "case word" = "K Squared"
 "casewordconsulting" = "ksquaredconsulting"
 "dillon" = "Dylan"
+"tewi" = "TUI"
+"tewis" = "TUIs"
+"tooey" = "TUI"
+"t u i" = "TUI"
 
 # [text]
 # Text processing options (word replacements, spoken punctuation)
