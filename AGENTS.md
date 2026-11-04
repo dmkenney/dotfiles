@@ -11,8 +11,10 @@
 - Short, simple words. No "leverage", "utilize", "robust", "comprehensive", "in order to".
 - No throat-clearing ("it is worth noting that") or hedging stacks. State the point, then any real caveat.
 - One point per bullet. Re-read and cut 20%.
-- Never state a claim you haven't verified. Don't say something was tested, fixed or checked unless it was.
-- American spelling in prose, comments, commits and PRs (color, behavior, canceled, -ize). Don't change identifiers, config keys or stored values to fix spelling; change only the text a user reads.
+- Copy-paste text (email drafts, messages, posts, any text Dylan will paste somewhere): put it in a fenced code block, never a `>` blockquote. The blockquote's left bar gets copied along with the text.
+- Never state a claim you haven't verified. Don't say something was tested, fixed, or checked unless it was.
+- Always use the Oxford comma in lists of three or more ("sales, support, and finance"), in every kind of writing.
+- American spelling in prose, comments, commits, and PRs (color, behavior, canceled, -ize). Don't change identifiers, config keys, or stored values to fix spelling; change only the text a user reads.
 
 ## Commits
 
