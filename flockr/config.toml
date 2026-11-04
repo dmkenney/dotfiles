@@ -144,3 +144,13 @@ resume_agents_on_restore = true
 [mobile]
 enabled = true
 listen = ["10.116.55.37"]
+
+[flock]
+enabled = true
+listen = ["10.116.55.37"]
+approve_messages = "never"
+
+[web]
+enabled = true
+listen = ["10.116.55.37"]
+dir = "/home/dylan/Projects/flockr-mobile-flock/dist"
