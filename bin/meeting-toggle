@@ -15,24 +15,50 @@ running() {
   voxtype meeting status 2>/dev/null | grep -q 'Meeting Status: \(starting\|recording\|paused\)'
 }
 
+meeting_id() {
+  voxtype meeting status 2>/dev/null | sed -n 's/^Meeting ID: //p'
+}
+
+# Held for the whole stop, so a second press can't start a meeting while the
+# last one is still being saved.
+lock_file="${XDG_RUNTIME_DIR:-/tmp}/meeting-toggle.lock"
+exec {lock_fd}>"$lock_file"
+
+stopping() {
+  ! flock -n "$lock_fd"
+}
+
 stop_meeting() {
+  flock -n "$lock_fd" || { notify-send "Meeting still stopping" "Wait for the last meeting to finish saving"; return; }
+
+  # Export this meeting by ID: "latest" can be a newer meeting started meanwhile.
+  id=$(meeting_id)
+  notify-send "Stopping meeting" "Saving the transcript..."
   voxtype meeting stop >/dev/null
-  omarchy-capture-screenrecording --status >/dev/null 2>&1 && omarchy-capture-screenrecording --stop-recording
 
   # The daemon finishes transcribing the last chunk after stop.
   for _ in $(seq 30); do
-    voxtype meeting status 2>/dev/null | grep -q 'No meeting' && break
+    [[ $(meeting_id) == "$id" ]] || break
     sleep 1
   done
 
   mkdir -p "$out_dir"
   file="$out_dir/$(date +%F-%H%M).md"
-  if voxtype meeting export latest --timestamps --speakers --metadata -o "$file" >/dev/null 2>&1; then
+  if [[ -n $id ]] && voxtype meeting export "$id" --timestamps --speakers --metadata -o "$file" >/dev/null 2>&1; then
     notify-send "Meeting stopped" "Transcript: $file"
   else
-    notify-send -u critical "Meeting stopped" "Transcript export failed. Try: voxtype meeting export latest"
+    notify-send -u critical "Meeting stopped" "Transcript export failed. Try: voxtype meeting list"
   fi
+
+  # Last: saving a long screen recording can take a minute.
+  omarchy-capture-screenrecording --status >/dev/null 2>&1 && omarchy-capture-screenrecording --stop-recording {lock_fd}>&-
 }
+
+if stopping; then
+  notify-send "Meeting still stopping" "Wait for the last meeting to finish saving"
+  exit 0
+fi
+flock -u "$lock_fd"
 
 case $1 in
   "")
@@ -57,10 +83,10 @@ case $1 in
     ;;
   screen)
     notify-send "Meeting transcript started" "Pick a monitor or region to record"
-    omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
+    omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio {lock_fd}>&-
     ;;
   window)
     notify-send "Meeting transcript started" "Pick a window to record"
-    OMARCHY_SCREENRECORD_USE_PORTAL=true omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio
+    OMARCHY_SCREENRECORD_USE_PORTAL=true omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio {lock_fd}>&-
     ;;
 esac
